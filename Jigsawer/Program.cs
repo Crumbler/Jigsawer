@@ -1,4 +1,6 @@
-﻿namespace Jigsawer;
+﻿using Jigsawer.Main;
+
+namespace Jigsawer;
 
 public static class Program {
     public static void Main() {

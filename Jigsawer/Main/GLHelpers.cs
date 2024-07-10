@@ -1,9 +1,9 @@
-﻿
-using OpenTK.Graphics.OpenGL4;
+﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
+
 using System.Runtime.CompilerServices;
 
-namespace Jigsawer;
+namespace Jigsawer.Main;
 public static class GLHelpers {
     [SkipLocalsInit]
     public static unsafe Box2i GetViewport() {
