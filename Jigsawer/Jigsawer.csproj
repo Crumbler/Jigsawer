@@ -9,6 +9,11 @@
     <Platforms>x64</Platforms>
   </PropertyGroup>
 
+  <PropertyGroup Label="Suppressions">
+    <NoWarn>$(NoWarn);CA1032;CA1848;CA1815;CA1303</NoWarn>
+    <NoWarn>$(NoWarn);IDE0290;IDE0270; IDE0066;IDE0251</NoWarn>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <OutputType>Exe</OutputType>
   </PropertyGroup>
@@ -19,10 +24,14 @@
 
   <ItemGroup>
     <None Remove="Images\MainMenuBackgroundTile.png" />
+    <None Remove="Shaders\Entities\Image\frag.glsl" />
+    <None Remove="Shaders\Entities\Image\vert.glsl" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Images\MainMenuBackgroundTile.png" />
+    <EmbeddedResource Include="Shaders\Entities\Image\frag.glsl" />
+    <EmbeddedResource Include="Shaders\Entities\Image\vert.glsl" />
   </ItemGroup>
 
   <ItemGroup>

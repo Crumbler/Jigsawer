@@ -11,6 +11,11 @@ public static class Logger {
 
     [Conditional("DEBUG")]
     public static void LogDebug(string message) {
-        logger.LogDebug("{Message}" ,message);
+        logger.LogDebug("{Message}", message);
+    }
+
+    [Conditional("DEBUG")]
+    public static void LogError(string message) {
+        logger.LogError("{Message}", message);
     }
 }

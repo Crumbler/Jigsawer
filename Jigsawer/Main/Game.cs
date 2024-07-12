@@ -1,6 +1,6 @@
 ﻿using Jigsawer.Scenes;
 
-using OpenTK.Graphics.OpenGL4;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
@@ -30,6 +30,8 @@ public sealed partial class Game : GameWindow {
 
         GL.ClearColor(Color4.Black);
 
+        Logger.LogDebug("Loading game");
+
         SwitchToScene(SceneType.MainMenu);
 
         Logger.LogDebug("Loaded game");
@@ -38,7 +40,7 @@ public sealed partial class Game : GameWindow {
     protected override void OnFramebufferResize(FramebufferResizeEventArgs e) {
         base.OnFramebufferResize(e);
 
-
+        Viewport.Set(new Box2i(0, 0, e.Width, e.Height));
     }
 
     protected override void OnKeyDown(KeyboardKeyEventArgs e) {
@@ -82,13 +84,19 @@ public sealed partial class Game : GameWindow {
     }
 
     private void SwitchToScene(SceneType sceneType) {
+        Scene newScene;
+
         switch (sceneType) {
             case SceneType.MainMenu:
-                currentScene = new MainMenuScene() {
-                    OnTransfer = SwitchToScene
-                };
+                newScene = new MainMenuScene();
                 break;
+            default:
+                throw new ArgumentException($"Scene type {sceneType} not found.", nameof(sceneType));
         }
+
+        newScene.OnTransfer = SwitchToScene;
+
+        currentScene = newScene;
     }
 
     protected override void OnUpdateFrame(FrameEventArgs args) {
