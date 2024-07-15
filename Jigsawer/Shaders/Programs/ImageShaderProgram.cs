@@ -21,11 +21,11 @@ public sealed class ImageShaderProgram : ShaderProgram {
         BindAttribute(AttributePositions.Position, AttributeNames.Position);
     }
 
-    private static class AttributePositions {
+    public static class AttributePositions {
         public const int Position = 0;
     }
 
     private static class AttributeNames {
-        public const string Position = "position";
+        public const string Position = "box";
     }
 }

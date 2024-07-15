@@ -1,5 +1,4 @@
 ﻿
-using Jigsawer.Main;
 using Jigsawer.Models;
 using Jigsawer.Shaders.Programs;
 
@@ -13,7 +12,7 @@ public sealed class MainMenuScene : Scene {
 
     public MainMenuScene() {
         backgroundImage = new ImageModel {
-            Rect = new Box2(0, 0, 100, 100)
+            Rect = new Box2(0, 0, 0.5f, 0.5f)
         };
 
         imageShader = ImageShaderProgram.Create();

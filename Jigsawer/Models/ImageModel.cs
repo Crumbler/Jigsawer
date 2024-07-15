@@ -1,5 +1,6 @@
 ﻿
 using Jigsawer.Main;
+using static Jigsawer.Shaders.Programs.ImageShaderProgram;
 
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
@@ -7,48 +8,43 @@ using OpenTK.Mathematics;
 namespace Jigsawer.Models;
 
 public sealed class ImageModel : RenderModel {
-    private readonly Vector2[] vertexCoords;
+    private const int PrimitivesPerInstance = 4;
+    private const int InstanceDataSize = sizeof(float) * PrimitivesPerInstance;
+
+    private Box2 box;
     private readonly VAO vao;
     private readonly VBO positionVBO;
 
     public Box2 Rect {
-        get => new(vertexCoords[0], vertexCoords[2]);
+        get => box;
 
         set {
-            float left = value.Min.X;
-            float bottom = value.Min.Y;
-            float right = value.Max.X;
-            float top = value.Max.Y;
+            box = value;
 
-            vertexCoords[0] = new Vector2(left, bottom);
-            vertexCoords[1] = new Vector2(left, top);
-            vertexCoords[2] = new Vector2(right, top);
-            vertexCoords[3] = new Vector2(right, bottom);
-
-            positionVBO.SetData<Vector2>(vertexCoords.Length * Vector2.SizeInBytes, null);
-            positionVBO.SetData(vertexCoords.Length * Vector2.SizeInBytes, vertexCoords);
+            positionVBO.Orphan(InstanceDataSize);
+            positionVBO.SetData(InstanceDataSize, value);
         }
     }
 
     public ImageModel() {
-        vertexCoords = new Vector2[4];
-
         vao = VAO.Create();
         vao.Bind();
 
         positionVBO = VBO.Create(BufferUsageHint.DynamicDraw);
         positionVBO.Bind();
 
-        positionVBO.SetData(vertexCoords.Length * Vector2.SizeInBytes, vertexCoords);
+        positionVBO.SetData(InstanceDataSize, box);
 
-        VAO.SetVertexAttributePointer(0, 2, VertexAttribPointerType.Float);
-
-        VAO.EnableVertexAttributeArray(0);
+        VAO.SetVertexAttributePointer(AttributePositions.Position,
+            PrimitivesPerInstance, VertexAttribPointerType.Float);
+        GL.VertexAttribDivisor(AttributePositions.Position, PrimitivesPerInstance);
+        VAO.EnableVertexAttributeArray(AttributePositions.Position);
     }
 
     public void Render() {
         vao.Bind();
-        GL.DrawArrays(PrimitiveType.TriangleFan, 0, vertexCoords.Length);
+
+        GL.DrawArrays(PrimitiveType.TriangleFan, 0, PrimitivesPerInstance);
     }
 
     public override void Delete() {

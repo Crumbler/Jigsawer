@@ -8,7 +8,7 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Jigsawer.Main;
 
-public sealed partial class Game : GameWindow {
+public sealed class Game : GameWindow {
     private WindowState previousWindowState = WindowState.Normal;
     private Scene? currentScene;
 
@@ -38,14 +38,10 @@ public sealed partial class Game : GameWindow {
     }
 
     protected override void OnFramebufferResize(FramebufferResizeEventArgs e) {
-        base.OnFramebufferResize(e);
-
         Viewport.Set(new Box2i(0, 0, e.Width, e.Height));
     }
 
     protected override void OnKeyDown(KeyboardKeyEventArgs e) {
-        base.OnKeyDown(e);
-
         switch (e.Key) {
             case Keys.F4:
                 if (e.Alt) {
@@ -74,8 +70,6 @@ public sealed partial class Game : GameWindow {
     }
 
     protected override void OnRenderFrame(FrameEventArgs args) {
-        base.OnRenderFrame(args);
-
         GL.Clear(ClearBufferMask.ColorBufferBit);
 
         currentScene?.Render();
@@ -100,8 +94,6 @@ public sealed partial class Game : GameWindow {
     }
 
     protected override void OnUpdateFrame(FrameEventArgs args) {
-        base.OnUpdateFrame(args);
-
         currentScene?.Update();
     }
 }
