@@ -10,6 +10,7 @@ public struct VAO {
     public void Bind() {
         if (Id != boundId) {
             GL.BindVertexArray(Id);
+            boundId = Id;
         }
     }
 

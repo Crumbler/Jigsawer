@@ -37,6 +37,7 @@ public abstract class Scene {
         ShaderProgram.StopUsing();
         VAO.Unbind();
         VBO.Unbind();
+        Texture.Unbind();
     }
 
     public abstract void Render();
@@ -44,7 +45,7 @@ public abstract class Scene {
 
     /// <summary>
     /// Called when the framebuffer is resized.
-    /// When overriding, 
+    /// When overriding, make sure to call the base method.
     /// </summary>
     public virtual void OnFramebufferResize(Vector2i newSize) {
         CalculateProjectionMatrix(newSize);

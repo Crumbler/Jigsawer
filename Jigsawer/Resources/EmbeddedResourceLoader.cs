@@ -9,7 +9,7 @@ namespace Jigsawer.Resources;
 public static class EmbeddedResourceLoader {
     private static readonly Assembly assembly = typeof(EmbeddedResourceLoader).Assembly;
 
-    private static Stream GetResourceStream(string resourceName) {
+    public static Stream GetResourceStream(string resourceName) {
         Stream? stream = assembly.GetManifestResourceStream(resourceName);
 
         if (stream == null) {

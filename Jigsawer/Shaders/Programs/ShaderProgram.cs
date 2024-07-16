@@ -53,6 +53,12 @@ public abstract class ShaderProgram {
     protected static void SetMatrix(int location, ref Matrix3 mat) {
         GL.UniformMatrix3(location, true, ref mat);
     }
+    protected static void SetVector2(int location, Vector2 vector) {
+        GL.Uniform2(location, vector);
+    }
+    protected static void SetInt(int location, int value) {
+        GL.Uniform1(location, value);
+    }
 
     protected void BindAttribute(int index, string name) => GL.BindAttribLocation(Id, index, name);
     protected int GetUniformLocation(string name) => GL.GetUniformLocation(Id, name);
