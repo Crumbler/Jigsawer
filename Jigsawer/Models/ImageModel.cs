@@ -4,6 +4,7 @@ using static Jigsawer.Shaders.Programs.ImageShaderProgram;
 
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
+using Jigsawer.Shaders.Programs;
 
 namespace Jigsawer.Models;
 
@@ -12,8 +13,11 @@ public sealed class ImageModel {
     private const int InstanceDataSize = sizeof(float) * PrimitivesPerInstance;
 
     private Box2 box;
+    private float textureSizeMultiplier;
     private readonly VAO vao;
     private readonly VBO positionVBO;
+    private readonly Texture texture;
+    private readonly ImageShaderProgram imageShader;
 
     public Box2 Rect {
         get => box;
@@ -27,7 +31,9 @@ public sealed class ImageModel {
         }
     }
 
-    public ImageModel() {
+    public ImageModel(ref Matrix3 projMat, float textureSizeMultiplier) {
+        this.textureSizeMultiplier = textureSizeMultiplier;
+
         vao = VAO.Create();
         vao.Bind();
 
@@ -40,10 +46,32 @@ public sealed class ImageModel {
             PrimitivesPerInstance, VertexAttribPointerType.Float);
         GL.VertexAttribDivisor(AttributePositions.Position, PrimitivesPerInstance);
         VAO.EnableVertexAttributeArray(AttributePositions.Position);
+
+        texture = Texture.Create(TextureUnit.Texture0, Images.Image.MainMenuBackgroundTile);
+
+        imageShader = ImageShaderProgram.Create();
+        imageShader.Use();
+        imageShader.SetProjectionMatrix(ref projMat);
+        imageShader.SetTextureSize(texture.Size * textureSizeMultiplier);
+        imageShader.SetTextureUnit(0);
+    }
+
+    public void UpdateProjectionMatrix(ref Matrix3 mat) {
+        imageShader.Use();
+        imageShader.SetProjectionMatrix(ref mat);
     }
 
     public void Render() {
         vao.Bind();
+
+        texture.Activate();
+        texture.Bind();
+        Texture.SetMinFilter(TextureMinFilter.Linear);
+        Texture.SetMagFilter(TextureMagFilter.Linear);
+        Texture.SetWrapping(TextureParameterName.TextureWrapS, TextureWrapMode.Repeat);
+        Texture.SetWrapping(TextureParameterName.TextureWrapT, TextureWrapMode.Repeat);
+
+        imageShader.Use();
 
         GL.DrawArrays(PrimitiveType.TriangleFan, 0, PrimitivesPerInstance);
     }
@@ -51,5 +79,6 @@ public sealed class ImageModel {
     public void Delete() {
         vao.Delete();
         positionVBO.Delete();
+        texture.Delete();
     }
 }
