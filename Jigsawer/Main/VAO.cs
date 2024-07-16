@@ -3,11 +3,24 @@ using OpenTK.Graphics.OpenGL;
 
 namespace Jigsawer.Main;
 public struct VAO {
+    private static int boundId;
+
     public int Id { get; private set; }
 
-    public void Bind() => GL.BindVertexArray(Id);
+    public void Bind() {
+        if (Id != boundId) {
+            GL.BindVertexArray(Id);
+        }
+    }
+
     public void Delete() => GL.DeleteVertexArray(Id);
 
+    public static void Unbind() {
+        if (boundId != 0) {
+            boundId = 0;
+            GL.BindVertexArray(0);
+        }
+    }
     public static void SetVertexAttributePointer(
         int index,
         int size,

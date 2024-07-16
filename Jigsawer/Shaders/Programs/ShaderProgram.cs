@@ -6,6 +6,8 @@ using OpenTK.Mathematics;
 namespace Jigsawer.Shaders.Programs;
 
 public abstract class ShaderProgram {
+    private static int currentlyUsedId;
+
     public int Id {
         get; private set;
     }
@@ -82,6 +84,19 @@ public abstract class ShaderProgram {
         GetUniformLocations();
     }
 
-    public void Use() => GL.UseProgram(Id);
+    public static void StopUsing() {
+        if (currentlyUsedId != 0) {
+            currentlyUsedId = 0;
+            GL.UseProgram(0);
+        }
+    }
+
+    public void Use() {
+        if (currentlyUsedId != Id) {
+            GL.UseProgram(Id);
+            currentlyUsedId = Id;
+        }
+    }
+
     public void Delete() => GL.DeleteProgram(Id);
 }

@@ -16,12 +16,14 @@ public sealed class MainMenuScene : Scene {
         };
 
         imageShader = ImageShaderProgram.Create();
-
+        
         imageShader.Use();
         imageShader.SetProjectionMatrix(ref projMat);
     }
 
     protected override void Close() {
+        base.Close();
+
         backgroundImage.Delete();
         imageShader.Delete();
     }

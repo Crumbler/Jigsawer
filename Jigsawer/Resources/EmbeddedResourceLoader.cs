@@ -20,7 +20,7 @@ public static class EmbeddedResourceLoader {
     }
 
     public static string GetResourceString(string resourceName) {
-        var stream = GetResourceStream(resourceName);
+        using var stream = GetResourceStream(resourceName);
 
         using var reader = new StreamReader(stream, Encoding.UTF8);
 

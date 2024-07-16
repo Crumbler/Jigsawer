@@ -1,5 +1,6 @@
 ﻿
 using Jigsawer.Main;
+using Jigsawer.Shaders.Programs;
 
 using OpenTK.Mathematics;
 
@@ -28,7 +29,15 @@ public abstract class Scene {
     }
 
     protected void TransferToScene(SceneType sceneType) => OnTransfer?.Invoke(sceneType);
-    protected abstract void Close();
+
+    /// <summary>
+    /// WHen overriding make sure to call the base method.
+    /// </summary>
+    protected virtual void Close() {
+        ShaderProgram.StopUsing();
+        VAO.Unbind();
+        VBO.Unbind();
+    }
 
     public abstract void Render();
     public abstract void Update();

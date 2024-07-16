@@ -7,7 +7,7 @@ using OpenTK.Mathematics;
 
 namespace Jigsawer.Models;
 
-public sealed class ImageModel : RenderModel {
+public sealed class ImageModel {
     private const int PrimitivesPerInstance = 4;
     private const int InstanceDataSize = sizeof(float) * PrimitivesPerInstance;
 
@@ -48,7 +48,7 @@ public sealed class ImageModel : RenderModel {
         GL.DrawArrays(PrimitiveType.TriangleFan, 0, PrimitivesPerInstance);
     }
 
-    public override void Delete() {
+    public void Delete() {
         vao.Delete();
         positionVBO.Delete();
     }
