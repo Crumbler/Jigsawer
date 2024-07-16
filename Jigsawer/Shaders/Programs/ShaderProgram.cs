@@ -1,6 +1,7 @@
 ﻿using Jigsawer.Main;
 
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Mathematics;
 
 namespace Jigsawer.Shaders.Programs;
 
@@ -38,7 +39,23 @@ public abstract class ShaderProgram {
         }
     }
 
+    protected static void SetMatrix(int location, ref Matrix2 mat) {
+        GL.UniformMatrix2(location, true, ref mat);
+    }
+    protected static void SetMatrix(int location, ref Matrix3x2 mat) {
+        GL.UniformMatrix3x2(location, true, ref mat);
+    }
+    protected static void SetMatrix(int location, ref Matrix2x3 mat) {
+        GL.UniformMatrix2x3(location, true, ref mat);
+    }
+    protected static void SetMatrix(int location, ref Matrix3 mat) {
+        GL.UniformMatrix3(location, true, ref mat);
+    }
+
     protected void BindAttribute(int index, string name) => GL.BindAttribLocation(Id, index, name);
+    protected int GetUniformLocation(string name) => GL.GetUniformLocation(Id, name);
+
+    protected abstract void GetUniformLocations();
     protected abstract void BindAttributes();
 
     protected void Initialize(ShaderInfo shaderInfoA, ShaderInfo shaderInfoB) {
@@ -61,6 +78,8 @@ public abstract class ShaderProgram {
 
         shaderA.Delete();
         shaderB.Delete();
+
+        GetUniformLocations();
     }
 
     public void Use() => GL.UseProgram(Id);

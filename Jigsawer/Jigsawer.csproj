@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Suppressions">
-    <NoWarn>$(NoWarn);CA1032;CA1848;CA1815;CA1303</NoWarn>
+    <NoWarn>$(NoWarn);CA1032;CA1848;CA1815;CA1303;CA1034;CA1051</NoWarn>
     <NoWarn>$(NoWarn);IDE0290;IDE0270; IDE0066;IDE0251</NoWarn>
   </PropertyGroup>
 

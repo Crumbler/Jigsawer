@@ -21,6 +21,7 @@ public sealed class ImageModel : RenderModel {
         set {
             box = value;
 
+            positionVBO.Bind();
             positionVBO.Orphan(InstanceDataSize);
             positionVBO.SetData(InstanceDataSize, value);
         }

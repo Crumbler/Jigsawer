@@ -39,6 +39,8 @@ public sealed class Game : GameWindow {
 
     protected override void OnFramebufferResize(FramebufferResizeEventArgs e) {
         Viewport.Set(new Box2i(0, 0, e.Width, e.Height));
+
+        currentScene?.OnFramebufferResize(e.Size);
     }
 
     protected override void OnKeyDown(KeyboardKeyEventArgs e) {
