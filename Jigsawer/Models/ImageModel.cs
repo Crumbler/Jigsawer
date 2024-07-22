@@ -13,7 +13,6 @@ public sealed class ImageModel {
     private const int InstanceDataSize = sizeof(float) * PrimitivesPerInstance;
 
     private Box2 box;
-    private float textureSizeMultiplier;
     private readonly VAO vao;
     private readonly VBO positionVBO;
     private readonly Texture texture;
@@ -32,8 +31,6 @@ public sealed class ImageModel {
     }
 
     public ImageModel(ref Matrix3 projMat, float textureSizeMultiplier) {
-        this.textureSizeMultiplier = textureSizeMultiplier;
-
         vao = VAO.Create();
         vao.Bind();
 

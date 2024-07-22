@@ -38,7 +38,7 @@ public sealed class Game : GameWindow {
     }
 
     protected override void OnFramebufferResize(FramebufferResizeEventArgs e) {
-        Viewport.Set(new Box2i(0, 0, e.Width, e.Height));
+        Viewport.Size = new Vector2i(e.Width, e.Height);
 
         currentScene?.OnFramebufferResize(e.Size);
     }
@@ -96,6 +96,6 @@ public sealed class Game : GameWindow {
     }
 
     protected override void OnUpdateFrame(FrameEventArgs args) {
-        currentScene?.Update();
+        currentScene?.Update(args.Time);
     }
 }

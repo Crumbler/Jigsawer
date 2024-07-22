@@ -26,12 +26,16 @@
     <None Remove="Images\MainMenuBackgroundTile.png" />
     <None Remove="Shaders\Entities\Image\frag.glsl" />
     <None Remove="Shaders\Entities\Image\vert.glsl" />
+    <None Remove="Shaders\Entities\MainMenuPuzzles\frag.glsl" />
+    <None Remove="Shaders\Entities\MainMenuPuzzles\vert.glsl" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Images\MainMenuBackgroundTile.png" />
     <EmbeddedResource Include="Shaders\Entities\Image\frag.glsl" />
     <EmbeddedResource Include="Shaders\Entities\Image\vert.glsl" />
+    <EmbeddedResource Include="Shaders\Entities\MainMenuPuzzles\frag.glsl" />
+    <EmbeddedResource Include="Shaders\Entities\MainMenuPuzzles\vert.glsl" />
   </ItemGroup>
 
   <ItemGroup>
