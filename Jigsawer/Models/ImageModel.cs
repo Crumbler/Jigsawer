@@ -2,7 +2,7 @@
 using Jigsawer.Main;
 using static Jigsawer.Shaders.Programs.ImageShaderProgram;
 
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using Jigsawer.Shaders.Programs;
 

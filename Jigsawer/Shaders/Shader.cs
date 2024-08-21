@@ -2,7 +2,7 @@
 using Jigsawer.Exceptions;
 using Jigsawer.Main;
 
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL4;
 
 namespace Jigsawer.Shaders;
 

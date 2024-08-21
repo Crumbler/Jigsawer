@@ -1,7 +1,7 @@
 ﻿
 using Jigsawer.Resources;
 
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
 using System.Drawing;
@@ -54,7 +54,7 @@ public struct Texture {
             System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
         GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb,
-            bitmap.Width, bitmap.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgr,
+            bitmap.Width, bitmap.Height, 0, OpenTK.Graphics.OpenGL4.PixelFormat.Bgr,
             PixelType.UnsignedByte, bitmapData.Scan0);
 
         bitmap.UnlockBits(bitmapData);

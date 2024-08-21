@@ -1,7 +1,7 @@
 ﻿
 using Jigsawer.Shaders.Programs;
 
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
 namespace Jigsawer.Models;

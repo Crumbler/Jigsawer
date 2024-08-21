@@ -1,6 +1,6 @@
 ﻿
 using Jigsawer.Resources;
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL4;
 
 namespace Jigsawer.Shaders;
 
