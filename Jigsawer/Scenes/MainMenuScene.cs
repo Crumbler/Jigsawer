@@ -7,11 +7,14 @@ namespace Jigsawer.Scenes;
 
 public sealed class MainMenuScene : Scene {
     private readonly ImageModel backgroundImage;
+    private readonly MainMenuPuzzlesModel backgroundPuzzles;
 
     public MainMenuScene() : base() {
         backgroundImage = new ImageModel(ref projMat, 0.5f) {
             Rect = new Box2(Vector2.Zero, FramebufferSize)
         };
+
+        backgroundPuzzles = new MainMenuPuzzlesModel(TotalMilliseconds, FramebufferSize);
     }
 
     protected override void Close() {
@@ -25,13 +28,19 @@ public sealed class MainMenuScene : Scene {
 
         backgroundImage.Rect = new Box2(Vector2.Zero, FramebufferSize);
         backgroundImage.UpdateProjectionMatrix(ref projMat);
+
+        backgroundPuzzles.SetDrawSize(newSize);
     }
 
     public override void Render() {
         backgroundImage.Render();
+
+        backgroundPuzzles.Render();
     }
 
-    public override void Update() {
-        
+    public override void Update(double secondsPassed) {
+        base.Update(secondsPassed);
+
+        backgroundPuzzles.SetTime(TotalMilliseconds);
     }
 }

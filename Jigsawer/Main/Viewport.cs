@@ -6,14 +6,27 @@ using System.Runtime.CompilerServices;
 namespace Jigsawer.Main;
 
 public static class Viewport {
-    [SkipLocalsInit]
-    public static unsafe Box2i Get() {
-        Box2i viewportBox;
+    public static Box2i Bounds {
+        [SkipLocalsInit]
+        get {
+            Box2i viewportBox;
 
-        GL.GetInteger(GetPName.Viewport, (int*)&viewportBox);
+            unsafe {
+                GL.GetInteger(GetPName.Viewport, (int*)&viewportBox);
+            }
 
-        return viewportBox;
+            return viewportBox;
+        }
+
+        set => GL.Viewport(value);
     }
 
-    public static void Set(Box2i box) => GL.Viewport(box);
+    public static Vector2i Size {
+        get {
+            var bounds = Bounds;
+            return bounds.Max - bounds.Min;
+        }
+
+        set => Bounds = new Box2i(Vector2i.Zero, value);
+    }
 }

@@ -7,14 +7,15 @@ using OpenTK.Mathematics;
 namespace Jigsawer.Scenes;
 
 public abstract class Scene {
+    private double secondsAccumulator;
     protected Matrix3 projMat;
 
     protected Scene() {
-        var viewport = Viewport.Get();
-        FramebufferSize = viewport.Max;
+        FramebufferSize = Viewport.Size;
         CalculateProjectionMatrix(FramebufferSize);
     }
 
+    protected int TotalMilliseconds { get; private set; }
     protected Vector2i FramebufferSize { get; private set; }
     public Action<SceneType>? OnTransfer { get; set; }
 
@@ -41,7 +42,19 @@ public abstract class Scene {
     }
 
     public abstract void Render();
-    public abstract void Update();
+
+    /// <summary>
+    /// When overriding make sure to call the base method.
+    /// </summary>
+    public virtual void Update(double secondsPassed) {
+        secondsAccumulator += secondsPassed;
+
+        double millis = Math.Floor(secondsAccumulator * 1000.0);
+
+        TotalMilliseconds += (int)millis;
+
+        secondsAccumulator -= millis / 1000.0;
+    }
 
     /// <summary>
     /// Called when the framebuffer is resized.
