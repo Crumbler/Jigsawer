@@ -21,6 +21,7 @@ public sealed class MainMenuScene : Scene {
         base.Close();
 
         backgroundImage.Delete();
+        backgroundPuzzles.Delete();
     }
 
     public override void OnFramebufferResize(Vector2i newSize) {
