@@ -45,8 +45,12 @@ public sealed class ImageModel {
         VAO.EnableVertexAttributeArray(AttributePositions.Position);
 
         texture = Texture.Create(TextureUnit.Texture0, Images.Image.MainMenuBackgroundTile);
+        Texture.SetMinFilter(TextureMinFilter.Linear);
+        Texture.SetMagFilter(TextureMagFilter.Linear);
+        Texture.SetWrapping(TextureParameterName.TextureWrapS, TextureWrapMode.Repeat);
+        Texture.SetWrapping(TextureParameterName.TextureWrapT, TextureWrapMode.Repeat);
 
-        imageShader = ImageShaderProgram.Create();
+        imageShader = Create();
         imageShader.Use();
         imageShader.SetProjectionMatrix(ref projMat);
         imageShader.SetTextureSize(texture.Size * textureSizeMultiplier);
@@ -63,10 +67,6 @@ public sealed class ImageModel {
 
         texture.Activate();
         texture.Bind();
-        Texture.SetMinFilter(TextureMinFilter.Linear);
-        Texture.SetMagFilter(TextureMagFilter.Linear);
-        Texture.SetWrapping(TextureParameterName.TextureWrapS, TextureWrapMode.Repeat);
-        Texture.SetWrapping(TextureParameterName.TextureWrapT, TextureWrapMode.Repeat);
 
         imageShader.Use();
 
