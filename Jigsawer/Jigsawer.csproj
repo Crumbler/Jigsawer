@@ -7,6 +7,9 @@
     <AnalysisMode>All</AnalysisMode>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Platforms>x64</Platforms>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <OutputPath>bin/$(Configuration)</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Label="Suppressions">
