@@ -1,8 +1,8 @@
-#version 330 core
+#version 430
 
 layout(location = 0) in vec4 box;
 
-uniform mat3 projMat;
+layout(location = 0) uniform mat3 projMat;
 
 out vec2 uv;
 

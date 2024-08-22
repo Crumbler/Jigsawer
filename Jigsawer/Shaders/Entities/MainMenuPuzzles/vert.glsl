@@ -1,7 +1,7 @@
-#version 330 core
+#version 430
 
-uniform int time;
-uniform vec2 drawSize;
+layout(location = 0) uniform int time;
+layout(location = 1) uniform vec2 drawSize;
 
 out vec2 uv;
 flat out int pieceId;

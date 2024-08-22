@@ -61,9 +61,7 @@ public abstract class ShaderProgram {
     }
 
     protected void BindAttribute(int index, string name) => GL.BindAttribLocation(Id, index, name);
-    protected int GetUniformLocation(string name) => GL.GetUniformLocation(Id, name);
 
-    protected abstract void GetUniformLocations();
     protected abstract void BindAttributes();
 
     protected void Initialize(ShaderInfo shaderInfoA, ShaderInfo shaderInfoB) {
@@ -86,8 +84,6 @@ public abstract class ShaderProgram {
 
         shaderA.Delete();
         shaderB.Delete();
-
-        GetUniformLocations();
     }
 
     public static void StopUsing() {

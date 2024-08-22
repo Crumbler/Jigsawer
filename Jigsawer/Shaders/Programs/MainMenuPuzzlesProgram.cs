@@ -7,9 +7,6 @@ namespace Jigsawer.Shaders.Programs;
 public sealed class MainMenuPuzzlesProgram : ShaderProgram {
     private const string EntityName = "MainMenuPuzzles";
 
-    private int drawSizeUniform,
-        timeUniform;
-
     public static MainMenuPuzzlesProgram Create() {
         var program = new MainMenuPuzzlesProgram();
         
@@ -22,16 +19,11 @@ public sealed class MainMenuPuzzlesProgram : ShaderProgram {
 
     protected override void BindAttributes() { }
 
-    protected override void GetUniformLocations() {
-        drawSizeUniform = GetUniformLocation(UniformNames.DrawSize);
-        timeUniform = GetUniformLocation(UniformNames.Time);
-    }
+    public static void SetTime(int time) => SetInt(UniformLocations.Time, time);
+    public static void SetDrawSize(Vector2 drawSize) => SetVector2(UniformLocations.DrawSize, drawSize);
 
-    public void SetTime(int time) => SetInt(timeUniform, time);
-    public void SetDrawSize(Vector2 drawSize) => SetVector2(drawSizeUniform, drawSize);
-
-    private static class UniformNames {
-        public const string DrawSize = "drawSize";
-        public const string Time = "time";
+    private static class UniformLocations {
+        public const int Time = 0;
+        public const int DrawSize = 1;
     }
 }
