@@ -9,10 +9,6 @@ public sealed class ImageShaderProgram : ShaderProgram {
 
     private ImageShaderProgram() { }
 
-    protected override void BindAttributes() {
-        BindAttribute(AttributePositions.Position, AttributeNames.Position);
-    }
-
     public static ImageShaderProgram Create() {
         var program = new ImageShaderProgram();
 
@@ -35,10 +31,6 @@ public sealed class ImageShaderProgram : ShaderProgram {
 
     public static class AttributePositions {
         public const int Position = 0;
-    }
-
-    private static class AttributeNames {
-        public const string Position = "box";
     }
 
     private static class UniformLocations {

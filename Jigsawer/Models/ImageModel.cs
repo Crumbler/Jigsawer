@@ -31,16 +31,15 @@ public sealed class ImageModel {
 
     public ImageModel(ref Matrix3 projMat, float textureSizeMultiplier) {
         vao = VAO.Create();
-        vao.Bind();
 
         positionVBO = VBO.Create(BufferUsageHint.StaticDraw);
         positionVBO.SetData(InstanceDataSize, box);
-        positionVBO.Bind();
 
-        VAO.SetVertexAttributePointer(AttributePositions.Position,
-            PrimitivesPerInstance, VertexAttribPointerType.Float);
-        GL.VertexAttribDivisor(AttributePositions.Position, PrimitivesPerInstance);
-        VAO.EnableVertexAttributeArray(AttributePositions.Position);
+        vao.EnableVertexAttributeArray(AttributePositions.Position);
+        vao.BindAttributeToPoint(AttributePositions.Position, 0);
+        vao.SetBindingPointToBuffer(0, positionVBO.Id);
+        vao.SetBindingPointDivisor(0, 4);
+        vao.SetAttributeFormat(AttributePositions.Position, PrimitivesPerInstance, VertexAttribType.Float);
 
         texture = Texture.Create(TextureUnit.Texture0, Images.Image.MainMenuBackgroundTile);
         Texture.SetMinFilter(TextureMinFilter.Linear);

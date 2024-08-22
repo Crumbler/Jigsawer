@@ -22,17 +22,33 @@ public struct VAO {
             GL.BindVertexArray(0);
         }
     }
-    public static void SetVertexAttributePointer(
-        int index,
-        int size,
-        VertexAttribPointerType type,
-        bool normalized = false,
-        int stride = 0,
-        int offset = 0) {
-        GL.VertexAttribPointer(index, size, type, normalized, stride, offset);
+
+    public void SetBindingPointToBuffer(int bindingPoint, int bufferId) {
+        GL.VertexArrayVertexBuffer(Id, bindingPoint, bufferId, 0, 0);
     }
-    public static void EnableVertexAttributeArray(int index) => GL.EnableVertexAttribArray(index);
-    public static VAO Create() => new() {
-        Id = GL.GenVertexArray()
-    };
+
+    public void BindAttributeToPoint(int attribute, int bindingPoint) {
+        GL.VertexArrayAttribBinding(Id, attribute, bindingPoint);
+    }
+
+    public void SetAttributeFormat(
+        int attribute,
+        int size,
+        VertexAttribType type) {
+        GL.VertexArrayAttribFormat(Id, attribute, size, type, false, 0);
+    }
+
+    public void SetBindingPointDivisor(int bindingPoint, int divisor) {
+        GL.VertexArrayBindingDivisor(Id, bindingPoint, divisor);
+    }
+
+    public void EnableVertexAttributeArray(int index) => GL.EnableVertexArrayAttrib(Id, index);
+
+    public static VAO Create() {
+        GL.CreateVertexArrays(1, out int vaoId);
+
+        return new VAO() {
+            Id = vaoId
+        };
+    }
 }

@@ -60,10 +60,6 @@ public abstract class ShaderProgram {
         GL.Uniform1(location, value);
     }
 
-    protected void BindAttribute(int index, string name) => GL.BindAttribLocation(Id, index, name);
-
-    protected abstract void BindAttributes();
-
     protected void Initialize(ShaderInfo shaderInfoA, ShaderInfo shaderInfoB) {
         Shader shaderA = shaderInfoA.Load(),
             shaderB = shaderInfoB.Load();
@@ -72,8 +68,6 @@ public abstract class ShaderProgram {
 
         AttachShader(shaderA);
         AttachShader(shaderB);
-
-        BindAttributes();
 
         Link();
 
