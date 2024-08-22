@@ -24,8 +24,7 @@ public sealed class ImageModel {
         set {
             box = value;
 
-            positionVBO.Bind();
-            positionVBO.Orphan(InstanceDataSize);
+            positionVBO.Orphan();
             positionVBO.SetData(InstanceDataSize, value);
         }
     }
@@ -34,10 +33,9 @@ public sealed class ImageModel {
         vao = VAO.Create();
         vao.Bind();
 
-        positionVBO = VBO.Create(BufferUsageHint.DynamicDraw);
-        positionVBO.Bind();
-
+        positionVBO = VBO.Create(BufferUsageHint.StaticDraw);
         positionVBO.SetData(InstanceDataSize, box);
+        positionVBO.Bind();
 
         VAO.SetVertexAttributePointer(AttributePositions.Position,
             PrimitivesPerInstance, VertexAttribPointerType.Float);
