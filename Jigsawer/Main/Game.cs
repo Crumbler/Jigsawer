@@ -58,17 +58,13 @@ public sealed class Game : GameWindow {
 
     protected override void OnKeyDown(KeyboardKeyEventArgs e) {
         switch (e.Key) {
-            case Keys.F4:
-                if (e.Alt) {
-                    Logger.LogDebug("Closing game");
-                    Close();
-                }
+            case Keys.F4 when e.Alt:
+                Close();
                 break;
 
-            case Keys.Enter:
-                if (e.Alt) {
-                    ToggleFullscreen();
-                }
+            case Keys.F11:
+            case Keys.Enter when e.Alt:
+                ToggleFullscreen();
                 break;
         }
     }
@@ -110,5 +106,11 @@ public sealed class Game : GameWindow {
 
     protected override void OnUpdateFrame(FrameEventArgs args) {
         currentScene?.Update(args.Time);
+    }
+
+    private new void Close() {
+        Logger.LogDebug("Closing game");
+
+        base.Close();
     }
 }
