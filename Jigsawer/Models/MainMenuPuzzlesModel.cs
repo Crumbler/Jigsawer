@@ -23,12 +23,12 @@ public sealed class MainMenuPuzzlesModel {
         GL.DrawArrays(PrimitiveType.Triangles, 0, PuzzlePieceCount * 3);
     }
 
-    public void SetTime(int time) {
+    public void UpdateTime(int time) {
         shader.Use();
         MainMenuPuzzlesProgram.SetTime(time);
     }
 
-    public void SetDrawSize(Vector2 drawSize) {
+    public void UpdateDrawSize(Vector2 drawSize) {
         shader.Use();
         MainMenuPuzzlesProgram.SetDrawSize(drawSize);
     }

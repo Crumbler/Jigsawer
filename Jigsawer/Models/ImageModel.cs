@@ -50,14 +50,14 @@ public sealed class ImageModel {
 
         imageShader = Create();
         imageShader.Use();
-        imageShader.SetProjectionMatrix(ref projMat);
-        imageShader.SetTextureSize(texture.Size * textureSizeMultiplier);
-        imageShader.SetTextureUnit(0);
+        SetProjectionMatrix(ref projMat);
+        SetTextureSize(texture.Size * textureSizeMultiplier);
+        SetTextureUnit(0);
     }
 
     public void UpdateProjectionMatrix(ref Matrix3 mat) {
         imageShader.Use();
-        imageShader.SetProjectionMatrix(ref mat);
+        SetProjectionMatrix(ref mat);
     }
 
     public void Render() {

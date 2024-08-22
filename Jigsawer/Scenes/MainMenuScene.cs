@@ -30,7 +30,7 @@ public sealed class MainMenuScene : Scene {
         backgroundImage.Rect = new Box2(Vector2.Zero, FramebufferSize);
         backgroundImage.UpdateProjectionMatrix(ref projMat);
 
-        backgroundPuzzles.SetDrawSize(newSize);
+        backgroundPuzzles.UpdateDrawSize(newSize);
     }
 
     public override void Render() {
@@ -42,6 +42,6 @@ public sealed class MainMenuScene : Scene {
     public override void Update(double secondsPassed) {
         base.Update(secondsPassed);
 
-        backgroundPuzzles.SetTime(TotalMilliseconds);
+        backgroundPuzzles.UpdateTime(TotalMilliseconds);
     }
 }
