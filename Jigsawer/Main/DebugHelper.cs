@@ -3,10 +3,12 @@ using Jigsawer.Exceptions;
 
 using OpenTK.Graphics.OpenGL4;
 
+using System.Runtime.InteropServices;
+
 namespace Jigsawer.Main;
 
 public static class DebugHelper {
-    public static string OpenGLDebugSourceToString(DebugSource source) => source switch {
+    private static string OpenGLDebugSourceToString(DebugSource source) => source switch {
         DebugSource.DontCare => "Don't care",
         DebugSource.DebugSourceApi => "API",
         DebugSource.DebugSourceWindowSystem => "Window system",
@@ -17,7 +19,7 @@ public static class DebugHelper {
         _ => throw new UnknownDebugSourceException(source)
     };
 
-    public static string OpenGLDebugTypeToString(DebugType type) => type switch {
+    private static string OpenGLDebugTypeToString(DebugType type) => type switch {
         DebugType.DontCare => "Don't care",
         DebugType.DebugTypeError => "Error",
         DebugType.DebugTypeDeprecatedBehavior => "Deprecated behavior",
@@ -31,7 +33,7 @@ public static class DebugHelper {
         _ => throw new UnknownDebugTypeException(type)
     };
 
-    public static string OpenGLDebugSeverityToString(DebugSeverity severity) => severity switch {
+    private static string OpenGLDebugSeverityToString(DebugSeverity severity) => severity switch {
         DebugSeverity.DontCare => "Don't care",
         DebugSeverity.DebugSeverityNotification => "Notification",
         DebugSeverity.DebugSeverityHigh => "High",
@@ -39,4 +41,43 @@ public static class DebugHelper {
         DebugSeverity.DebugSeverityLow => "Low",
         _ => throw new UnknownDebugSeverityException(severity)
     };
+
+#if DEBUG
+    private static readonly DebugProc debugMessageDelegate = OnDebugMessage;
+#endif
+
+    public static void InitDebugLogging() {
+#if DEBUG
+        GL.DebugMessageCallback(debugMessageDelegate, 0);
+        GL.Enable(EnableCap.DebugOutput);
+#endif
+    }
+
+#if DEBUG
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="source">Source of the debugging message.</param>
+    /// <param name="type">Type of the debugging message.</param>
+    /// <param name="id">ID associated with the message.</param>
+    /// <param name="severity">Severity of the message.</param>
+    /// <param name="length">Length of the string in pMessage</param>
+    /// <param name="pMessage">Pointer to message string</param>
+    /// <param name="pUserParam">User specified parameter</param>
+    private static void OnDebugMessage(
+        DebugSource source,
+        DebugType type,
+        int id,
+        DebugSeverity severity,
+        int length,
+        IntPtr pMessage,
+        IntPtr pUserParam) {
+        string message = Marshal.PtrToStringAnsi(pMessage, length);
+        string sourceString = OpenGLDebugSourceToString(source);
+        string typeString = OpenGLDebugTypeToString(type);
+        string severityString = OpenGLDebugSeverityToString(severity);
+
+        Console.WriteLine($"[Severity = {severityString}, source = {sourceString}, type = {typeString}, id = {id}]\n{message}");
+    }
+#endif
 }
