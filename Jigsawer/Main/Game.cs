@@ -1,6 +1,6 @@
 ﻿using Jigsawer.Scenes;
 
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
@@ -20,7 +20,14 @@ public sealed class Game : GameWindow {
             Title = title,
             Vsync = VSyncMode.Adaptive,
             API = ContextAPI.OpenGL,
-            APIVersion = new Version(3, 3)
+            APIVersion = new Version(4, 5),
+
+            Flags =
+#if DEBUG
+            ContextFlags.Debug
+#else
+            ContextFlags.ForwardCompatible
+#endif
         }) { }
 
     protected override void OnLoad() {
@@ -28,13 +35,19 @@ public sealed class Game : GameWindow {
 
         CenterWindow();
 
-        GL.ClearColor(Color4.Black);
+        InitOpenGL();
 
         Logger.LogDebug("Loading game");
 
         SwitchToScene(SceneType.MainMenu);
 
         Logger.LogDebug("Loaded game");
+    }
+
+    private static void InitOpenGL() {
+        GL.ClearColor(Color4.Black);
+
+        DebugHelper.InitDebugLogging();
     }
 
     protected override void OnFramebufferResize(FramebufferResizeEventArgs e) {
@@ -45,17 +58,13 @@ public sealed class Game : GameWindow {
 
     protected override void OnKeyDown(KeyboardKeyEventArgs e) {
         switch (e.Key) {
-            case Keys.F4:
-                if (e.Alt) {
-                    Logger.LogDebug("Closing game");
-                    Close();
-                }
+            case Keys.F4 when e.Alt:
+                Close();
                 break;
 
-            case Keys.Enter:
-                if (e.Alt) {
-                    ToggleFullscreen();
-                }
+            case Keys.F11:
+            case Keys.Enter when e.Alt:
+                ToggleFullscreen();
                 break;
         }
     }
@@ -97,5 +106,11 @@ public sealed class Game : GameWindow {
 
     protected override void OnUpdateFrame(FrameEventArgs args) {
         currentScene?.Update(args.Time);
+    }
+
+    private new void Close() {
+        Logger.LogDebug("Closing game");
+
+        base.Close();
     }
 }

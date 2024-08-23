@@ -1,5 +1,7 @@
 ﻿
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL4;
+
+using System.Runtime.CompilerServices;
 
 namespace Jigsawer.Main;
 
@@ -18,16 +20,18 @@ public struct VBO {
     }
 
     public void Delete() => GL.DeleteBuffer(Id);
-    public void SetData<T>(int size, T[]? data)
+
+    public void SetData<T>(int size, T[] data)
         where T : unmanaged {
-        GL.BufferData(Target, size, data, Usage);
-    }
-    public unsafe void SetData<T>(int size, T data)
-        where T : unmanaged {
-        GL.BufferData(Target, size, (nint)(&data), Usage);
+        GL.NamedBufferData(Id, size, data, Usage);
     }
 
-    public void Orphan(int size) => GL.BufferData(Target, size, 0, Usage);
+    public unsafe void SetData<T>(int size, T data)
+        where T : unmanaged {
+        GL.NamedBufferData(Id, size, (nint)(&data), Usage);
+    }
+
+    public void Orphan() => GL.InvalidateBufferData(Id);
 
     public static void Unbind() {
         if (boundId != 0) {
@@ -36,11 +40,22 @@ public struct VBO {
         }
     }
 
+    [SkipLocalsInit]
     public static VBO Create(
         BufferUsageHint usage,
-        BufferTarget target = BufferTarget.ArrayBuffer) => new() {
-        Id = GL.GenBuffer(),
-        Target = target,
-        Usage = usage
-    };
+        BufferTarget target = BufferTarget.ArrayBuffer) {
+
+        int bufId;
+        unsafe {
+            GL.CreateBuffers(1, &bufId);
+        }
+
+        VBO buffer = new() {
+            Id = bufId,
+            Target = target,
+            Usage = usage
+        };
+
+        return buffer;
+    }
 }

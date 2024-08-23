@@ -1,4 +1,4 @@
-#version 330 core
+#version 430
 
 // coords x(from -0.5 to 0.5), y(from 0.0 to equilateral triangle height)
 in vec2 uv;
@@ -6,8 +6,8 @@ flat in int pieceId;
 
 out vec4 outColor;
 
-uniform vec2 drawSize;
-uniform int time;
+layout(location = 0) uniform int time;
+layout(location = 1) uniform vec2 drawSize;
 
 // innerSide - side of square which fits the puzzle piece
 // without outcroppings

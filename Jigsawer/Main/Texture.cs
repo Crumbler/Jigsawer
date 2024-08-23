@@ -1,7 +1,7 @@
 ﻿
 using Jigsawer.Resources;
 
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
 using System.Drawing;
@@ -10,38 +10,27 @@ using System.Drawing.Imaging;
 namespace Jigsawer.Main;
 
 public struct Texture {
-    private static int boundId;
-
     public int Id { get; private set; }
     public Vector2 Size { get; private set; }
-    private TextureUnit Unit { get; set; }
+    private int Unit { get; set; }
 
-    public void Activate() => GL.ActiveTexture(Unit);
-
-    public void Bind() {
-        if (Id != boundId) {
-            GL.BindTexture(TextureTarget.Texture2D, Id);
-            boundId = Id;
-        }
+    public void Use() {
+        GL.BindTextureUnit(Unit, Id);
     }
 
     public void Delete() => GL.DeleteTexture(Id);
 
     public static void Unbind() {
-        if (boundId != 0) {
-            boundId = 0;
-            GL.BindTexture(default, 0);
-        }
+        GL.BindTextureUnit(0, 0);
     }
 
-    public static Texture Create(TextureUnit unit, string name) {
+    public static Texture Create(int unit, string name) {
+        GL.CreateTextures(TextureTarget.Texture2D, 1, out int textureId);
+
         var texture = new Texture() {
-            Id = GL.GenTexture(),
+            Id = textureId,
             Unit = unit
         };
-
-        texture.Activate();
-        texture.Bind();
 
         using var imageStream = EmbeddedResourceLoader.GetResourceStream(Images.Image.GetPath(name));
 
@@ -53,24 +42,24 @@ public struct Texture {
             ImageLockMode.ReadOnly,
             System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
-        GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb,
-            bitmap.Width, bitmap.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgr,
-            PixelType.UnsignedByte, bitmapData.Scan0);
+        GL.TextureStorage2D(textureId, 1, SizedInternalFormat.Rgb8, bitmap.Width, bitmap.Height);
+        GL.TextureSubImage2D(textureId, 0, 0, 0, bitmap.Width, bitmap.Height,
+            OpenTK.Graphics.OpenGL4.PixelFormat.Bgr, PixelType.UnsignedByte, bitmapData.Scan0);
 
         bitmap.UnlockBits(bitmapData);
 
         return texture;
     }
 
-    public static void SetWrapping(TextureParameterName parameter, TextureWrapMode value) {
-        GL.TexParameter(TextureTarget.Texture2D, parameter, (int)value);
+    public void SetWrapping(TextureParameterName parameter, TextureWrapMode value) {
+        GL.TextureParameter(Id, parameter, (int)value);
     }
 
-    public static void SetMinFilter(TextureMinFilter filter) {
-        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)filter);
+    public void SetMinFilter(TextureMinFilter filter) {
+        GL.TextureParameter(Id, TextureParameterName.TextureMinFilter, (int)filter);
     }
 
-    public static void SetMagFilter(TextureMagFilter filter) {
-        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)filter);
+    public void SetMagFilter(TextureMagFilter filter) {
+        GL.TextureParameter(Id, TextureParameterName.TextureMagFilter, (int)filter);
     }
 }

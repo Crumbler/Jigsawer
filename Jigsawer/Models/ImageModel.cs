@@ -2,7 +2,7 @@
 using Jigsawer.Main;
 using static Jigsawer.Shaders.Programs.ImageShaderProgram;
 
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using Jigsawer.Shaders.Programs;
 
@@ -24,49 +24,44 @@ public sealed class ImageModel {
         set {
             box = value;
 
-            positionVBO.Bind();
-            positionVBO.Orphan(InstanceDataSize);
+            positionVBO.Orphan();
             positionVBO.SetData(InstanceDataSize, value);
         }
     }
 
     public ImageModel(ref Matrix3 projMat, float textureSizeMultiplier) {
         vao = VAO.Create();
-        vao.Bind();
 
-        positionVBO = VBO.Create(BufferUsageHint.DynamicDraw);
-        positionVBO.Bind();
-
+        positionVBO = VBO.Create(BufferUsageHint.StaticDraw);
         positionVBO.SetData(InstanceDataSize, box);
 
-        VAO.SetVertexAttributePointer(AttributePositions.Position,
-            PrimitivesPerInstance, VertexAttribPointerType.Float);
-        GL.VertexAttribDivisor(AttributePositions.Position, PrimitivesPerInstance);
-        VAO.EnableVertexAttributeArray(AttributePositions.Position);
+        vao.EnableVertexAttributeArray(AttributePositions.Position);
+        vao.BindAttributeToPoint(AttributePositions.Position, 0);
+        vao.SetBindingPointToBuffer(0, positionVBO.Id);
+        // 1 attribute value per instance
+        vao.SetBindingPointDivisor(0, 1);
+        vao.SetAttributeFormat(AttributePositions.Position, PrimitivesPerInstance, VertexAttribType.Float);
 
-        texture = Texture.Create(TextureUnit.Texture0, Images.Image.MainMenuBackgroundTile);
+        texture = Texture.Create(0, Images.Image.MainMenuBackgroundTile);
+        texture.SetMinFilter(TextureMinFilter.Linear);
+        texture.SetMagFilter(TextureMagFilter.Linear);
+        texture.SetWrapping(TextureParameterName.TextureWrapS, TextureWrapMode.Repeat);
+        texture.SetWrapping(TextureParameterName.TextureWrapT, TextureWrapMode.Repeat);
 
-        imageShader = ImageShaderProgram.Create();
-        imageShader.Use();
+        imageShader = Create();
         imageShader.SetProjectionMatrix(ref projMat);
         imageShader.SetTextureSize(texture.Size * textureSizeMultiplier);
         imageShader.SetTextureUnit(0);
     }
 
     public void UpdateProjectionMatrix(ref Matrix3 mat) {
-        imageShader.Use();
         imageShader.SetProjectionMatrix(ref mat);
     }
 
     public void Render() {
         vao.Bind();
 
-        texture.Activate();
-        texture.Bind();
-        Texture.SetMinFilter(TextureMinFilter.Linear);
-        Texture.SetMagFilter(TextureMagFilter.Linear);
-        Texture.SetWrapping(TextureParameterName.TextureWrapS, TextureWrapMode.Repeat);
-        Texture.SetWrapping(TextureParameterName.TextureWrapT, TextureWrapMode.Repeat);
+        texture.Use();
 
         imageShader.Use();
 

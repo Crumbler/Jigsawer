@@ -1,6 +1,6 @@
 ﻿
 using Jigsawer.Resources;
-using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL4;
 
 namespace Jigsawer.Shaders;
 
@@ -14,7 +14,7 @@ public struct ShaderInfo {
     }
 
     public static ShaderInfo Get(string entityName, ShaderType type) => 
-        new(Shader.GetEntityPath(entityName, type), type);
+        new(Shader.GetEntityShaderPath(entityName, type), type);
 
     public Shader Load() {
         var shader = Shader.Create(Type);
