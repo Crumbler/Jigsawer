@@ -41,23 +41,23 @@ public abstract class ShaderProgram {
         }
     }
 
-    protected static void SetMatrix(int location, ref Matrix2 mat) {
-        GL.UniformMatrix2(location, true, ref mat);
+    protected void SetMatrix(int location, ref Matrix2 mat) {
+        GL.ProgramUniformMatrix2(Id, location, true, ref mat);
     }
-    protected static void SetMatrix(int location, ref Matrix3x2 mat) {
-        GL.UniformMatrix3x2(location, true, ref mat);
+    protected void SetMatrix(int location, ref Matrix3x2 mat) {
+        GL.ProgramUniformMatrix3x2(Id, location, true, ref mat);
     }
-    protected static void SetMatrix(int location, ref Matrix2x3 mat) {
-        GL.UniformMatrix2x3(location, true, ref mat);
+    protected void SetMatrix(int location, ref Matrix2x3 mat) {
+        GL.ProgramUniformMatrix2x3(Id, location, true, ref mat);
     }
-    protected static void SetMatrix(int location, ref Matrix3 mat) {
-        GL.UniformMatrix3(location, true, ref mat);
+    protected void SetMatrix(int location, ref Matrix3 mat) {
+        GL.ProgramUniformMatrix3(Id, location, true, ref mat);
     }
-    protected static void SetVector2(int location, Vector2 vector) {
-        GL.Uniform2(location, vector);
+    protected void SetVector2(int location, Vector2 vector) {
+        GL.ProgramUniform2(Id, location, vector);
     }
-    protected static void SetInt(int location, int value) {
-        GL.Uniform1(location, value);
+    protected void SetInt(int location, int value) {
+        GL.ProgramUniform1(Id, location, value);
     }
 
     protected void Initialize(ShaderInfo shaderInfoA, ShaderInfo shaderInfoB) {

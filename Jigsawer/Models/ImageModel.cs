@@ -49,15 +49,13 @@ public sealed class ImageModel {
         texture.SetWrapping(TextureParameterName.TextureWrapT, TextureWrapMode.Repeat);
 
         imageShader = Create();
-        imageShader.Use();
-        SetProjectionMatrix(ref projMat);
-        SetTextureSize(texture.Size * textureSizeMultiplier);
-        SetTextureUnit(0);
+        imageShader.SetProjectionMatrix(ref projMat);
+        imageShader.SetTextureSize(texture.Size * textureSizeMultiplier);
+        imageShader.SetTextureUnit(0);
     }
 
     public void UpdateProjectionMatrix(ref Matrix3 mat) {
-        imageShader.Use();
-        SetProjectionMatrix(ref mat);
+        imageShader.SetProjectionMatrix(ref mat);
     }
 
     public void Render() {

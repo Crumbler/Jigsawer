@@ -19,13 +19,13 @@ public sealed class ImageShaderProgram : ShaderProgram {
         return program;
     }
 
-    public static void SetProjectionMatrix(ref Matrix3 mat) {
+    public void SetProjectionMatrix(ref Matrix3 mat) {
         SetMatrix(UniformLocations.ProjectionMatrix, ref mat);
     }
-    public static void SetTextureSize(Vector2 size) {
+    public void SetTextureSize(Vector2 size) {
         SetVector2(UniformLocations.TextureSize, size);
     }
-    public static void SetTextureUnit(int unit) {
+    public void SetTextureUnit(int unit) {
         SetInt(UniformLocations.Texture, unit);
     }
 

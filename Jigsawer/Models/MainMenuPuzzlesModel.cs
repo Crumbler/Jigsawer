@@ -12,9 +12,8 @@ public sealed class MainMenuPuzzlesModel {
 
     public MainMenuPuzzlesModel(int time, Vector2 drawSize) {
         shader = MainMenuPuzzlesProgram.Create();
-        shader.Use();
-        MainMenuPuzzlesProgram.SetTime(time);
-        MainMenuPuzzlesProgram.SetDrawSize(drawSize);
+        shader.SetTime(time);
+        shader.SetDrawSize(drawSize);
     }
 
     public void Render() {
@@ -24,13 +23,11 @@ public sealed class MainMenuPuzzlesModel {
     }
 
     public void UpdateTime(int time) {
-        shader.Use();
-        MainMenuPuzzlesProgram.SetTime(time);
+        shader.SetTime(time);
     }
 
     public void UpdateDrawSize(Vector2 drawSize) {
-        shader.Use();
-        MainMenuPuzzlesProgram.SetDrawSize(drawSize);
+        shader.SetDrawSize(drawSize);
     }
 
     public void Delete() {

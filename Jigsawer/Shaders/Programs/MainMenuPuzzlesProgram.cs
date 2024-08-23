@@ -17,8 +17,8 @@ public sealed class MainMenuPuzzlesProgram : ShaderProgram {
         return program;
     }
 
-    public static void SetTime(int time) => SetInt(UniformLocations.Time, time);
-    public static void SetDrawSize(Vector2 drawSize) => SetVector2(UniformLocations.DrawSize, drawSize);
+    public void SetTime(int time) => SetInt(UniformLocations.Time, time);
+    public void SetDrawSize(Vector2 drawSize) => SetVector2(UniformLocations.DrawSize, drawSize);
 
     private static class UniformLocations {
         public const int Time = 0;
