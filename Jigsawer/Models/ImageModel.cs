@@ -38,7 +38,8 @@ public sealed class ImageModel {
         vao.EnableVertexAttributeArray(AttributePositions.Position);
         vao.BindAttributeToPoint(AttributePositions.Position, 0);
         vao.SetBindingPointToBuffer(0, positionVBO.Id);
-        vao.SetBindingPointDivisor(0, 4);
+        // 1 attribute value per instance
+        vao.SetBindingPointDivisor(0, 1);
         vao.SetAttributeFormat(AttributePositions.Position, PrimitivesPerInstance, VertexAttribType.Float);
 
         texture = Texture.Create(TextureUnit.Texture0, Images.Image.MainMenuBackgroundTile);
