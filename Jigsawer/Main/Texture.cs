@@ -62,6 +62,6 @@ public struct Texture {
     }
 
     public void SetMagFilter(TextureMagFilter filter) {
-        GL.TextureParameter(Id, TextureParameterName.TextureMinFilter, (int)filter);
+        GL.TextureParameter(Id, TextureParameterName.TextureMagFilter, (int)filter);
     }
 }
