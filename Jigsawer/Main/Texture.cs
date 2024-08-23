@@ -10,8 +10,6 @@ using System.Drawing.Imaging;
 namespace Jigsawer.Main;
 
 public struct Texture {
-    private static int boundId;
-
     public int Id { get; private set; }
     public Vector2 Size { get; private set; }
     private int Unit { get; set; }
