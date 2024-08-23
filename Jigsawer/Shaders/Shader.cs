@@ -34,7 +34,7 @@ public struct Shader {
         return result != 0;
     }
 
-    public static string GetEntityPath(string entityName, ShaderType shaderType) {
+    public static string GetEntityShaderPath(string entityName, ShaderType shaderType) {
         string shaderTypeName = shaderType switch {
             ShaderType.VertexShader => "vert",
             ShaderType.FragmentShader => "frag",

@@ -42,11 +42,11 @@ public sealed class ImageModel {
         vao.SetBindingPointDivisor(0, 1);
         vao.SetAttributeFormat(AttributePositions.Position, PrimitivesPerInstance, VertexAttribType.Float);
 
-        texture = Texture.Create(TextureUnit.Texture0, Images.Image.MainMenuBackgroundTile);
-        Texture.SetMinFilter(TextureMinFilter.Linear);
-        Texture.SetMagFilter(TextureMagFilter.Linear);
-        Texture.SetWrapping(TextureParameterName.TextureWrapS, TextureWrapMode.Repeat);
-        Texture.SetWrapping(TextureParameterName.TextureWrapT, TextureWrapMode.Repeat);
+        texture = Texture.Create(0, Images.Image.MainMenuBackgroundTile);
+        texture.SetMinFilter(TextureMinFilter.Linear);
+        texture.SetMagFilter(TextureMagFilter.Linear);
+        texture.SetWrapping(TextureParameterName.TextureWrapS, TextureWrapMode.Repeat);
+        texture.SetWrapping(TextureParameterName.TextureWrapT, TextureWrapMode.Repeat);
 
         imageShader = Create();
         imageShader.Use();
@@ -63,8 +63,7 @@ public sealed class ImageModel {
     public void Render() {
         vao.Bind();
 
-        texture.Activate();
-        texture.Bind();
+        texture.Use();
 
         imageShader.Use();
 
