@@ -10,23 +10,21 @@ namespace Jigsawer.Shaders.Programs;
 
 public class TextBlockShaderProgram : ShaderProgram {
     private const string EntityName = "TextBlock";
-    // +1 for font height
-    private const int FontInfoInterfaceSize = (FontAtlas.TotalChars + 1) * sizeof(float);
     private const int FontInfoBindingPoint = 1;
-    private readonly UBO fontInfoUbo;
+    private readonly UBO<FontInfo> fontInfoUbo;
 
     public TextBlockShaderProgram(FontAtlas fontAtlas) {
         Initialize(
             ShaderInfo.Get(EntityName, ShaderType.VertexShader),
             ShaderInfo.Get(EntityName, ShaderType.FragmentShader));
 
-        fontInfoUbo = new UBO(FontInfoBindingPoint, FontInfoInterfaceSize);
+        fontInfoUbo = new UBO<FontInfo>(FontInfoBindingPoint);
 
         FillFontInfoUbo(fontInfoUbo, fontAtlas);
     }
 
-    private static void FillFontInfoUbo(UBO ubo, FontAtlas fontAtlas) {
-        ref var fontInfo = ref ubo.Map<FontInfo>();
+    private static void FillFontInfoUbo(UBO<FontInfo> ubo, FontAtlas fontAtlas) {
+        ref var fontInfo = ref ubo.Map();
 
         fontInfo.fontHeight = fontAtlas.CharacterHeight;
 
