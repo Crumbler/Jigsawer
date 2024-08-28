@@ -41,7 +41,7 @@ public sealed class ImageModel {
         vao.SetBindingPointDivisor(0, 1);
         vao.SetAttributeFormat(AttributePositions.Position, PrimitivesPerInstance, VertexAttribType.Float);
 
-        texture = new Texture(0, Images.Image.MainMenuBackgroundTile);
+        texture = new Texture(Images.Image.MainMenuBackgroundTile);
         texture.SetMinFilter(TextureMinFilter.Linear);
         texture.SetMagFilter(TextureMagFilter.Linear);
         texture.SetWrapping(TextureParameterName.TextureWrapS, TextureWrapMode.Repeat);
@@ -50,7 +50,7 @@ public sealed class ImageModel {
         shader = new ImageShaderProgram();
         shader.SetProjectionMatrix(ref projMat);
         shader.SetScaleFactor(scaleFactor);
-        shader.SetTextureUnit(0);
+        shader.SetTextureUnit(texture.Unit);
     }
 
     public void UpdateProjectionMatrix(ref Matrix3 mat) {

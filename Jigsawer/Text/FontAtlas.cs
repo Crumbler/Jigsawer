@@ -64,8 +64,7 @@ public partial class FontAtlas {
     }
 
     private void GenerateTexture(Bitmap bitmap) {
-        GL.CreateTextures(TextureTarget.Texture2D, 1, out int textureId);
-        Texture = new Texture(textureId, 1);
+        Texture = new Texture();
         Texture.SetMinFilter(TextureMinFilter.Linear);
         Texture.SetMagFilter(TextureMagFilter.Linear);
 
@@ -73,8 +72,8 @@ public partial class FontAtlas {
             ImageLockMode.ReadOnly,
             System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
-        GL.TextureStorage2D(textureId, 1, SizedInternalFormat.R8, bitmap.Width, bitmap.Height);
-        GL.TextureSubImage2D(textureId, 0, 0, 0, bitmap.Width, bitmap.Height,
+        GL.TextureStorage2D(Texture.Id, 1, SizedInternalFormat.R8, bitmap.Width, bitmap.Height);
+        GL.TextureSubImage2D(Texture.Id, 0, 0, 0, bitmap.Width, bitmap.Height,
             OpenTK.Graphics.OpenGL4.PixelFormat.Bgr, PixelType.UnsignedByte, bitmapData.Scan0);
 
         bitmap.UnlockBits(bitmapData);
