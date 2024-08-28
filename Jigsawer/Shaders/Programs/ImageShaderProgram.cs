@@ -7,16 +7,10 @@ namespace Jigsawer.Shaders.Programs;
 public sealed class ImageShaderProgram : ShaderProgram {
     private const string EntityName = "Image";
 
-    private ImageShaderProgram() { }
-
-    public static ImageShaderProgram Create() {
-        var program = new ImageShaderProgram();
-
-        program.Initialize(
+    public ImageShaderProgram() {
+        Initialize(
             ShaderInfo.Get(EntityName, ShaderType.VertexShader),
             ShaderInfo.Get(EntityName, ShaderType.FragmentShader));
-
-        return program;
     }
 
     public void SetProjectionMatrix(ref Matrix3 mat) {

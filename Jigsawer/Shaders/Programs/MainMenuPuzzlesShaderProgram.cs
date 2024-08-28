@@ -4,17 +4,13 @@ using OpenTK.Mathematics;
 
 namespace Jigsawer.Shaders.Programs;
 
-public sealed class MainMenuPuzzlesProgram : ShaderProgram {
+public sealed class MainMenuPuzzlesShaderProgram : ShaderProgram {
     private const string EntityName = "MainMenuPuzzles";
 
-    public static MainMenuPuzzlesProgram Create() {
-        var program = new MainMenuPuzzlesProgram();
-        
-        program.Initialize(
+    public MainMenuPuzzlesShaderProgram() {
+        Initialize(
             ShaderInfo.Get(EntityName, ShaderType.VertexShader),
             ShaderInfo.Get(EntityName, ShaderType.FragmentShader));
-
-        return program;
     }
 
     public void SetTime(int time) => SetInt(UniformLocations.Time, time);

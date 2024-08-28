@@ -16,7 +16,7 @@ public sealed class ImageModel {
     private readonly VAO vao;
     private readonly VBO positionVBO;
     private readonly Texture texture;
-    private readonly ImageShaderProgram imageShader;
+    private readonly ImageShaderProgram shader;
 
     public Box2 Rect {
         get => box;
@@ -30,11 +30,10 @@ public sealed class ImageModel {
     }
 
     public ImageModel(ref Matrix3 projMat, float textureSizeMultiplier) {
-        vao = VAO.Create();
-
         positionVBO = VBO.Create(BufferUsageHint.StaticDraw);
         positionVBO.SetData(InstanceDataSize, box);
 
+        vao = VAO.Create();
         vao.EnableVertexAttributeArray(AttributePositions.Position);
         vao.BindAttributeToPoint(AttributePositions.Position, 0);
         vao.SetBindingPointToBuffer(0, positionVBO.Id);
@@ -42,20 +41,20 @@ public sealed class ImageModel {
         vao.SetBindingPointDivisor(0, 1);
         vao.SetAttributeFormat(AttributePositions.Position, PrimitivesPerInstance, VertexAttribType.Float);
 
-        texture = Texture.Create(0, Images.Image.MainMenuBackgroundTile);
+        texture = new Texture(0, Images.Image.MainMenuBackgroundTile);
         texture.SetMinFilter(TextureMinFilter.Linear);
         texture.SetMagFilter(TextureMagFilter.Linear);
         texture.SetWrapping(TextureParameterName.TextureWrapS, TextureWrapMode.Repeat);
         texture.SetWrapping(TextureParameterName.TextureWrapT, TextureWrapMode.Repeat);
 
-        imageShader = Create();
-        imageShader.SetProjectionMatrix(ref projMat);
-        imageShader.SetTextureSize(texture.Size * textureSizeMultiplier);
-        imageShader.SetTextureUnit(0);
+        shader = new ImageShaderProgram();
+        shader.SetProjectionMatrix(ref projMat);
+        shader.SetTextureSize(texture.Size * textureSizeMultiplier);
+        shader.SetTextureUnit(0);
     }
 
     public void UpdateProjectionMatrix(ref Matrix3 mat) {
-        imageShader.SetProjectionMatrix(ref mat);
+        shader.SetProjectionMatrix(ref mat);
     }
 
     public void Render() {
@@ -63,9 +62,9 @@ public sealed class ImageModel {
 
         texture.Use();
 
-        imageShader.Use();
+        shader.Use();
 
-        GL.DrawArrays(PrimitiveType.TriangleFan, 0, PrimitivesPerInstance);
+        GL.DrawArraysInstanced(PrimitiveType.TriangleFan, 0, PrimitivesPerInstance, 1);
     }
 
     public void Delete() {

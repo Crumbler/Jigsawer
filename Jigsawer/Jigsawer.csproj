@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Suppressions">
-    <NoWarn>$(NoWarn);CA1032;CA1848;CA1815;CA1303;CA1034;CA1051</NoWarn>
+    <NoWarn>$(NoWarn);CA1032;CA1848;CA1815;CA1303;CA1034;CA1051;CA1062</NoWarn>
     <NoWarn>$(NoWarn);IDE0290;IDE0270; IDE0066;IDE0251</NoWarn>
   </PropertyGroup>
 
@@ -31,6 +31,8 @@
     <None Remove="Shaders\Entities\Image\vert.glsl" />
     <None Remove="Shaders\Entities\MainMenuPuzzles\frag.glsl" />
     <None Remove="Shaders\Entities\MainMenuPuzzles\vert.glsl" />
+    <None Remove="Shaders\Entities\TextBlock\frag.glsl" />
+    <None Remove="Shaders\Entities\TextBlock\vert.glsl" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,6 +41,8 @@
     <EmbeddedResource Include="Shaders\Entities\Image\vert.glsl" />
     <EmbeddedResource Include="Shaders\Entities\MainMenuPuzzles\frag.glsl" />
     <EmbeddedResource Include="Shaders\Entities\MainMenuPuzzles\vert.glsl" />
+    <EmbeddedResource Include="Shaders\Entities\TextBlock\frag.glsl" />
+    <EmbeddedResource Include="Shaders\Entities\TextBlock\vert.glsl" />
   </ItemGroup>
 
   <ItemGroup>

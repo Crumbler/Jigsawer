@@ -47,6 +47,9 @@ public sealed class Game : GameWindow {
     private static void InitOpenGL() {
         GL.ClearColor(Color4.Black);
 
+        GL.Enable(EnableCap.Blend);
+        GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+
         DebugHelper.InitDebugLogging();
     }
 

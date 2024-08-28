@@ -87,7 +87,7 @@ public abstract class ShaderProgram {
         }
     }
 
-    public void Use() {
+    public virtual void Use() {
         if (currentlyUsedId != Id) {
             GL.UseProgram(Id);
             currentlyUsedId = Id;

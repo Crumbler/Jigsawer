@@ -23,8 +23,8 @@ public struct VAO {
         }
     }
 
-    public void SetBindingPointToBuffer(int bindingPoint, int bufferId) {
-        GL.VertexArrayVertexBuffer(Id, bindingPoint, bufferId, 0, 0);
+    public void SetBindingPointToBuffer(int bindingPoint, int bufferId, int offset = 0, int stride = 0) {
+        GL.VertexArrayVertexBuffer(Id, bindingPoint, bufferId, offset, stride);
     }
 
     public void BindAttributeToPoint(int attribute, int bindingPoint) {
@@ -36,6 +36,13 @@ public struct VAO {
         int size,
         VertexAttribType type) {
         GL.VertexArrayAttribFormat(Id, attribute, size, type, false, 0);
+    }
+
+    public void SetIntegerAttributeFormat(
+        int attribute,
+        int size,
+        VertexAttribIntegerType type) {
+        GL.VertexArrayAttribIFormat(Id, attribute, size, type, 0);
     }
 
     public void SetBindingPointDivisor(int bindingPoint, int divisor) {

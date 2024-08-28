@@ -12,6 +12,7 @@ void main()
     
     pos.x = box[0] + box[2] * (gl_VertexID / 2);
     pos.y = box[1] + box[3] * step(2, (gl_VertexID + 1) % 4);
+    // Necessary for matrix multiplication
     pos.z = 1;
 
     uv = pos.xy;

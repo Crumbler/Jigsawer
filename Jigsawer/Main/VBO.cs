@@ -31,6 +31,18 @@ public struct VBO {
         GL.NamedBufferData(Id, size, (nint)(&data), Usage);
     }
 
+    public void Reset(int size) {
+        GL.NamedBufferData(Id, size, 0, Usage);
+    }
+
+    public IntPtr Map() {
+        return GL.MapNamedBuffer(Id, BufferAccess.WriteOnly);
+    }
+
+    public void Unmap() {
+        GL.UnmapNamedBuffer(Id);
+    }
+
     public void Orphan() => GL.InvalidateBufferData(Id);
 
     public static void Unbind() {
