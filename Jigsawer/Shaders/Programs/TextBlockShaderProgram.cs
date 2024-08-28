@@ -1,5 +1,6 @@
 ﻿
 using Jigsawer.GLBuffers;
+using Jigsawer.GLBuffers.Interfaces;
 using Jigsawer.Text;
 
 using OpenTK.Graphics.OpenGL4;
@@ -25,26 +26,13 @@ public class TextBlockShaderProgram : ShaderProgram {
     }
 
     private static void FillFontInfoUbo(UBO ubo, FontAtlas fontAtlas) {
-        IntPtr ptr = ubo.Map();
+        ref var fontInfo = ref ubo.Map<FontInfo>();
 
-        FillFontHeight(ptr, fontAtlas.CharacterHeight);
+        fontInfo.fontHeight = fontAtlas.CharacterHeight;
 
-        ptr += sizeof(float);
-
-        FillCharacterWidths(ptr, fontAtlas.CharacterWidths);
+        fontAtlas.CharacterWidths.CopyTo(fontInfo.CharacterWidths);
 
         ubo.Unmap();
-    }
-
-    private static unsafe void FillFontHeight(IntPtr ptr, int height) {
-        float* fPtr = (float*)ptr.ToPointer();
-        *fPtr = height;
-    }
-
-    private static unsafe void FillCharacterWidths(IntPtr ptr, ReadOnlySpan<float> widths) {
-        var span = new Span<float>(ptr.ToPointer(), widths.Length);
-
-        widths.CopyTo(span);
     }
 
     public void SetProjectionMatrix(ref Matrix3 mat) {

@@ -25,8 +25,9 @@ public struct UBO {
         GL.BindBufferBase(BufferRangeTarget.UniformBuffer, bindingPoint, id);
     }
 
-    public nint Map() {
-        return GL.MapNamedBuffer(id, BufferAccess.WriteOnly);
+    public unsafe ref T Map<T>() where T : unmanaged {
+        IntPtr handle =  GL.MapNamedBuffer(id, BufferAccess.WriteOnly);
+        return ref Unsafe.AsRef<T>((void*)handle);
     }
 
     public void Unmap() {
