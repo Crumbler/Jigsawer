@@ -11,6 +11,20 @@ public struct VBO {
     public BufferTarget Target { get; private set; }
     public BufferUsageHint Usage { get; private set; }
 
+    [SkipLocalsInit]
+    public VBO(
+        BufferUsageHint usage,
+        BufferTarget target = BufferTarget.ArrayBuffer) {
+        int bufId;
+        unsafe {
+            GL.CreateBuffers(1, &bufId);
+        }
+
+        Id = bufId;
+        Target = target;
+        Usage = usage;
+    }
+
     public void Bind() {
         if (boundId != Id) {
             GL.BindBuffer(Target, Id);
@@ -49,24 +63,5 @@ public struct VBO {
             boundId = 0;
             GL.BindBuffer(default, 0);
         }
-    }
-
-    [SkipLocalsInit]
-    public static VBO Create(
-        BufferUsageHint usage,
-        BufferTarget target = BufferTarget.ArrayBuffer) {
-
-        int bufId;
-        unsafe {
-            GL.CreateBuffers(1, &bufId);
-        }
-
-        VBO buffer = new() {
-            Id = bufId,
-            Target = target,
-            Usage = usage
-        };
-
-        return buffer;
     }
 }

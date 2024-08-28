@@ -24,7 +24,7 @@ public class TextBlock {
         this.fontAtlas = fontAtlas;
         fontTexture = fontAtlas.Texture;
 
-        dataVBO = VBO.Create(BufferUsageHint.StaticDraw);
+        dataVBO = new VBO(BufferUsageHint.StaticDraw);
 
         displayedCharacters = CalculateDisplayedCharacterCount(text);
 
@@ -39,7 +39,7 @@ public class TextBlock {
 
         dataVBO.Unmap();
 
-        vao = VAO.Create();
+        vao = new VAO();
         vao.EnableVertexAttributeArray(TextBlockShaderProgram.AttributePositions.Position);
         vao.BindAttributeToPoint(TextBlockShaderProgram.AttributePositions.Position, 0);
         vao.SetBindingPointToBuffer(0, dataVBO.Id, 0, PosSize);

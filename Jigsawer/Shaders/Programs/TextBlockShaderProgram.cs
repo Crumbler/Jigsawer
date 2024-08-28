@@ -12,14 +12,14 @@ public class TextBlockShaderProgram : ShaderProgram {
     // +1 for font height
     private const int FontInfoInterfaceSize = (FontAtlas.TotalChars + 1) * sizeof(float);
     private const int FontInfoBindingPoint = 1;
-    private UBO fontInfoUbo;
+    private readonly UBO fontInfoUbo;
 
     public TextBlockShaderProgram(FontAtlas fontAtlas) {
         Initialize(
             ShaderInfo.Get(EntityName, ShaderType.VertexShader),
             ShaderInfo.Get(EntityName, ShaderType.FragmentShader));
 
-        fontInfoUbo = UBO.Create(FontInfoBindingPoint, FontInfoInterfaceSize);
+        fontInfoUbo = new UBO(FontInfoBindingPoint, FontInfoInterfaceSize);
 
         FillFontInfoUbo(fontInfoUbo, fontAtlas);
     }

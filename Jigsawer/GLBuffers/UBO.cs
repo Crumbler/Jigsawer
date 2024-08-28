@@ -5,30 +5,11 @@ using System.Runtime.CompilerServices;
 namespace Jigsawer.GLBuffers;
 
 public struct UBO {
-    public int Id { get; private set; }
-    private int bindingPoint;
-
-    private UBO(int id, int bindingPoint) {
-        Id = id;
-        this.bindingPoint = bindingPoint;
-    }
-
-    public void Bind() {
-        GL.BindBufferBase(BufferRangeTarget.UniformBuffer, bindingPoint, Id);
-    }
-
-    public nint Map() {
-        return GL.MapNamedBuffer(Id, BufferAccess.WriteOnly);
-    }
-
-    public void Unmap() {
-        GL.UnmapNamedBuffer(Id);
-    }
-
-    public void Delete() => GL.DeleteBuffer(Id);
+    private readonly int id;
+    private readonly int bindingPoint;
 
     [SkipLocalsInit]
-    public static UBO Create(int bindingPoint, int size) {
+    public UBO(int bindingPoint, int size) {
         int bufId;
         unsafe {
             GL.CreateBuffers(1, &bufId);
@@ -36,6 +17,21 @@ public struct UBO {
 
         GL.NamedBufferStorage(bufId, size, 0, BufferStorageFlags.MapWriteBit);
 
-        return new UBO(bufId, bindingPoint);
+        id = bufId;
+        this.bindingPoint = bindingPoint;
     }
+
+    public void Bind() {
+        GL.BindBufferBase(BufferRangeTarget.UniformBuffer, bindingPoint, id);
+    }
+
+    public nint Map() {
+        return GL.MapNamedBuffer(id, BufferAccess.WriteOnly);
+    }
+
+    public void Unmap() {
+        GL.UnmapNamedBuffer(id);
+    }
+
+    public void Delete() => GL.DeleteBuffer(id);
 }

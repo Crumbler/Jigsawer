@@ -6,6 +6,11 @@ public struct VAO {
 
     public int Id { get; private set; }
 
+    public VAO() {
+        GL.CreateVertexArrays(1, out int vaoId);
+        Id = vaoId;
+    }
+
     public void Bind() {
         if (Id != boundId) {
             GL.BindVertexArray(Id);
@@ -49,12 +54,4 @@ public struct VAO {
     }
 
     public void EnableVertexAttributeArray(int index) => GL.EnableVertexArrayAttrib(Id, index);
-
-    public static VAO Create() {
-        GL.CreateVertexArrays(1, out int vaoId);
-
-        return new VAO() {
-            Id = vaoId
-        };
-    }
 }

@@ -30,10 +30,10 @@ public sealed class ImageModel {
     }
 
     public ImageModel(ref Matrix3 projMat, float scaleFactor) {
-        positionVBO = VBO.Create(BufferUsageHint.StaticDraw);
+        positionVBO = new VBO(BufferUsageHint.StaticDraw);
         positionVBO.SetData(InstanceDataSize, box);
 
-        vao = VAO.Create();
+        vao = new VAO();
         vao.EnableVertexAttributeArray(AttributePositions.Position);
         vao.BindAttributeToPoint(AttributePositions.Position, 0);
         vao.SetBindingPointToBuffer(0, positionVBO.Id);
