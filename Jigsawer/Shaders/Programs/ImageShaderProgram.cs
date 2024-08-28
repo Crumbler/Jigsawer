@@ -16,8 +16,8 @@ public sealed class ImageShaderProgram : ShaderProgram {
     public void SetProjectionMatrix(ref Matrix3 mat) {
         SetMatrix(UniformLocations.ProjectionMatrix, ref mat);
     }
-    public void SetTextureSize(Vector2 size) {
-        SetVector2(UniformLocations.TextureSize, size);
+    public void SetScaleFactor(float x) {
+        SetFloat(UniformLocations.ScaleFactor, x);
     }
     public void SetTextureUnit(int unit) {
         SetInt(UniformLocations.Texture, unit);
@@ -29,7 +29,7 @@ public sealed class ImageShaderProgram : ShaderProgram {
 
     private static class UniformLocations {
         public const int ProjectionMatrix = 0;
-        public const int TextureSize = 1;
+        public const int ScaleFactor = 1;
         public const int Texture = 2;
     }
 }

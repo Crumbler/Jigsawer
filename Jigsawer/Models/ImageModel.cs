@@ -29,7 +29,7 @@ public sealed class ImageModel {
         }
     }
 
-    public ImageModel(ref Matrix3 projMat, float textureSizeMultiplier) {
+    public ImageModel(ref Matrix3 projMat, float scaleFactor) {
         positionVBO = VBO.Create(BufferUsageHint.StaticDraw);
         positionVBO.SetData(InstanceDataSize, box);
 
@@ -49,7 +49,7 @@ public sealed class ImageModel {
 
         shader = new ImageShaderProgram();
         shader.SetProjectionMatrix(ref projMat);
-        shader.SetTextureSize(texture.Size * textureSizeMultiplier);
+        shader.SetScaleFactor(scaleFactor);
         shader.SetTextureUnit(0);
     }
 
