@@ -1,9 +1,8 @@
-﻿
-using OpenTK.Graphics.OpenGL4;
+﻿using OpenTK.Graphics.OpenGL4;
 
 using System.Runtime.CompilerServices;
 
-namespace Jigsawer.Main;
+namespace Jigsawer.GLBuffers;
 
 public struct VBO {
     private static int boundId;
@@ -35,7 +34,7 @@ public struct VBO {
         GL.NamedBufferData(Id, size, 0, Usage);
     }
 
-    public IntPtr Map() {
+    public nint Map() {
         return GL.MapNamedBuffer(Id, BufferAccess.WriteOnly);
     }
 

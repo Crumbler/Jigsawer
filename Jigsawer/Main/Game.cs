@@ -1,4 +1,6 @@
-﻿using Jigsawer.Scenes;
+﻿using Jigsawer.Debug;
+using Jigsawer.GLObjects;
+using Jigsawer.Scenes;
 
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;

@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
+
 using System.Diagnostics;
 
-namespace Jigsawer.Main;
+namespace Jigsawer.Debug;
 
 public static class Logger {
     private static readonly ILoggerFactory loggerFactory =

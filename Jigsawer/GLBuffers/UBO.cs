@@ -1,10 +1,8 @@
-﻿
-
-using OpenTK.Graphics.OpenGL4;
+﻿using OpenTK.Graphics.OpenGL4;
 
 using System.Runtime.CompilerServices;
 
-namespace Jigsawer.Main;
+namespace Jigsawer.GLBuffers;
 
 public struct UBO {
     public int Id { get; private set; }
@@ -19,7 +17,7 @@ public struct UBO {
         GL.BindBufferBase(BufferRangeTarget.UniformBuffer, bindingPoint, Id);
     }
 
-    public IntPtr Map() {
+    public nint Map() {
         return GL.MapNamedBuffer(Id, BufferAccess.WriteOnly);
     }
 

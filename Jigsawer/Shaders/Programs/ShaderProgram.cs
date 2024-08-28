@@ -1,4 +1,4 @@
-﻿using Jigsawer.Main;
+﻿using Jigsawer.Debug;
 
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;

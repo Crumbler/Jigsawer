@@ -1,7 +1,6 @@
-﻿
-using OpenTK.Graphics.OpenGL4;
+﻿using OpenTK.Graphics.OpenGL4;
 
-namespace Jigsawer.Main;
+namespace Jigsawer.GLObjects;
 public struct VAO {
     private static int boundId;
 

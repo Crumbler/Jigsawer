@@ -1,5 +1,5 @@
 ﻿
-using Jigsawer.Main;
+using Jigsawer.GLObjects;
 
 using OpenTK.Graphics.OpenGL4;
 

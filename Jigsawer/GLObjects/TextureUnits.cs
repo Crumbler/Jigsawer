@@ -1,8 +1,9 @@
 ﻿
 using OpenTK.Graphics.OpenGL4;
 using Jigsawer.Helpers;
+using Jigsawer.Debug;
 
-namespace Jigsawer.Main;
+namespace Jigsawer.GLObjects;
 
 public static class TextureUnits {
     private static readonly int unitCount = GetMaxTextureUnitCount();

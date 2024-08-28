@@ -1,10 +1,10 @@
-﻿
-using Jigsawer.Main;
-using static Jigsawer.Shaders.Programs.ImageShaderProgram;
+﻿using static Jigsawer.Shaders.Programs.ImageShaderProgram;
 
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using Jigsawer.Shaders.Programs;
+using Jigsawer.GLBuffers;
+using Jigsawer.GLObjects;
 
 namespace Jigsawer.Models;
 

@@ -1,13 +1,11 @@
-﻿
-using Jigsawer.Resources;
+﻿using Jigsawer.Resources;
 
 using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
 
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace Jigsawer.Main;
+namespace Jigsawer.GLObjects;
 
 public struct Texture {
     public int Id { get; private set; }

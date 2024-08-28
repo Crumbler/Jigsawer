@@ -1,5 +1,6 @@
 ﻿
-using Jigsawer.Main;
+using Jigsawer.GLBuffers;
+using Jigsawer.GLObjects;
 using Jigsawer.Shaders.Programs;
 
 using OpenTK.Mathematics;
