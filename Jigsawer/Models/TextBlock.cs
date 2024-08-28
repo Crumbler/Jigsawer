@@ -15,24 +15,26 @@ public class TextBlock {
     private readonly Texture fontTexture;
     private readonly TextBlockShaderProgram shader;
     private readonly FontAtlas fontAtlas;
-    private readonly int characterCount;
+    private readonly int displayedCharacters;
     private const int PosSize = sizeof(float) * 2,
         IndexSize = sizeof(int);
 
     public TextBlock(string text, Vector2 position, FontAtlas fontAtlas, ref Matrix3 projMat) {
         this.fontAtlas = fontAtlas;
-        characterCount = text.Length;
         fontTexture = fontAtlas.Texture;
 
         dataVBO = VBO.Create(BufferUsageHint.StaticDraw);
 
-        dataVBO.Reset(text.Length * (PosSize + IndexSize));
+        displayedCharacters = CalculateDisplayedCharacterCount(text);
+
+        dataVBO.Reset(displayedCharacters * (PosSize + IndexSize));
 
         IntPtr ptr = dataVBO.Map();
-        CalculateAndStoreCharacterPositions(text, position, fontAtlas.CharacterWidths, ptr);
+        CalculateAndStoreCharacterPositions(text, position,
+            fontAtlas, ptr, displayedCharacters);
 
-        ptr += text.Length * PosSize;
-        StoreCharacterIndices(text, ptr);
+        ptr += displayedCharacters * PosSize;
+        StoreCharacterIndices(text, ptr, displayedCharacters);
 
         dataVBO.Unmap();
 
@@ -47,7 +49,7 @@ public class TextBlock {
 
         vao.EnableVertexAttributeArray(TextBlockShaderProgram.AttributePositions.CharacterId);
         vao.BindAttributeToPoint(TextBlockShaderProgram.AttributePositions.CharacterId, 1);
-        vao.SetBindingPointToBuffer(1, dataVBO.Id, text.Length * PosSize, IndexSize);
+        vao.SetBindingPointToBuffer(1, dataVBO.Id, displayedCharacters * PosSize, IndexSize);
         vao.SetBindingPointDivisor(1, 1);
         vao.SetIntegerAttributeFormat(
             TextBlockShaderProgram.AttributePositions.CharacterId,
@@ -58,26 +60,61 @@ public class TextBlock {
         shader.SetTextureUnit(fontTexture.Unit);
     }
 
+    private static int CalculateDisplayedCharacterCount(ReadOnlySpan<char> chars) {
+        return chars.Length - chars.Count(' ') - chars.Count('\n');
+    }
+
     private static unsafe void CalculateAndStoreCharacterPositions(ReadOnlySpan<char> chars,
-        Vector2 basePos, ReadOnlySpan<float> charWidths, IntPtr positionsPtr) {
+        Vector2 basePos, FontAtlas fontAtlas, IntPtr positionsPtr,
+        int displayedCharacters) {
         float x = basePos.X;
         float y = basePos.Y;
 
-        var positions = new Span<Vector2>(positionsPtr.ToPointer(), chars.Length * PosSize);
+        ReadOnlySpan<float> characterWidths = fontAtlas.CharacterWidths;
+
+        var positions = new Span<Vector2>(positionsPtr.ToPointer(), displayedCharacters);
+        int positionInd = 0;
 
         for (int i = 0; i < chars.Length; ++i) {
-            positions[i] = new Vector2(x, y);
+            char c = chars[i];
+            switch (c) {
+                case ' ':
+                    x += fontAtlas.SpaceWidth;
+                    break;
 
-            x += charWidths[i];
+                case '\n':
+                    x = basePos.X;
+                    y += fontAtlas.CharacterHeight;
+                    break;
+
+                default:
+                    positions[positionInd] = new Vector2(x, y);
+                    ++positionInd;
+
+                    x += characterWidths[i];
+                    break;
+            }
         }
     }
 
     private static unsafe void StoreCharacterIndices(ReadOnlySpan<char> chars,
-        IntPtr indicesPtr) {
-        var indices = new Span<int>(indicesPtr.ToPointer(), chars.Length * IndexSize);
+        IntPtr indicesPtr, int displayedCharacters) {
+        var indices = new Span<int>(indicesPtr.ToPointer(), displayedCharacters);
+        int indexInd = 0;
 
         for (int i = 0; i < chars.Length; ++i) {
-            indices[i] = chars[i] - FontAtlas.MinChar;
+            char c = chars[i];
+
+            switch (c) {
+                case ' ':
+                case '\n':
+                    break;
+                    
+                default:
+                    indices[indexInd] = c - FontAtlas.MinChar;
+                    ++indexInd;
+                    break;
+            }
         }
     }
 
@@ -92,7 +129,7 @@ public class TextBlock {
 
         fontTexture.Use();
 
-        GL.DrawArraysInstanced(PrimitiveType.TriangleStrip, 0, 4, characterCount);
+        GL.DrawArraysInstanced(PrimitiveType.TriangleStrip, 0, 4, displayedCharacters);
     }
 
     public void Delete() {

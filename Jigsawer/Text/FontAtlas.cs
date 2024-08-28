@@ -24,6 +24,7 @@ public partial class FontAtlas {
 
     public Texture Texture { get; private set; }
     public int CharacterHeight { get; private set; }
+    public float SpaceWidth { get; private set; }
     public ReadOnlySpan<float> CharacterWidths => characterWidths;
     private readonly float[] characterWidths = new float[TotalChars];
 
@@ -80,9 +81,15 @@ public partial class FontAtlas {
     }
 
     private void CalculateCharacterWidths(Font font, out float maxCharacterWidth) {
+        SpaceWidth = measureGraphics.MeasureString([' ', 'a'], font,
+            int.MaxValue, StringFormat.GenericTypographic).Width -
+                    measureGraphics.MeasureString(['a'], font,
+            int.MaxValue, StringFormat.GenericTypographic).Width;
+
         float maxWidth = 0f;
 
         Span<char> charSpan = stackalloc char[1];
+
         Span<float> charWidths = characterWidths;
 
         for (int i = MinChar; i <= MaxChar; ++i) {
