@@ -97,5 +97,5 @@ public abstract class ShaderProgram {
         }
     }
 
-    public void Delete() => GL.DeleteProgram(Id);
+    public virtual void Delete() => GL.DeleteProgram(Id);
 }

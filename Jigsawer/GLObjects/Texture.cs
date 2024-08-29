@@ -37,7 +37,7 @@ public struct Texture {
         GL.CreateTextures(TextureTarget.Texture2D, 1, out int textureId);
 
         Id = textureId;
-        Unit = TextureUnits.GrabUnit();
+        Unit = TextureUnits.GrabOne();
     }
 
     public void Use() {
@@ -45,7 +45,7 @@ public struct Texture {
     }
 
     public void Delete() {
-        TextureUnits.ReturnUnit(Unit);
+        TextureUnits.ReturnOne(Unit);
         GL.DeleteTexture(Id);
     }
 

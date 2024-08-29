@@ -10,13 +10,13 @@ using System.Runtime.InteropServices;
 
 namespace Jigsawer.Text;
 
-public partial class FontAtlas {
+public sealed partial class FontAtlas {
     private const string FontFamilyName = "MS Gothic";
     // 94 printable ASCII characters
     public const int MinChar = '!', MaxChar = '~', TotalChars = MaxChar - MinChar + 1;
 
     private static readonly Graphics measureGraphics = Graphics.FromHdc(CreateCompatibleDC(0));
-    public static readonly FontAtlas Normal = new(FontFamilyName, 20f);
+    public static readonly FontAtlas Normal = new(FontFamilyName, 20);
 
     static FontAtlas() {
         measureGraphics.TextRenderingHint = TextRenderingHint.AntiAlias;
@@ -27,8 +27,10 @@ public partial class FontAtlas {
     public float SpaceWidth { get; private set; }
     public ReadOnlySpan<float> CharacterWidths => characterWidths;
     private readonly float[] characterWidths = new float[TotalChars];
+    private readonly int emSize;
 
-    public FontAtlas(string fontFamily, float emSize) {
+    private FontAtlas(string fontFamily, int emSize) {
+        this.emSize = emSize;
         using var font = new Font(fontFamily, emSize);
 
         CharacterHeight = font.Height;
@@ -61,6 +63,10 @@ public partial class FontAtlas {
         }
 
         GenerateTexture(bitmap);
+    }
+
+    public override int GetHashCode() {
+        return emSize.GetHashCode();
     }
 
     private void GenerateTexture(Bitmap bitmap) {

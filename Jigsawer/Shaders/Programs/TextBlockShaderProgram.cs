@@ -8,16 +8,20 @@ using OpenTK.Mathematics;
 
 namespace Jigsawer.Shaders.Programs;
 
-public class TextBlockShaderProgram : ShaderProgram {
+public sealed class TextBlockShaderProgram : ShaderProgram {
     private const string EntityName = "TextBlock";
     private const int FontInfoBindingPoint = 1;
+    private static readonly Dictionary<FontAtlas, TextBlockShaderProgram> instances = [];
     private readonly UBO<FontInfo> fontInfoUbo;
+    private int instanceCount = 1;
+    private readonly FontAtlas fontAtlas;
 
-    public TextBlockShaderProgram(FontAtlas fontAtlas) {
+    private TextBlockShaderProgram(FontAtlas fontAtlas) {
         Initialize(
             ShaderInfo.Get(EntityName, ShaderType.VertexShader),
             ShaderInfo.Get(EntityName, ShaderType.FragmentShader));
 
+        this.fontAtlas = fontAtlas;
         fontInfoUbo = new UBO<FontInfo>(FontInfoBindingPoint);
 
         FillFontInfoUbo(fontInfoUbo, fontAtlas);
@@ -45,6 +49,25 @@ public class TextBlockShaderProgram : ShaderProgram {
         base.Use();
 
         fontInfoUbo.Bind();
+    }
+
+    public static TextBlockShaderProgram GetInstance(FontAtlas atlas) {
+        if (instances.TryGetValue(atlas, out var existingProgram)) {
+            ++existingProgram.instanceCount;
+            return existingProgram;
+        }
+
+        var newProgram = new TextBlockShaderProgram(atlas);
+        instances.Add(atlas, newProgram);
+        return newProgram;
+    }
+
+    public override void Delete() {
+        --instanceCount;
+        if (instanceCount == 0) {
+            instances.Remove(fontAtlas);
+            base.Delete();
+        }
     }
 
     public static class AttributePositions {

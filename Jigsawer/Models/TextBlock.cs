@@ -56,7 +56,7 @@ public class TextBlock {
             TextBlockShaderProgram.AttributePositions.CharacterId,
             1, VertexAttribIntegerType.UnsignedByte);
 
-        shader = new TextBlockShaderProgram(fontAtlas);
+        shader = TextBlockShaderProgram.GetInstance(fontAtlas);
         shader.SetProjectionMatrix(ref projMat);
         shader.SetTextureUnit(fontTexture.Unit);
     }

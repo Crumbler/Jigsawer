@@ -16,7 +16,7 @@ public static class TextureUnits {
         return maxUnitCount;
     }
 
-    public static int GrabUnit() {
+    public static int GrabOne() {
         var (index, element) = unitUses.GetMinElement();
 
         ++unitUses[index];
@@ -24,7 +24,7 @@ public static class TextureUnits {
         return element;
     }
 
-    public static void ReturnUnit(int unit) {
+    public static void ReturnOne(int unit) {
         --unitUses[unit];
     }
 
@@ -45,5 +45,7 @@ public static class TextureUnits {
         }
 
         span.Clear();
+
+        Array.Clear(unitUses);
     }
 }
