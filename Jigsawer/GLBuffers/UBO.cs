@@ -1,4 +1,6 @@
-﻿using OpenTK.Graphics.OpenGL4;
+﻿using Jigsawer.GLObjects;
+
+using OpenTK.Graphics.OpenGL4;
 
 using System.Runtime.CompilerServices;
 
@@ -6,10 +8,11 @@ namespace Jigsawer.GLBuffers;
 
 public struct UBO<T> where T : unmanaged {
     private readonly int id;
-    private readonly int bindingPoint;
+
+    public int BindingPoint { get; private set; }
 
     [SkipLocalsInit]
-    public UBO(int bindingPoint) {
+    public UBO() {
         int bufId;
         unsafe {
             GL.CreateBuffers(1, &bufId);
@@ -18,11 +21,15 @@ public struct UBO<T> where T : unmanaged {
         GL.NamedBufferStorage(bufId, Unsafe.SizeOf<T>(), 0, BufferStorageFlags.MapWriteBit);
 
         id = bufId;
-        this.bindingPoint = bindingPoint;
+        BindingPoint = BufferBindingPoints.GrabUBOPoint();
     }
 
     public void Bind() {
-        GL.BindBufferBase(BufferRangeTarget.UniformBuffer, bindingPoint, id);
+        BufferBindingPoints.BindUBO(BindingPoint, id);
+    }
+
+    public static void UnbindAll() {
+        BufferBindingPoints.UnbindAllUBOs();
     }
 
     public unsafe ref T Map() {
@@ -34,5 +41,8 @@ public struct UBO<T> where T : unmanaged {
         GL.UnmapNamedBuffer(id);
     }
 
-    public void Delete() => GL.DeleteBuffer(id);
+    public void Delete() {
+        BufferBindingPoints.ReturnUBOPoint(BindingPoint);
+        GL.DeleteBuffer(id);
+    }
 }

@@ -7,7 +7,7 @@ namespace Jigsawer.GLObjects;
 
 public static class TextureUnits {
     private static readonly int unitCount = GetMaxTextureUnitCount();
-    private static readonly byte[] unitUses = new byte[unitCount];
+    private static readonly byte[] unitUseCounts = new byte[unitCount];
     private static readonly int[] unitToTexture = new int[unitCount];
 
     private static int GetMaxTextureUnitCount() {
@@ -17,15 +17,15 @@ public static class TextureUnits {
     }
 
     public static int GrabOne() {
-        var (index, element) = unitUses.GetMinElement();
+        var (index, element) = unitUseCounts.GetMinElement();
 
-        ++unitUses[index];
+        ++unitUseCounts[index];
 
         return element;
     }
 
     public static void ReturnOne(int unit) {
-        --unitUses[unit];
+        --unitUseCounts[unit];
     }
 
     public static void Bind(int unit, int texture) {
@@ -46,6 +46,6 @@ public static class TextureUnits {
 
         span.Clear();
 
-        Array.Clear(unitUses);
+        Array.Clear(unitUseCounts);
     }
 }

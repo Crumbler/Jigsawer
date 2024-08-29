@@ -63,6 +63,11 @@ public abstract class ShaderProgram {
         GL.ProgramUniform1(Id, location, value);
     }
 
+    protected void ConnectUniformBlockToBuffer(string blockName, int bindingPoint) {
+        int blockIndex = GL.GetUniformBlockIndex(Id, blockName);
+        GL.UniformBlockBinding(Id, blockIndex, bindingPoint);
+    }
+
     protected void Initialize(ShaderInfo shaderInfoA, ShaderInfo shaderInfoB) {
         Shader shaderA = shaderInfoA.Load(),
             shaderB = shaderInfoB.Load();
