@@ -10,8 +10,8 @@ void main()
 {
     vec3 pos;
     
-    pos.x = box[0] + box[2] * (gl_VertexID / 2);
-    pos.y = box[1] + box[3] * step(2, (gl_VertexID + 1) % 4);
+    pos.x = box[0] + box[2] * (gl_VertexID & 1);
+    pos.y = box[1] + box[3] * step(2, gl_VertexID);
     // Necessary for matrix multiplication
     pos.z = 1;
 

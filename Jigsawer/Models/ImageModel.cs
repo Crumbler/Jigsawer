@@ -63,7 +63,7 @@ public sealed class ImageModel {
 
         shader.Use();
 
-        GL.DrawArraysInstanced(PrimitiveType.TriangleFan, 0, PrimitivesPerInstance, 1);
+        GL.DrawArraysInstanced(PrimitiveType.TriangleStrip, 0, PrimitivesPerInstance, 1);
     }
 
     public void Delete() {
