@@ -6,6 +6,12 @@ using System.Runtime.CompilerServices;
 
 namespace Jigsawer.GLBuffers;
 
+public static class UBO {
+    public static void UnbindAll() {
+        BufferBindingPoints.UnbindAllUBOs();
+    }
+}
+
 public struct UBO<T> where T : unmanaged {
     private readonly int id;
 
@@ -26,10 +32,6 @@ public struct UBO<T> where T : unmanaged {
 
     public void Bind() {
         BufferBindingPoints.BindUBO(BindingPoint, id);
-    }
-
-    public static void UnbindAll() {
-        BufferBindingPoints.UnbindAllUBOs();
     }
 
     public unsafe ref T Map() {

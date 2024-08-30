@@ -13,16 +13,17 @@ public struct VBO {
 
     [SkipLocalsInit]
     public VBO(
-        BufferUsageHint usage,
+        int size,
         BufferTarget target = BufferTarget.ArrayBuffer) {
         int bufId;
         unsafe {
             GL.CreateBuffers(1, &bufId);
         }
 
+        GL.NamedBufferStorage(bufId, size, 0, BufferStorageFlags.MapWriteBit);
+
         Id = bufId;
         Target = target;
-        Usage = usage;
     }
 
     public void Bind() {
@@ -34,21 +35,22 @@ public struct VBO {
 
     public void Delete() => GL.DeleteBuffer(Id);
 
-    public void SetData<T>(int size, T[] data)
+    public unsafe void SetData<T>(int size, T data, bool invalidate = false)
         where T : unmanaged {
-        GL.NamedBufferData(Id, size, data, Usage);
+        if (invalidate) {
+            Orphan();
+        }
+
+        var dataPtr = (T*)GL.MapNamedBuffer(Id, BufferAccess.WriteOnly);
+        *dataPtr = data;
+        GL.UnmapNamedBuffer(Id);
     }
 
-    public unsafe void SetData<T>(int size, T data)
-        where T : unmanaged {
-        GL.NamedBufferData(Id, size, (nint)(&data), Usage);
-    }
+    public nint Map(bool invalidate = false) {
+        if (invalidate) {
+            Orphan();
+        }
 
-    public void Reset(int size) {
-        GL.NamedBufferData(Id, size, 0, Usage);
-    }
-
-    public nint Map() {
         return GL.MapNamedBuffer(Id, BufferAccess.WriteOnly);
     }
 
@@ -56,7 +58,7 @@ public struct VBO {
         GL.UnmapNamedBuffer(Id);
     }
 
-    public void Orphan() => GL.InvalidateBufferData(Id);
+    private void Orphan() => GL.InvalidateBufferData(Id);
 
     public static void Unbind() {
         if (boundId != 0) {

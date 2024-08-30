@@ -39,6 +39,7 @@ public abstract class Scene {
         ShaderProgram.StopUsing();
         VAO.Unbind();
         VBO.Unbind();
+        UBO.UnbindAll();
         Texture.Unbind();
     }
 

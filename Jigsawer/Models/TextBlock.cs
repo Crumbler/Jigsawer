@@ -17,21 +17,20 @@ public class TextBlock {
     private readonly VBO dataVBO;
     private readonly Texture fontTexture;
     private readonly TextBlockShaderProgram shader;
-    private readonly FontAtlas fontAtlas;
     private readonly int displayedCharacters;
     private const int PosSize = sizeof(float) * 2,
         IndexSize = sizeof(int),
         ColorSize = sizeof(float) * 3;
 
-    public TextBlock(string text, Vector2 position, Color4 color, FontAtlas fontAtlas, ref Matrix3 projMat) {
-        this.fontAtlas = fontAtlas;
+    public TextBlock(string text, Vector2 position, Color4 color,
+        FontAtlas fontAtlas, ref Matrix3 projMat) {
         fontTexture = fontAtlas.Texture;
-
-        dataVBO = new VBO(BufferUsageHint.StaticDraw);
 
         displayedCharacters = CalculateDisplayedCharacterCount(text);
 
-        dataVBO.Reset(displayedCharacters * (PosSize + IndexSize) + ColorSize);
+        int bufferSize = displayedCharacters * (PosSize + IndexSize) + ColorSize;
+
+        dataVBO = new VBO(bufferSize);
 
         IntPtr ptr = dataVBO.Map();
         CalculateAndStoreCharacterPositions(text, position,

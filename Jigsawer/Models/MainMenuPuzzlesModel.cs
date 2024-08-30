@@ -7,8 +7,8 @@ using OpenTK.Mathematics;
 namespace Jigsawer.Models;
 
 public sealed class MainMenuPuzzlesModel {
-    private readonly MainMenuPuzzlesShaderProgram shader;
     private const int PuzzlePieceCount = 4;
+    private readonly MainMenuPuzzlesShaderProgram shader;
 
     public MainMenuPuzzlesModel(int time, Vector2 drawSize) {
         shader = new MainMenuPuzzlesShaderProgram();

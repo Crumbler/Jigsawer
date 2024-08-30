@@ -24,13 +24,12 @@ public sealed class ImageModel {
         set {
             box = value;
 
-            positionVBO.Orphan();
-            positionVBO.SetData(InstanceDataSize, value);
+            positionVBO.SetData(InstanceDataSize, value, true);
         }
     }
 
     public ImageModel(ref Matrix3 projMat, float scaleFactor) {
-        positionVBO = new VBO(BufferUsageHint.StaticDraw);
+        positionVBO = new VBO(InstanceDataSize);
         positionVBO.SetData(InstanceDataSize, box);
 
         vao = new VAO();
