@@ -9,6 +9,7 @@ layout (std140, binding = 1) uniform FontData
 };
 
 in vec2 fUv;
+flat in vec3 fColor;
 
 out vec4 outColor;
 
@@ -17,6 +18,5 @@ void main()
     vec2 uv = fUv;
     vec2 textureSz = textureSize(fontAtlasTexture, 0);
     float texVal = 1.0 - texture(fontAtlasTexture, uv / textureSz).r;
-    vec3 col = vec3(0.0);
-    outColor = vec4(col, texVal);
+    outColor = vec4(fColor, texVal);
 }

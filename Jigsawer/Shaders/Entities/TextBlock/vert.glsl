@@ -2,6 +2,7 @@
 
 layout(location = 0) in vec2 vPos;
 layout(location = 1) in uint charId;
+layout(location = 2) in vec3 vColor;
 
 layout(location = 0) uniform mat3 projMat;
 
@@ -12,9 +13,12 @@ layout (std140, binding = 1) uniform FontData
 };
 
 out vec2 fUv;
+flat out vec3 fColor;
 
 void main()
 {
+    fColor = vColor;
+
     int ind = gl_VertexID;
 
     vec2 uv;

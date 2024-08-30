@@ -72,13 +72,14 @@ public sealed class TextBlockShaderProgram : ShaderProgram {
     }
 
     public static class AttributePositions {
-        public const int Position = 0;
-        public const int CharacterId = 1;
+        public const int Position = 0, 
+            CharacterId = 1,
+            Color = 2;
     }
 
     private static class UniformLocations {
-        public const int ProjectionMatrix = 0;
-        public const int Texture = 1;
+        public const int ProjectionMatrix = 0,
+            Texture = 1;
     }
 
     private static class UniformBlockNames {

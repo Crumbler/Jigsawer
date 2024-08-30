@@ -8,6 +8,8 @@ using Jigsawer.Text;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
+using System.Runtime.CompilerServices;
+
 namespace Jigsawer.Models;
 
 public class TextBlock {
@@ -18,9 +20,10 @@ public class TextBlock {
     private readonly FontAtlas fontAtlas;
     private readonly int displayedCharacters;
     private const int PosSize = sizeof(float) * 2,
-        IndexSize = sizeof(int);
+        IndexSize = sizeof(int),
+        ColorSize = sizeof(float) * 3;
 
-    public TextBlock(string text, Vector2 position, FontAtlas fontAtlas, ref Matrix3 projMat) {
+    public TextBlock(string text, Vector2 position, Color4 color, FontAtlas fontAtlas, ref Matrix3 projMat) {
         this.fontAtlas = fontAtlas;
         fontTexture = fontAtlas.Texture;
 
@@ -28,7 +31,7 @@ public class TextBlock {
 
         displayedCharacters = CalculateDisplayedCharacterCount(text);
 
-        dataVBO.Reset(displayedCharacters * (PosSize + IndexSize));
+        dataVBO.Reset(displayedCharacters * (PosSize + IndexSize) + ColorSize);
 
         IntPtr ptr = dataVBO.Map();
         CalculateAndStoreCharacterPositions(text, position,
@@ -36,6 +39,9 @@ public class TextBlock {
 
         ptr += displayedCharacters * PosSize;
         StoreCharacterIndices(text, ptr, displayedCharacters);
+
+        ptr += displayedCharacters * IndexSize;
+        StoreColor(color, ptr);
 
         dataVBO.Unmap();
 
@@ -55,6 +61,11 @@ public class TextBlock {
         vao.SetIntegerAttributeFormat(
             TextBlockShaderProgram.AttributePositions.CharacterId,
             1, VertexAttribIntegerType.UnsignedByte);
+
+        vao.EnableVertexAttributeArray(TextBlockShaderProgram.AttributePositions.Color);
+        vao.BindAttributeToPoint(TextBlockShaderProgram.AttributePositions.Color, 2);
+        vao.SetBindingPointToBuffer(2, dataVBO.Id, displayedCharacters * (PosSize + IndexSize));
+        vao.SetAttributeFormat(TextBlockShaderProgram.AttributePositions.Color, 3, VertexAttribType.Float);
 
         shader = TextBlockShaderProgram.GetInstance(fontAtlas);
         shader.SetProjectionMatrix(ref projMat);
@@ -117,6 +128,11 @@ public class TextBlock {
                     break;
             }
         }
+    }
+
+    private static unsafe void StoreColor(Color4 color, IntPtr colorPtr) {
+        ref var endVec = ref Unsafe.AsRef<Vector3>(colorPtr.ToPointer());
+        endVec = new Vector3(color.R, color.G, color.B);
     }
 
     public void UpdateProjectionMatrix(ref Matrix3 mat) {
