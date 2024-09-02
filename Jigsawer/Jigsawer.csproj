@@ -28,6 +28,8 @@
 
   <ItemGroup>
     <None Remove="Images\MainMenuBackgroundTile.png" />
+    <None Remove="Shaders\Entities\Buttons\frag.glsl" />
+    <None Remove="Shaders\Entities\Buttons\vert.glsl" />
     <None Remove="Shaders\Entities\Image\frag.glsl" />
     <None Remove="Shaders\Entities\Image\vert.glsl" />
     <None Remove="Shaders\Entities\MainMenuPuzzles\frag.glsl" />
@@ -38,6 +40,8 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Images\MainMenuBackgroundTile.png" />
+    <EmbeddedResource Include="Shaders\Entities\Buttons\frag.glsl" />
+    <EmbeddedResource Include="Shaders\Entities\Buttons\vert.glsl" />
     <EmbeddedResource Include="Shaders\Entities\Image\frag.glsl" />
     <EmbeddedResource Include="Shaders\Entities\Image\vert.glsl" />
     <EmbeddedResource Include="Shaders\Entities\MainMenuPuzzles\frag.glsl" />

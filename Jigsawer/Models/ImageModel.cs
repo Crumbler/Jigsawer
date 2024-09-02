@@ -8,7 +8,7 @@ using Jigsawer.GLObjects;
 
 namespace Jigsawer.Models;
 
-public sealed class ImageModel {
+public sealed class ImageModel : IRenderableModel {
     private const int PrimitivesPerInstance = 4;
     private const int InstanceDataSize = sizeof(float) * PrimitivesPerInstance;
 
@@ -24,21 +24,22 @@ public sealed class ImageModel {
         set {
             box = value;
 
-            positionVBO.SetData(InstanceDataSize, value, true);
+            positionVBO.SetData(value, true);
         }
     }
 
     public ImageModel(ref Matrix3 projMat, float scaleFactor) {
         positionVBO = new VBO(InstanceDataSize);
-        positionVBO.SetData(InstanceDataSize, box);
+        positionVBO.SetData(box);
 
         vao = new VAO();
+        vao.SetBindingPointToBuffer(0, positionVBO.Id);
+        vao.SetBindingPointDivisor(0, 1);
+
         vao.EnableVertexAttributeArray(AttributePositions.Position);
         vao.BindAttributeToPoint(AttributePositions.Position, 0);
-        vao.SetBindingPointToBuffer(0, positionVBO.Id);
-        // 1 attribute value per instance
-        vao.SetBindingPointDivisor(0, 1);
-        vao.SetAttributeFormat(AttributePositions.Position, PrimitivesPerInstance, VertexAttribType.Float);
+        vao.SetAttributeFormat(AttributePositions.Position,
+            PrimitivesPerInstance, VertexAttribType.Float);
 
         texture = new Texture(Images.Image.MainMenuBackgroundTile);
         texture.SetMinFilter(TextureMinFilter.Linear);

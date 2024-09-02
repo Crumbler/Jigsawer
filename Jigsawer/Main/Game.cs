@@ -74,6 +74,10 @@ public sealed class Game : GameWindow {
         }
     }
 
+    protected override void OnMouseDown(MouseButtonEventArgs e) {
+        currentScene?.OnMouseDown(e);
+    }
+
     private void ToggleFullscreen() {
         Logger.LogDebug("Toggled fullscreen");
 
@@ -110,7 +114,7 @@ public sealed class Game : GameWindow {
     }
 
     protected override void OnUpdateFrame(FrameEventArgs args) {
-        currentScene?.Update(args.Time);
+        currentScene?.Update(args.Time, MousePosition);
     }
 
     private new void Close() {

@@ -6,7 +6,7 @@ using OpenTK.Mathematics;
 
 namespace Jigsawer.Models;
 
-public sealed class MainMenuPuzzlesModel {
+public sealed class MainMenuPuzzlesModel : IRenderableModel {
     private const int PuzzlePieceCount = 4;
     private readonly MainMenuPuzzlesShaderProgram shader;
 

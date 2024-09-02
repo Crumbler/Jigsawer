@@ -2,7 +2,7 @@
 
 layout(location = 0) in vec2 vPos;
 layout(location = 1) in uint charId;
-layout(location = 2) in vec3 vColor;
+layout(location = 2) in vec4 vColor;
 
 layout(location = 0) uniform mat3 projMat;
 
@@ -17,7 +17,7 @@ flat out vec3 fColor;
 
 void main()
 {
-    fColor = vColor;
+    fColor = vColor.rgb;
 
     int ind = gl_VertexID;
 

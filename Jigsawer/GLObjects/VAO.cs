@@ -38,8 +38,10 @@ public struct VAO {
     public void SetAttributeFormat(
         int attribute,
         int size,
-        VertexAttribType type) {
-        GL.VertexArrayAttribFormat(Id, attribute, size, type, false, 0);
+        VertexAttribType type,
+        bool normalized = false,
+        int offset = 0) {
+        GL.VertexArrayAttribFormat(Id, attribute, size, type, normalized, offset);
     }
 
     public void SetIntegerAttributeFormat(

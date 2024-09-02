@@ -39,9 +39,7 @@ public sealed class MainMenuScene : Scene {
         backgroundPuzzles.Render();
     }
 
-    public override void Update(double secondsPassed) {
-        base.Update(secondsPassed);
-
+    protected override void Update(int passedMs) {
         backgroundPuzzles.UpdateTime(TotalMilliseconds);
     }
 }

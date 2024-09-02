@@ -2,17 +2,18 @@
 
 using Jigsawer.GLBuffers;
 using Jigsawer.GLObjects;
+using Jigsawer.Helpers;
 using Jigsawer.Shaders.Programs;
 using Jigsawer.Text;
 
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
-using System.Runtime.CompilerServices;
+using System.Drawing;
 
 namespace Jigsawer.Models;
 
-public class TextBlock {
+public class TextBlock : IRenderableModel {
     private readonly VAO vao;
     private readonly VBO dataVBO;
     private readonly Texture fontTexture;
@@ -22,7 +23,7 @@ public class TextBlock {
         IndexSize = sizeof(int),
         ColorSize = sizeof(float) * 3;
 
-    public TextBlock(string text, Vector2 position, Color4 color,
+    public TextBlock(ReadOnlySpan<char> text, Vector2 position, Color color,
         FontAtlas fontAtlas, ref Matrix3 projMat) {
         fontTexture = fontAtlas.Texture;
 
@@ -64,7 +65,7 @@ public class TextBlock {
         vao.EnableVertexAttributeArray(TextBlockShaderProgram.AttributePositions.Color);
         vao.BindAttributeToPoint(TextBlockShaderProgram.AttributePositions.Color, 2);
         vao.SetBindingPointToBuffer(2, dataVBO.Id, displayedCharacters * (PosSize + IndexSize));
-        vao.SetAttributeFormat(TextBlockShaderProgram.AttributePositions.Color, 3, VertexAttribType.Float);
+        vao.SetAttributeFormat(TextBlockShaderProgram.AttributePositions.Color, 4, VertexAttribType.UnsignedByte, true);
 
         shader = TextBlockShaderProgram.GetInstance(fontAtlas);
         shader.SetProjectionMatrix(ref projMat);
@@ -129,9 +130,9 @@ public class TextBlock {
         }
     }
 
-    private static unsafe void StoreColor(Color4 color, IntPtr colorPtr) {
-        ref var endVec = ref Unsafe.AsRef<Vector3>(colorPtr.ToPointer());
-        endVec = new Vector3(color.R, color.G, color.B);
+    private static unsafe void StoreColor(Color color, IntPtr colorPtr) {
+        ref var endCol = ref colorPtr.ToReference<int>();
+        endCol = color.ToInt();
     }
 
     public void UpdateProjectionMatrix(ref Matrix3 mat) {
