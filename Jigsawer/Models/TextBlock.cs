@@ -21,21 +21,25 @@ public class TextBlock : IRenderableModel {
     private readonly int displayedCharacters;
     private const int PosSize = sizeof(float) * 2,
         IndexSize = sizeof(int),
-        ColorSize = sizeof(float) * 3;
+        ColorSize = sizeof(byte) * 4,
+        SizeMultSize = sizeof(float);
 
     public TextBlock(ReadOnlySpan<char> text, Vector2 position, Color color,
+        float padding, float size,
         FontAtlas fontAtlas, ref Matrix3 projMat) {
         fontTexture = fontAtlas.Texture;
 
         displayedCharacters = CalculateDisplayedCharacterCount(text);
 
-        int bufferSize = displayedCharacters * (PosSize + IndexSize) + ColorSize;
+        int bufferSize = displayedCharacters * (PosSize + IndexSize) + ColorSize + SizeMultSize;
 
         dataVBO = new VBO(bufferSize);
 
+        float sizeMult = size / fontAtlas.EmSize;
+
         IntPtr ptr = dataVBO.Map();
-        CalculateAndStoreCharacterPositions(text, position,
-            fontAtlas, ptr, displayedCharacters);
+        CalculateAndStoreCharacterPositions(text, position, sizeMult,
+            fontAtlas, ptr, padding, displayedCharacters);
 
         ptr += displayedCharacters * PosSize;
         StoreCharacterIndices(text, ptr, displayedCharacters);
@@ -43,29 +47,42 @@ public class TextBlock : IRenderableModel {
         ptr += displayedCharacters * IndexSize;
         StoreColor(color, ptr);
 
+        ptr += ColorSize;
+        StoreSizeMult(sizeMult, ptr);
+
         dataVBO.Unmap();
 
         vao = new VAO();
-        vao.EnableVertexAttributeArray(TextBlockShaderProgram.AttributePositions.Position);
-        vao.BindAttributeToPoint(TextBlockShaderProgram.AttributePositions.Position, 0);
+
         vao.SetBindingPointToBuffer(0, dataVBO.Id, 0, PosSize);
         vao.SetBindingPointDivisor(0, 1);
+
+        vao.EnableVertexAttributeArray(TextBlockShaderProgram.AttributePositions.Position);
+        vao.BindAttributeToPoint(TextBlockShaderProgram.AttributePositions.Position, 0);
         vao.SetAttributeFormat(
             TextBlockShaderProgram.AttributePositions.Position,
             2, VertexAttribType.Float);
 
-        vao.EnableVertexAttributeArray(TextBlockShaderProgram.AttributePositions.CharacterId);
-        vao.BindAttributeToPoint(TextBlockShaderProgram.AttributePositions.CharacterId, 1);
         vao.SetBindingPointToBuffer(1, dataVBO.Id, displayedCharacters * PosSize, IndexSize);
         vao.SetBindingPointDivisor(1, 1);
+
+        vao.EnableVertexAttributeArray(TextBlockShaderProgram.AttributePositions.CharacterId);
+        vao.BindAttributeToPoint(TextBlockShaderProgram.AttributePositions.CharacterId, 1);
         vao.SetIntegerAttributeFormat(
             TextBlockShaderProgram.AttributePositions.CharacterId,
             1, VertexAttribIntegerType.UnsignedByte);
 
+        vao.SetBindingPointToBuffer(2, dataVBO.Id, displayedCharacters * (PosSize + IndexSize));
+
         vao.EnableVertexAttributeArray(TextBlockShaderProgram.AttributePositions.Color);
         vao.BindAttributeToPoint(TextBlockShaderProgram.AttributePositions.Color, 2);
-        vao.SetBindingPointToBuffer(2, dataVBO.Id, displayedCharacters * (PosSize + IndexSize));
-        vao.SetAttributeFormat(TextBlockShaderProgram.AttributePositions.Color, 4, VertexAttribType.UnsignedByte, true);
+        vao.SetAttributeFormat(TextBlockShaderProgram.AttributePositions.Color,
+            4, VertexAttribType.UnsignedByte, true);
+
+        vao.EnableVertexAttributeArray(TextBlockShaderProgram.AttributePositions.SizeMult);
+        vao.BindAttributeToPoint(TextBlockShaderProgram.AttributePositions.SizeMult, 2);
+        vao.SetAttributeFormat(TextBlockShaderProgram.AttributePositions.SizeMult,
+            1, VertexAttribType.Float, offset: ColorSize);
 
         shader = TextBlockShaderProgram.GetInstance(fontAtlas);
         shader.SetProjectionMatrix(ref projMat);
@@ -77,8 +94,11 @@ public class TextBlock : IRenderableModel {
     }
 
     private static unsafe void CalculateAndStoreCharacterPositions(ReadOnlySpan<char> chars,
-        Vector2 basePos, FontAtlas fontAtlas, IntPtr positionsPtr,
+        Vector2 basePos, float sizeMult, FontAtlas fontAtlas, IntPtr positionsPtr,
+        float padding,
         int displayedCharacters) {
+        basePos += new Vector2(padding);
+
         float x = basePos.X;
         float y = basePos.Y;
 
@@ -91,19 +111,19 @@ public class TextBlock : IRenderableModel {
             char c = chars[i];
             switch (c) {
                 case ' ':
-                    x += fontAtlas.SpaceWidth;
+                    x += fontAtlas.SpaceWidth * sizeMult;
                     break;
 
                 case '\n':
                     x = basePos.X;
-                    y += fontAtlas.CharacterHeight;
+                    y += fontAtlas.CharacterHeight * sizeMult;
                     break;
 
                 default:
                     positions[positionInd] = new Vector2(x, y);
                     ++positionInd;
 
-                    x += characterWidths[i];
+                    x += characterWidths[i] * sizeMult;
                     break;
             }
         }
@@ -133,6 +153,11 @@ public class TextBlock : IRenderableModel {
     private static unsafe void StoreColor(Color color, IntPtr colorPtr) {
         ref var endCol = ref colorPtr.ToReference<int>();
         endCol = color.ToInt();
+    }
+
+    private static unsafe void StoreSizeMult(float sizeMult, IntPtr sizePtr) {
+        ref var mult = ref sizePtr.ToReference<float>();
+        mult = sizeMult;
     }
 
     public void UpdateProjectionMatrix(ref Matrix3 mat) {

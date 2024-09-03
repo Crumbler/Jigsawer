@@ -25,12 +25,12 @@ public sealed partial class FontAtlas {
     public Texture Texture { get; private set; }
     public int CharacterHeight { get; private set; }
     public float SpaceWidth { get; private set; }
+    public float EmSize { get; private set; }
     public ReadOnlySpan<float> CharacterWidths => characterWidths;
     private readonly float[] characterWidths = new float[TotalChars];
-    private readonly int emSize;
 
     private FontAtlas(string fontFamily, int emSize) {
-        this.emSize = emSize;
+        EmSize = emSize;
         using var font = new Font(fontFamily, emSize);
 
         CharacterHeight = font.Height;
@@ -66,7 +66,7 @@ public sealed partial class FontAtlas {
     }
 
     public override int GetHashCode() {
-        return emSize.GetHashCode();
+        return EmSize.GetHashCode();
     }
 
     private void GenerateTexture(Bitmap bitmap) {

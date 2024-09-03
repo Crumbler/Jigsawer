@@ -3,6 +3,7 @@
 layout(location = 0) in vec2 vPos;
 layout(location = 1) in uint charId;
 layout(location = 2) in vec4 vColor;
+layout(location = 3) in float sizeMult;
 
 layout(location = 0) uniform mat3 projMat;
 
@@ -29,8 +30,8 @@ void main()
     fUv = uv;
 
     vec3 pos;
-    pos.x = vPos.x + characterWidths[ind] * step(2, ind);
-    pos.y = vPos.y + fontHeight * step(1, ind & 1);
+    pos.x = vPos.x + characterWidths[ind] * sizeMult * step(2, ind);
+    pos.y = vPos.y + fontHeight * sizeMult * step(1, ind & 1);
     // Necessary for matrix multiplication
     pos.z = 1.0;
 
