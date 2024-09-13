@@ -19,7 +19,7 @@ public class TextBlock : IRenderableModel {
     private readonly Texture fontTexture;
     private readonly TextBlockShaderProgram shader;
     private readonly int displayedCharacters;
-    private const int PosSize = sizeof(float) * 2,
+    private const int PosSize = sizeof(uint),
         IndexSize = sizeof(int),
         ColorSize = sizeof(byte) * 4,
         SizeMultSize = sizeof(float);
@@ -54,16 +54,18 @@ public class TextBlock : IRenderableModel {
 
         vao = new VAO();
 
-        vao.SetBindingPointToBuffer(0, dataVBO.Id, 0, PosSize);
+        int offset = 0;
+        vao.SetBindingPointToBuffer(0, dataVBO.Id, offset, PosSize);
         vao.SetBindingPointDivisor(0, 1);
 
         vao.EnableVertexAttributeArray(TextBlockShaderProgram.AttributePositions.Position);
         vao.BindAttributeToPoint(TextBlockShaderProgram.AttributePositions.Position, 0);
         vao.SetAttributeFormat(
             TextBlockShaderProgram.AttributePositions.Position,
-            2, VertexAttribType.Float);
+            2, VertexAttribType.HalfFloat);
 
-        vao.SetBindingPointToBuffer(1, dataVBO.Id, displayedCharacters * PosSize, IndexSize);
+        offset += displayedCharacters * PosSize;
+        vao.SetBindingPointToBuffer(1, dataVBO.Id, offset, IndexSize);
         vao.SetBindingPointDivisor(1, 1);
 
         vao.EnableVertexAttributeArray(TextBlockShaderProgram.AttributePositions.CharacterId);
@@ -72,7 +74,8 @@ public class TextBlock : IRenderableModel {
             TextBlockShaderProgram.AttributePositions.CharacterId,
             1, VertexAttribIntegerType.UnsignedByte);
 
-        vao.SetBindingPointToBuffer(2, dataVBO.Id, displayedCharacters * (PosSize + IndexSize));
+        offset += displayedCharacters * IndexSize;
+        vao.SetBindingPointToBuffer(2, dataVBO.Id, offset);
 
         vao.EnableVertexAttributeArray(TextBlockShaderProgram.AttributePositions.Color);
         vao.BindAttributeToPoint(TextBlockShaderProgram.AttributePositions.Color, 2);
@@ -104,7 +107,7 @@ public class TextBlock : IRenderableModel {
 
         ReadOnlySpan<float> characterWidths = fontAtlas.CharacterWidths;
 
-        var positions = new Span<Vector2>(positionsPtr.ToPointer(), displayedCharacters);
+        var positions = new Span<System.Half>(positionsPtr.ToPointer(), displayedCharacters * 2);
         int positionInd = 0;
 
         for (int i = 0; i < chars.Length; ++i) {
@@ -120,8 +123,9 @@ public class TextBlock : IRenderableModel {
                     break;
 
                 default:
-                    positions[positionInd] = new Vector2(x, y);
-                    ++positionInd;
+                    positions[positionInd] = (System.Half)x;
+                    positions[positionInd + 1] = (System.Half)y;
+                    positionInd += 2;
 
                     x += characterWidths[i] * sizeMult;
                     break;
