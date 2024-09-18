@@ -7,10 +7,10 @@ layout(location = 3) in float sizeMult;
 
 layout(location = 0) uniform mat3 projMat;
 
-layout (std140, binding = 1) uniform FontData
+layout (std140) uniform FontData
 {
     float fontHeight;
-    float characterWidths[94];
+    vec4 characterSizes[47];
 };
 
 out vec2 fUv;
@@ -22,16 +22,19 @@ void main()
 
     int ind = gl_VertexID;
 
+    vec4 vec = characterSizes[charId / 2];
+    vec2 charSize = vec2(vec[2 * (charId & 1)], vec[2 * (charId & 1) + 1]);
+
     vec2 uv;
 
-    uv.x = step(2, ind) * characterWidths[ind];
-    uv.y = (charId + step(1, ind & 1)) * fontHeight;
+    uv.x = step(2, ind) * charSize.x;
+    uv.y = charId * fontHeight + step(1, ind & 1) * charSize.y;
     
     fUv = uv;
 
     vec3 pos;
-    pos.x = vPos.x + characterWidths[ind] * sizeMult * step(2, ind);
-    pos.y = vPos.y + fontHeight * sizeMult * step(1, ind & 1);
+    pos.x = vPos.x + charSize.x * sizeMult * step(2, ind);
+    pos.y = vPos.y + charSize.y * sizeMult * float(ind & 1);
     // Necessary for matrix multiplication
     pos.z = 1.0;
 

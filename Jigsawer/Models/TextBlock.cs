@@ -25,8 +25,9 @@ public class TextBlock : IRenderableModel {
         SizeMultSize = sizeof(float);
 
     public TextBlock(ReadOnlySpan<char> text, Vector2 position, Color color,
-        float padding, float size,
-        FontAtlas fontAtlas, ref Matrix3 projMat) {
+        float padding, float size, ref Matrix3 projMat) {
+        var fontAtlas = FontAtlas.GetFontAtlas((int)size);
+
         fontTexture = fontAtlas.Texture;
 
         displayedCharacters = CalculateDisplayedCharacterCount(text);
@@ -103,9 +104,10 @@ public class TextBlock : IRenderableModel {
         basePos += new Vector2(padding);
 
         float x = basePos.X;
-        float y = basePos.Y;
+        float y = basePos.Y + fontAtlas.MaxAscender;
 
-        ReadOnlySpan<float> characterWidths = fontAtlas.CharacterWidths;
+        var characterSizes = fontAtlas.CharacterSizes;
+        var characterMetrics = fontAtlas.CharacterMetrics;
 
         var positions = new Span<System.Half>(positionsPtr.ToPointer(), displayedCharacters * 2);
         int positionInd = 0;
@@ -114,20 +116,23 @@ public class TextBlock : IRenderableModel {
             char c = chars[i];
             switch (c) {
                 case ' ':
-                    x += fontAtlas.SpaceWidth * sizeMult;
+                    x += fontAtlas.SpaceAdvance * sizeMult;
                     break;
 
                 case '\n':
                     x = basePos.X;
+                    
                     y += fontAtlas.CharacterHeight * sizeMult;
                     break;
 
                 default:
-                    positions[positionInd] = (System.Half)x;
-                    positions[positionInd + 1] = (System.Half)y;
+                    var metrics = characterMetrics[c - FontAtlas.MinChar];
+
+                    positions[positionInd] = (System.Half)(x + metrics.bearingX * sizeMult);
+                    positions[positionInd + 1] = (System.Half)(y - metrics.bearingY * sizeMult);
                     positionInd += 2;
 
-                    x += characterWidths[i] * sizeMult;
+                    x += metrics.advance * sizeMult;
                     break;
             }
         }

@@ -1,116 +1,103 @@
 ﻿
 using Jigsawer.GLObjects;
+using Jigsawer.Helpers;
 
 using OpenTK.Graphics.OpenGL4;
 
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Drawing.Text;
-using System.Runtime.InteropServices;
+using SharpFont;
 
 namespace Jigsawer.Text;
 
+public sealed record FontMetrix(float Height, float Ascender);
+
 public sealed partial class FontAtlas {
-    private const string FontFamilyName = "MS Gothic";
+    private const string FontName = "Ebrima";
     // 94 printable ASCII characters
-    public const int MinChar = '!', MaxChar = '~', TotalChars = MaxChar - MinChar + 1;
+    public const char MinChar = '!', MaxChar = '~';
+    public const int TotalChars = MaxChar - MinChar + 1;
 
-    private static readonly Graphics measureGraphics = Graphics.FromHdc(CreateCompatibleDC(0));
-    public static readonly FontAtlas Normal = new(FontFamilyName, 20);
+    private static readonly List<FontAtlas> atlases = GenerateFontAtlases();
 
-    static FontAtlas() {
-        measureGraphics.TextRenderingHint = TextRenderingHint.AntiAlias;
+    private static List<FontAtlas> GenerateFontAtlases() {
+        using var library = new Library();
+
+        string fontsFolder = Environment.GetFolderPath(Environment.SpecialFolder.Fonts);
+
+        using var face = new Face(library, Path.Combine(fontsFolder, FontName + ".ttf"));
+
+        var atlases = new List<FontAtlas>();
+
+        const int StartSize = 8, SizeStep = 8, EndSize = StartSize + SizeStep * 3;
+
+        int originalAlignment = PixelParameters.UnpackAlignment;
+        PixelParameters.UnpackAlignment = 1;
+
+        for (int size = StartSize; size <= EndSize; size += SizeStep) {
+            atlases.Add(new FontAtlas(face, size));
+        }
+
+        PixelParameters.UnpackAlignment = originalAlignment;
+
+        return atlases;
     }
+
+    public static FontAtlas GetFontAtlas(int emSize) =>
+        atlases.MinBy(atlas => int.Abs(atlas.EmSize - emSize))!;
 
     public Texture Texture { get; private set; }
     public int CharacterHeight { get; private set; }
-    public float SpaceWidth { get; private set; }
-    public float EmSize { get; private set; }
-    public ReadOnlySpan<float> CharacterWidths => characterWidths;
-    private readonly float[] characterWidths = new float[TotalChars];
+    public float SpaceAdvance { get; private set; }
+    public float MaxAscender { get; private set; }
+    public int EmSize { get; private set; }
+    public ReadOnlySpan<(float width, float height)> CharacterSizes => characterSizes;
+    public ReadOnlySpan<(int bearingX, int bearingY, float advance)> CharacterMetrics => characterMetrics;
 
-    private FontAtlas(string fontFamily, int emSize) {
+    private readonly (float width, float height)[] characterSizes =
+        new (float, float)[TotalChars];
+    private readonly (int bearingX, int bearingY, float advance)[] characterMetrics =
+        new (int, int, float)[TotalChars];
+
+    private FontAtlas(Face face, int emSize) {
+        face.SetPixelSizes(0, (uint)emSize);
+
         EmSize = emSize;
-        using var font = new Font(fontFamily, emSize);
 
-        CharacterHeight = font.Height;
+        CharacterHeight = (int)face.Size.Metrics.Height;
+        MaxAscender = (float)face.Size.Metrics.Ascender;
 
-        CalculateCharacterWidths(font, out float maxCharacterWidth);
-
-        int bitmapWidth = (int)MathF.Ceiling(maxCharacterWidth);
-        int bitmapHeight = TotalChars * font.Height;
-
-        using var bitmap = new Bitmap(bitmapWidth, bitmapHeight,
-            System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-
-        using var g = Graphics.FromImage(bitmap);
-
-        g.TextRenderingHint = TextRenderingHint.AntiAlias;
-
-        g.FillRectangle(Brushes.White, 0, 0, bitmapWidth, bitmapHeight);
-
-        Span<char> charSpan = stackalloc char[1];
-
-        for (int i = MinChar; i <= MaxChar; ++i) {
-            charSpan[0] = (char)i;
-
-            int y = (i - MinChar) * font.Height;
-
-            g.DrawString(charSpan, font, Brushes.Black, 0f, y, StringFormat.GenericTypographic);
-
-            float characterWidth = measureGraphics.MeasureString(charSpan,
-                font, int.MaxValue, StringFormat.GenericTypographic).Width;
-        }
-
-        GenerateTexture(bitmap);
+        GenerateTextureAndCalculateMetrics(face);
     }
 
-    public override int GetHashCode() {
-        return EmSize.GetHashCode();
-    }
-
-    private void GenerateTexture(Bitmap bitmap) {
+    private void GenerateTextureAndCalculateMetrics(Face face) {
         Texture = new Texture();
         Texture.SetMinFilter(TextureMinFilter.Linear);
         Texture.SetMagFilter(TextureMagFilter.Linear);
 
-        BitmapData bitmapData = bitmap.LockBits(new Rectangle(Point.Empty, bitmap.Size),
-            ImageLockMode.ReadOnly,
-            System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+        GL.TextureStorage2D(Texture.Id, 1, SizedInternalFormat.R8,
+            face.Size.Metrics.NominalWidth, CharacterHeight * TotalChars);
 
-        GL.TextureStorage2D(Texture.Id, 1, SizedInternalFormat.R8, bitmap.Width, bitmap.Height);
-        GL.TextureSubImage2D(Texture.Id, 0, 0, 0, bitmap.Width, bitmap.Height,
-            OpenTK.Graphics.OpenGL4.PixelFormat.Bgr, PixelType.UnsignedByte, bitmapData.Scan0);
+        Span<(float width, float height)> sizesSpan = characterSizes;
+        Span<(int bearingX, int bearingY, float advance)> metricsSpan = characterMetrics;
 
-        bitmap.UnlockBits(bitmapData);
-    }
+        for (char c = MinChar; c <= MaxChar; ++c) {
+            face.LoadChar(c, LoadFlags.Render, LoadTarget.Normal);
 
-    private void CalculateCharacterWidths(Font font, out float maxCharacterWidth) {
-        SpaceWidth = measureGraphics.MeasureString([' ', 'a'], font,
-            int.MaxValue, StringFormat.GenericTypographic).Width -
-                    measureGraphics.MeasureString(['a'], font,
-            int.MaxValue, StringFormat.GenericTypographic).Width;
+            int ind = c - MinChar;
 
-        float maxWidth = 0f;
+            var glyph = face.Glyph;
 
-        Span<char> charSpan = stackalloc char[1];
+            sizesSpan[ind] = ((float)glyph.Metrics.Width, (float)glyph.Metrics.Height);
+            metricsSpan[ind] = (glyph.BitmapLeft, glyph.BitmapTop, (float)glyph.Advance.X);
 
-        Span<float> charWidths = characterWidths;
+            int y = CharacterHeight * ind;
+            int width = glyph.Bitmap.Width;
+            int height = glyph.Bitmap.Rows;
 
-        for (int i = MinChar; i <= MaxChar; ++i) {
-            charSpan[0] = (char)i;
-
-            float width = measureGraphics.MeasureString(charSpan,
-                font, int.MaxValue, StringFormat.GenericTypographic).Width;
-            charWidths[i - MinChar] = width;
-
-            maxWidth = MathF.Max(maxWidth, width);
+            GL.TextureSubImage2D(Texture.Id, 0, 0, y, width, height,
+                PixelFormat.Red, PixelType.UnsignedByte, glyph.Bitmap.Buffer);
         }
 
-        maxCharacterWidth = maxWidth;
+        face.LoadChar(' ', LoadFlags.Default, LoadTarget.Normal);
+        SpaceAdvance = (float)face.Glyph.Metrics.HorizontalAdvance;
     }
-
-    [LibraryImport("gdi32.dll", EntryPoint = "CreateCompatibleDC")]
-    [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
-    private static partial IntPtr CreateCompatibleDC(IntPtr hdc);
 }

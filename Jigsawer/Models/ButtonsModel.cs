@@ -16,7 +16,6 @@ public record struct ButtonInfo(Box2 Box,
     System.Drawing.Color TextColor,
     float Padding,
     float TextSize,
-    FontAtlas FontAtlas,
     string Text,
     Action OnClick);
 
@@ -57,7 +56,7 @@ public sealed class ButtonsModel : IRenderableModel {
             var button = buttons[i];
             textBlocks[i] = new TextBlock(button.Text, button.Box.Min,
                 button.TextColor, button.Padding, 
-                button.TextSize, button.FontAtlas, ref projMat);
+                button.TextSize, ref projMat);
         }
     }
 

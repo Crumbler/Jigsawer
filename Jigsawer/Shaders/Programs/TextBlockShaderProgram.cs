@@ -32,8 +32,7 @@ public sealed class TextBlockShaderProgram : ShaderProgram {
         ref var fontInfo = ref ubo.Map();
 
         fontInfo.fontHeight = fontAtlas.CharacterHeight;
-
-        fontAtlas.CharacterWidths.CopyTo(fontInfo.CharacterWidths);
+        fontAtlas.CharacterSizes.CopyTo(fontInfo.CharacterSizes);
 
         ubo.Unmap();
     }
