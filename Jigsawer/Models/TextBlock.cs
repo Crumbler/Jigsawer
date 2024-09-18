@@ -106,7 +106,6 @@ public class TextBlock : IRenderableModel {
         float x = basePos.X;
         float y = basePos.Y + fontAtlas.MaxAscender;
 
-        var characterSizes = fontAtlas.CharacterSizes;
         var characterMetrics = fontAtlas.CharacterMetrics;
 
         var positions = new Span<System.Half>(positionsPtr.ToPointer(), displayedCharacters * 2);
@@ -126,13 +125,13 @@ public class TextBlock : IRenderableModel {
                     break;
 
                 default:
-                    var metrics = characterMetrics[c - FontAtlas.MinChar];
+                    var (bearingX, bearingY, advance) = characterMetrics[c - FontAtlas.MinChar];
 
-                    positions[positionInd] = (System.Half)(x + metrics.bearingX * sizeMult);
-                    positions[positionInd + 1] = (System.Half)(y - metrics.bearingY * sizeMult);
+                    positions[positionInd] = (System.Half)(x + bearingX * sizeMult);
+                    positions[positionInd + 1] = (System.Half)(y - bearingY * sizeMult);
                     positionInd += 2;
 
-                    x += metrics.advance * sizeMult;
+                    x += advance * sizeMult;
                     break;
             }
         }

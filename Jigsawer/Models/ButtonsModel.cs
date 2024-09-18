@@ -3,7 +3,6 @@ using Jigsawer.GLBuffers;
 using Jigsawer.GLObjects;
 using Jigsawer.Helpers;
 using Jigsawer.Shaders.Programs;
-using Jigsawer.Text;
 
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;

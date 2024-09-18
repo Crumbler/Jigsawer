@@ -73,7 +73,7 @@ public sealed partial class FontAtlas {
         Texture.SetMinFilter(TextureMinFilter.Linear);
         Texture.SetMagFilter(TextureMagFilter.Linear);
 
-        GL.TextureStorage2D(Texture.Id, 1, SizedInternalFormat.R8,
+        Texture.SetStorage2D(1, SizedInternalFormat.R8,
             face.Size.Metrics.NominalWidth, CharacterHeight * TotalChars);
 
         Span<(float width, float height)> sizesSpan = characterSizes;
@@ -93,7 +93,7 @@ public sealed partial class FontAtlas {
             int width = glyph.Bitmap.Width;
             int height = glyph.Bitmap.Rows;
 
-            GL.TextureSubImage2D(Texture.Id, 0, 0, y, width, height,
+            Texture.SetSubImage2D(0, 0, y, width, height,
                 PixelFormat.Red, PixelType.UnsignedByte, glyph.Bitmap.Buffer);
         }
 

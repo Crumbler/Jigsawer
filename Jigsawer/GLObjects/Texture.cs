@@ -18,7 +18,8 @@ public struct Texture {
     public Texture(string resourceName) {
         Initialize();
 
-        using var imageStream = EmbeddedResourceLoader.GetResourceStream(Images.Image.GetPath(resourceName));
+        using var imageStream =
+            EmbeddedResourceLoader.GetResourceStream(Images.Image.GetPath(resourceName));
 
         using var bitmap = new Bitmap(imageStream);
 
@@ -26,11 +27,22 @@ public struct Texture {
             ImageLockMode.ReadOnly,
             System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
-        GL.TextureStorage2D(Id, 1, SizedInternalFormat.Rgb8, bitmap.Width, bitmap.Height);
-        GL.TextureSubImage2D(Id, 0, 0, 0, bitmap.Width, bitmap.Height,
+        SetStorage2D(1, SizedInternalFormat.Rgb8, bitmap.Width, bitmap.Height);
+        SetSubImage2D(0, 0, 0, bitmap.Width, bitmap.Height,
             OpenTK.Graphics.OpenGL4.PixelFormat.Bgr, PixelType.UnsignedByte, bitmapData.Scan0);
 
         bitmap.UnlockBits(bitmapData);
+    }
+
+    public void SetStorage2D(int levels, SizedInternalFormat internalFormat,
+        int width, int height) {
+        GL.TextureStorage2D(Id, levels, internalFormat, width, height);
+    }
+
+    public void SetSubImage2D(int level, int x, int y, int width, int height,
+        OpenTK.Graphics.OpenGL4.PixelFormat pixelFormat, PixelType type, nint data) {
+        GL.TextureSubImage2D(Id, level, x, y, width, height,
+            pixelFormat, type, data);
     }
 
     private void Initialize() {
