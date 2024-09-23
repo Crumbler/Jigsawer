@@ -21,14 +21,18 @@ public sealed class MainMenuScene : Scene {
         };
 
         backgroundPuzzles = new MainMenuPuzzlesModel(FramebufferSize, sharedInfo.BindingPoint);
-        const string buttonText = "Some text";
 
-        ButtonInfo button = new(new Box2(200, 400, 400, 500),
+        ButtonInfo buttonSingleplayer = new(new Box2(200, 200, 500, 280),
             Color.Gray.WithAlpha(0.8f), Color.Black.WithAlpha(0.8f),
-            Color.White, 10, 40f,
-            buttonText, static () => Console.WriteLine("Click"));
+            Color.White, 20, 50f,
+            "Singleplayer", OnSingleplayer);
 
-        buttons = new ButtonsModel(sharedInfo.BindingPoint, button);
+        ButtonInfo buttonExit = new(new Box2(200, 350, 500, 430),
+            Color.Gray.WithAlpha(0.8f), Color.Black.WithAlpha(0.8f),
+            Color.White, 20, 50f,
+            "Exit", OnExit);
+
+        buttons = new ButtonsModel(sharedInfo.BindingPoint, buttonSingleplayer, buttonExit);
     }
 
     protected override void Close() {
@@ -52,10 +56,18 @@ public sealed class MainMenuScene : Scene {
         }
     }
 
+    private void OnSingleplayer() {
+        TransferToScene(SceneType.SingleplayerStart);
+    }
+
+    private void OnExit() {
+        ExitAction.Invoke();
+    }
+
     public override void Render() {
         backgroundImage.Render();
 
-        //backgroundPuzzles.Render();
+        backgroundPuzzles.Render();
 
         buttons.Render();
     }

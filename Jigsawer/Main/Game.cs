@@ -99,16 +99,21 @@ public sealed class Game : GameWindow {
 
     private void SwitchToScene(SceneType sceneType) {
         Scene newScene;
-
+        
         switch (sceneType) {
             case SceneType.MainMenu:
                 newScene = new MainMenuScene();
+                break;
+
+            case SceneType.SingleplayerStart:
+                newScene = new SingeplayerStartScene();
                 break;
             default:
                 throw new ArgumentException($"Scene type {sceneType} not found.", nameof(sceneType));
         }
 
-        newScene.OnTransfer = SwitchToScene;
+        newScene.SceneTransferAction = SwitchToScene;
+        newScene.ExitAction = Close;
 
         currentScene = newScene;
     }

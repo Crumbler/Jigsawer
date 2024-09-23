@@ -1,4 +1,5 @@
 ﻿
+using Jigsawer.Debug;
 using Jigsawer.GLBuffers;
 using Jigsawer.GLBuffers.Interfaces;
 using Jigsawer.GLObjects;
@@ -30,7 +31,8 @@ public abstract class Scene {
     protected int TotalMilliseconds { get; private set; }
     protected Vector2i FramebufferSize { get; private set; }
     protected Vector2 CursorPos { get; private set; }
-    public Action<SceneType>? OnTransfer { get; set; }
+    public Action<SceneType> SceneTransferAction { get; set; }
+    public Action ExitAction { get; set; }
 
     private void CalculateProjectionMatrix(Vector2i size) {
         var mat = Matrix3.CreateScale(size.X / 2f, -size.Y / 2f, 0f);
@@ -42,7 +44,10 @@ public abstract class Scene {
         projMat = mat.Inverted();
     }
 
-    protected void TransferToScene(SceneType sceneType) => OnTransfer?.Invoke(sceneType);
+    protected void TransferToScene(SceneType sceneType) {
+        Logger.LogDebug("Transfering to scene " + sceneType);
+        SceneTransferAction.Invoke(sceneType);
+    }
 
     /// <summary>
     /// WHen overriding make sure to call the base method.
