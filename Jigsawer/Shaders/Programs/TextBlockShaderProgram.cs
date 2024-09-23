@@ -4,7 +4,6 @@ using Jigsawer.GLBuffers.Interfaces;
 using Jigsawer.Text;
 
 using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
 
 namespace Jigsawer.Shaders.Programs;
 

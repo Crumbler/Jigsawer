@@ -45,12 +45,12 @@ public abstract class Scene {
     }
 
     protected void TransferToScene(SceneType sceneType) {
-        Logger.LogDebug("Transfering to scene " + sceneType);
+        Logger.LogDebug("Transferring to scene " + sceneType);
         SceneTransferAction.Invoke(sceneType);
     }
 
     /// <summary>
-    /// WHen overriding make sure to call the base method.
+    /// When overriding make sure to call the base method.
     /// </summary>
     protected virtual void Close() {
         ShaderProgram.StopUsing();

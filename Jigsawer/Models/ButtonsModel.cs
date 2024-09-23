@@ -72,8 +72,8 @@ public sealed class ButtonsModel : IRenderableModel {
 
     private record struct BoxAndColors(Box2 Box, int Color, int HoverColor);
 
-    private static unsafe void FillButtonBoxesAndColors(IntPtr ptr, ReadOnlySpan<ButtonInfo> buttons) {
-        var span = new Span<BoxAndColors>(ptr.ToPointer(), buttons.Length);
+    private static void FillButtonBoxesAndColors(IntPtr ptr, ReadOnlySpan<ButtonInfo> buttons) {
+        var span = ptr.ToSpan<BoxAndColors>(buttons.Length);
 
         for (int i = 0; i < span.Length; ++i) {
             var button = buttons[i];
@@ -81,8 +81,8 @@ public sealed class ButtonsModel : IRenderableModel {
         }
     }
 
-    private static unsafe void FillButtonHoverFactors(IntPtr ptr, int buttonCount) {
-        var span = new Span<float>(ptr.ToPointer(), buttonCount);
+    private static void FillButtonHoverFactors(IntPtr ptr, int buttonCount) {
+        var span = ptr.ToSpan<float>(buttonCount);
         span.Clear();
     }
 
@@ -146,13 +146,13 @@ public sealed class ButtonsModel : IRenderableModel {
         StoreHoverFactors();
     }
 
-    private unsafe void StoreHoverFactors() {
+    private void StoreHoverFactors() {
         ReadOnlySpan<float> hoverFactors = this.hoverFactors;
 
         IntPtr ptr = dataVBO.MapRange(buttons.Length * BytesForBoxAndColors,
             buttons.Length * BytesForHoverFactor, true);
 
-        var span = new Span<float>(ptr.ToPointer(), hoverFactors.Length);
+        var span = ptr.ToSpan<float>(hoverFactors.Length);
 
         hoverFactors.CopyTo(span);
 

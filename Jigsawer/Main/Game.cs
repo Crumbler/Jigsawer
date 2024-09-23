@@ -106,7 +106,7 @@ public sealed class Game : GameWindow {
                 break;
 
             case SceneType.SingleplayerStart:
-                newScene = new SingeplayerStartScene();
+                newScene = new SingleplayerStartScene();
                 break;
             default:
                 throw new ArgumentException($"Scene type {sceneType} not found.", nameof(sceneType));

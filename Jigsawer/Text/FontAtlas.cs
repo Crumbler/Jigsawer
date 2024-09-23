@@ -8,9 +8,7 @@ using SharpFont;
 
 namespace Jigsawer.Text;
 
-public sealed record FontMetrix(float Height, float Ascender);
-
-public sealed partial class FontAtlas {
+public sealed class FontAtlas {
     private const string FontName = "Ebrima";
     // 94 printable ASCII characters
     public const char MinChar = '!', MaxChar = '~';
@@ -70,6 +68,10 @@ public sealed partial class FontAtlas {
 
     public override int GetHashCode() {
         return EmSize.GetHashCode();
+    }
+
+    public override bool Equals(object? obj) {
+        return obj is FontAtlas f && f.EmSize == EmSize;
     }
 
     private void GenerateTextureAndCalculateMetrics(Face face) {

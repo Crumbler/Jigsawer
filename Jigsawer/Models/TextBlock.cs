@@ -96,7 +96,7 @@ public class TextBlock : IRenderableModel {
         return chars.Length - chars.Count(' ') - chars.Count('\n');
     }
 
-    private static unsafe void CalculateAndStoreCharacterPositions(ReadOnlySpan<char> chars,
+    private static void CalculateAndStoreCharacterPositions(ReadOnlySpan<char> chars,
         Vector2 basePos, float sizeMult, FontAtlas fontAtlas, IntPtr positionsPtr,
         float padding,
         int displayedCharacters) {
@@ -107,7 +107,7 @@ public class TextBlock : IRenderableModel {
 
         var characterMetrics = fontAtlas.CharacterMetrics;
 
-        var positions = new Span<Vector2h>(positionsPtr.ToPointer(), displayedCharacters);
+        var positions = positionsPtr.ToSpan<Vector2h>(displayedCharacters);
         int positionInd = 0;
 
         for (int i = 0; i < chars.Length; ++i) {
@@ -137,9 +137,10 @@ public class TextBlock : IRenderableModel {
         }
     }
 
-    private static unsafe void StoreCharacterIndices(ReadOnlySpan<char> chars,
+    private static void StoreCharacterIndices(ReadOnlySpan<char> chars,
         IntPtr indicesPtr, int displayedCharacters) {
-        var indices = new Span<int>(indicesPtr.ToPointer(), displayedCharacters);
+        var indices = indicesPtr.ToSpan<int>(displayedCharacters);
+
         int indexInd = 0;
 
         for (int i = 0; i < chars.Length; ++i) {
@@ -158,12 +159,12 @@ public class TextBlock : IRenderableModel {
         }
     }
 
-    private static unsafe void StoreColor(Color color, IntPtr colorPtr) {
+    private static void StoreColor(Color color, IntPtr colorPtr) {
         ref var endCol = ref colorPtr.ToReference<int>();
         endCol = color.ToInt();
     }
 
-    private static unsafe void StoreSizeMult(float sizeMult, IntPtr sizePtr) {
+    private static void StoreSizeMult(float sizeMult, IntPtr sizePtr) {
         ref var mult = ref sizePtr.ToReference<float>();
         mult = sizeMult;
     }
