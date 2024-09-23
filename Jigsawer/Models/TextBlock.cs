@@ -9,8 +9,6 @@ using Jigsawer.Text;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
-using System.Drawing;
-
 namespace Jigsawer.Models;
 
 public class TextBlock : IRenderableModel {
@@ -24,7 +22,7 @@ public class TextBlock : IRenderableModel {
         ColorSize = sizeof(byte) * 4,
         SizeMultSize = sizeof(float);
 
-    public TextBlock(ReadOnlySpan<char> text, Vector2 position, Color color,
+    public TextBlock(ReadOnlySpan<char> text, Vector2 position, Color4 color,
         float padding, float size, int sharedInfoUboBindingPoint) {
         var fontAtlas = FontAtlas.GetFontAtlas((int)size);
 
@@ -159,7 +157,7 @@ public class TextBlock : IRenderableModel {
         }
     }
 
-    private static void StoreColor(Color color, IntPtr colorPtr) {
+    private static void StoreColor(Color4 color, IntPtr colorPtr) {
         ref var endCol = ref colorPtr.ToReference<int>();
         endCol = color.ToInt();
     }

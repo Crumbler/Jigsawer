@@ -6,8 +6,6 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
-using System.Drawing;
-
 namespace Jigsawer.Scenes;
 
 public sealed class MainMenuScene : Scene {
@@ -23,13 +21,13 @@ public sealed class MainMenuScene : Scene {
         backgroundPuzzles = new MainMenuPuzzlesModel(FramebufferSize, sharedInfo.BindingPoint);
 
         ButtonInfo buttonSingleplayer = new(new Box2(200, 200, 500, 280),
-            Color.Gray.WithAlpha(0.8f), Color.Black.WithAlpha(0.8f),
-            Color.White, 20, 50f,
+            Color4.Gray.WithAlpha(0.8f), Color4.Black.WithAlpha(0.8f),
+            Color4.White, 20, 50f,
             "Singleplayer", OnSingleplayer);
 
         ButtonInfo buttonExit = new(new Box2(200, 350, 500, 430),
-            Color.Gray.WithAlpha(0.8f), Color.Black.WithAlpha(0.8f),
-            Color.White, 20, 50f,
+            Color4.Gray.WithAlpha(0.8f), Color4.Black.WithAlpha(0.8f),
+            Color4.White, 20, 50f,
             "Exit", OnExit);
 
         buttons = new ButtonsModel(sharedInfo.BindingPoint, buttonSingleplayer, buttonExit);

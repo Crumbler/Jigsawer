@@ -10,9 +10,9 @@ using OpenTK.Mathematics;
 namespace Jigsawer.Models;
 
 public record struct ButtonInfo(Box2 Box,
-    System.Drawing.Color Color,
-    System.Drawing.Color HoverColor,
-    System.Drawing.Color TextColor,
+    Color4 Color,
+    Color4 HoverColor,
+    Color4 TextColor,
     float Padding,
     float TextSize,
     string Text,
