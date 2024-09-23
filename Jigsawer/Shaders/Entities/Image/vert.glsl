@@ -2,7 +2,11 @@
 
 layout(location = 0) in vec4 box;
 
-layout(location = 0) uniform mat3 projMat;
+layout (std140) uniform SharedInfo
+{
+    int time;
+    mat3 projMat;
+};
 
 out vec2 uv;
 

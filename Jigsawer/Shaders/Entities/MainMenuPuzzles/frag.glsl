@@ -6,8 +6,13 @@ flat in int pieceId;
 
 out vec4 outColor;
 
-layout(location = 0) uniform int time;
-layout(location = 1) uniform vec2 drawSize;
+layout (std140) uniform SharedInfo
+{
+    int time;
+    mat3 projMat;
+};
+
+layout(location = 0) uniform vec2 drawSize;
 
 // innerSide - side of square which fits the puzzle piece
 // without outcroppings

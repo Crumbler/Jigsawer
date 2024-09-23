@@ -31,14 +31,13 @@ public sealed class ButtonsModel : IRenderableModel {
     private readonly TextBlock[] textBlocks;
     private readonly float[] hoverFactors;
 
-    public ButtonsModel(ref Matrix3 projMat, params ButtonInfo[] buttons) {
+    public ButtonsModel(int sharedInfoUboBindgPoint, params ButtonInfo[] buttons) {
         this.buttons = buttons;
         hoverFactors = new float[buttons.Length];
         textBlocks = new TextBlock[buttons.Length];
-        FillTextBlocks(ref projMat);
+        FillTextBlocks(sharedInfoUboBindgPoint);
 
-        shader = new ButtonsShaderProgram();
-        shader.SetProjectionMatrix(ref projMat);
+        shader = new ButtonsShaderProgram(sharedInfoUboBindgPoint);
 
         dataVBO = new VBO(buttons.Length * BytesPerButton);
         FillVBO();
@@ -47,7 +46,7 @@ public sealed class ButtonsModel : IRenderableModel {
         SetupVAO();
     }
 
-    private void FillTextBlocks(ref Matrix3 projMat) {
+    private void FillTextBlocks(int sharedInfoUboBindgPoint) {
         ReadOnlySpan<ButtonInfo> buttons = this.buttons;
         Span<TextBlock> textBlocks = this.textBlocks;
 
@@ -55,7 +54,7 @@ public sealed class ButtonsModel : IRenderableModel {
             var button = buttons[i];
             textBlocks[i] = new TextBlock(button.Text, button.Box.Min,
                 button.TextColor, button.Padding, 
-                button.TextSize, ref projMat);
+                button.TextSize, sharedInfoUboBindgPoint);
         }
     }
 
@@ -158,14 +157,6 @@ public sealed class ButtonsModel : IRenderableModel {
         hoverFactors.CopyTo(span);
 
         dataVBO.Unmap();
-    }
-
-    public void UpdateProjectionMatrix(ref Matrix3 mat) {
-        shader.SetProjectionMatrix(ref mat);
-        Span<TextBlock> textBlocks = this.textBlocks;
-        foreach (var textBlock in textBlocks) {
-            textBlock.UpdateProjectionMatrix(ref mat);
-        }
     }
 
     public void Render() {

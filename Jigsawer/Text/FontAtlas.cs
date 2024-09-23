@@ -68,6 +68,10 @@ public sealed partial class FontAtlas {
         GenerateTextureAndCalculateMetrics(face);
     }
 
+    public override int GetHashCode() {
+        return EmSize.GetHashCode();
+    }
+
     private void GenerateTextureAndCalculateMetrics(Face face) {
         Texture = new Texture();
         Texture.SetMinFilter(TextureMinFilter.Linear);

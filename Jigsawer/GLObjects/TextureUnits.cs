@@ -17,11 +17,11 @@ public static class TextureUnits {
     }
 
     public static int GrabOne() {
-        var (index, element) = unitUseCounts.GetMinElement();
+        var (index, _) = unitUseCounts.GetMinElement();
 
         ++unitUseCounts[index];
 
-        return element;
+        return index;
     }
 
     public static void ReturnOne(int unit) {

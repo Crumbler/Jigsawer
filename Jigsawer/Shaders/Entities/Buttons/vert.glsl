@@ -5,7 +5,11 @@ layout(location = 1) in vec4 color;
 layout(location = 2) in vec4 hoverColor;
 layout(location = 3) in float hoverFactor;
 
-layout(location = 0) uniform mat3 projMat;
+layout (std140) uniform SharedInfo
+{
+    int time;
+    mat3 projMat;
+};
 
 out flat vec4 fColor;
 

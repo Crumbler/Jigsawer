@@ -1,8 +1,8 @@
 #version 430
 
-layout(location = 1) uniform float scaleFactor;
+layout(location = 0) uniform float scaleFactor;
 
-layout(location = 2) uniform sampler2D texture0;
+layout(location = 1) uniform sampler2D texture0;
 
 in vec2 uv;
 

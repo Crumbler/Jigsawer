@@ -1,20 +1,17 @@
 ﻿
 using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
 
 namespace Jigsawer.Shaders.Programs;
 
 public class ButtonsShaderProgram : ShaderProgram {
     private const string EntityName = "Buttons";
 
-    public ButtonsShaderProgram() {
+    public ButtonsShaderProgram(int sharedInfoUboBindingPoint) {
         Initialize(
             ShaderInfo.Get(EntityName, ShaderType.VertexShader),
             ShaderInfo.Get(EntityName, ShaderType.FragmentShader));
-    }
 
-    public void SetProjectionMatrix(ref Matrix3 mat) {
-        SetMatrix(UniformLocations.ProjectionMatrix, ref mat);
+        ConnectUniformBlockToBuffer(UniformBlockNames.SharedInfo, sharedInfoUboBindingPoint);
     }
 
     public static class AttributePositions {
@@ -24,7 +21,7 @@ public class ButtonsShaderProgram : ShaderProgram {
             HoverFactor = 3;
     }
 
-    private static class UniformLocations {
-        public const int ProjectionMatrix = 0;
+    private static class UniformBlockNames {
+        public const string SharedInfo = "SharedInfo";
     }
 }

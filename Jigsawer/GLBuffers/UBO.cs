@@ -39,6 +39,13 @@ public struct UBO<T> where T : unmanaged {
         return ref Unsafe.AsRef<T>((void*)handle);
     }
 
+    public unsafe ref T MapRange(int offset, int length) {
+        IntPtr handle = GL.MapNamedBufferRange(id, offset, length,
+            BufferAccessMask.MapWriteBit | BufferAccessMask.MapInvalidateRangeBit);
+
+        return ref Unsafe.AsRef<T>((void*)(handle - offset));
+    }
+
     public void Unmap() {
         GL.UnmapNamedBuffer(id);
     }

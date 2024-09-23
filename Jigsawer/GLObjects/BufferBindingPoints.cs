@@ -19,11 +19,11 @@ public static class BufferBindingPoints {
     }
 
     public static int GrabUBOPoint() {
-        var (index, element) = uboUseCounts.GetMinElement();
+        var (index, _) = uboUseCounts.GetMinElement();
 
         ++uboUseCounts[index];
 
-        return element;
+        return index;
     }
 
     public static void ReturnUBOPoint(int point) {

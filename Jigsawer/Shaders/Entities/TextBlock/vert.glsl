@@ -5,9 +5,13 @@ layout(location = 1) in uint charId;
 layout(location = 2) in vec4 vColor;
 layout(location = 3) in float sizeMult;
 
-layout(location = 0) uniform mat3 projMat;
+layout (std140) uniform SharedInfo
+{
+    int time;
+    mat3 projMat;
+};
 
-layout (std140) uniform FontData
+layout (std140) uniform FontInfo
 {
     float fontHeight;
     vec4 characterSizes[47];

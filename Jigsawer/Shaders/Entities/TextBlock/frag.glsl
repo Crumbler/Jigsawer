@@ -1,6 +1,6 @@
 #version 430
 
-layout(location = 1) uniform sampler2D fontAtlasTexture;
+layout(location = 0) uniform sampler2D fontAtlasTexture;
 
 in vec2 fUv;
 flat in vec3 fColor;

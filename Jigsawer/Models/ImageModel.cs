@@ -28,7 +28,7 @@ public sealed class ImageModel : IRenderableModel {
         }
     }
 
-    public ImageModel(ref Matrix3 projMat, float scaleFactor) {
+    public ImageModel(int sharedInfoUboBindingPoint, float scaleFactor) {
         positionVBO = new VBO(InstanceDataSize);
         positionVBO.SetData(box);
 
@@ -47,14 +47,9 @@ public sealed class ImageModel : IRenderableModel {
         texture.SetWrapping(TextureParameterName.TextureWrapS, TextureWrapMode.Repeat);
         texture.SetWrapping(TextureParameterName.TextureWrapT, TextureWrapMode.Repeat);
 
-        shader = new ImageShaderProgram();
-        shader.SetProjectionMatrix(ref projMat);
+        shader = new ImageShaderProgram(sharedInfoUboBindingPoint);
         shader.SetScaleFactor(scaleFactor);
         shader.SetTextureUnit(texture.Unit);
-    }
-
-    public void UpdateProjectionMatrix(ref Matrix3 mat) {
-        shader.SetProjectionMatrix(ref mat);
     }
 
     public void Render() {

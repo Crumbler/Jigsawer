@@ -1,5 +1,6 @@
 ﻿
 using Jigsawer.GLBuffers;
+using Jigsawer.GLBuffers.Interfaces;
 using Jigsawer.GLObjects;
 using Jigsawer.Shaders.Programs;
 
@@ -11,10 +12,19 @@ namespace Jigsawer.Scenes;
 public abstract class Scene {
     private double secondsAccumulator;
     protected Matrix3 projMat;
+    protected UBO<SharedInfo> sharedInfo;
 
     protected Scene() {
         FramebufferSize = Viewport.Size;
         CalculateProjectionMatrix(FramebufferSize);
+
+        sharedInfo = new UBO<SharedInfo>();
+        sharedInfo.Bind();
+
+        ref var info = ref sharedInfo.Map();
+        info.time = TotalMilliseconds;
+        info.SetProjectionMatrix(in projMat);
+        sharedInfo.Unmap();
     }
 
     protected int TotalMilliseconds { get; private set; }
@@ -53,6 +63,9 @@ public abstract class Scene {
         int passedMs = (int)millis;
 
         TotalMilliseconds += passedMs;
+        ref var info = ref sharedInfo.MapRange(SharedInfo.TimeOffset, SharedInfo.TimeSize);
+        info.time = TotalMilliseconds;
+        sharedInfo.Unmap();
 
         secondsAccumulator -= millis / 1000.0;
 
@@ -74,6 +87,13 @@ public abstract class Scene {
     public virtual void OnFramebufferResize(Vector2i newSize) {
         CalculateProjectionMatrix(newSize);
 
+        ref var info = ref sharedInfo.MapRange(SharedInfo.ProjectionMatrixOffset,
+            SharedInfo.ProjectionMatrixSize);
+
+        info.SetProjectionMatrix(in projMat);
+
+        sharedInfo.Unmap();
+        
         FramebufferSize = newSize;
     }
 }

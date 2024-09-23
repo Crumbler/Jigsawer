@@ -25,7 +25,7 @@ public class TextBlock : IRenderableModel {
         SizeMultSize = sizeof(float);
 
     public TextBlock(ReadOnlySpan<char> text, Vector2 position, Color color,
-        float padding, float size, ref Matrix3 projMat) {
+        float padding, float size, int sharedInfoUboBindingPoint) {
         var fontAtlas = FontAtlas.GetFontAtlas((int)size);
 
         fontTexture = fontAtlas.Texture;
@@ -88,8 +88,7 @@ public class TextBlock : IRenderableModel {
         vao.SetAttributeFormat(TextBlockShaderProgram.AttributePositions.SizeMult,
             1, VertexAttribType.Float, offset: ColorSize);
 
-        shader = TextBlockShaderProgram.GetInstance(fontAtlas);
-        shader.SetProjectionMatrix(ref projMat);
+        shader = TextBlockShaderProgram.GetInstance(fontAtlas, sharedInfoUboBindingPoint);
         shader.SetTextureUnit(fontTexture.Unit);
     }
 
@@ -108,7 +107,7 @@ public class TextBlock : IRenderableModel {
 
         var characterMetrics = fontAtlas.CharacterMetrics;
 
-        var positions = new Span<System.Half>(positionsPtr.ToPointer(), displayedCharacters * 2);
+        var positions = new Span<Vector2h>(positionsPtr.ToPointer(), displayedCharacters);
         int positionInd = 0;
 
         for (int i = 0; i < chars.Length; ++i) {
@@ -127,9 +126,10 @@ public class TextBlock : IRenderableModel {
                 default:
                     var (bearingX, bearingY, advance) = characterMetrics[c - FontAtlas.MinChar];
 
-                    positions[positionInd] = (System.Half)(x + bearingX * sizeMult);
-                    positions[positionInd + 1] = (System.Half)(y - bearingY * sizeMult);
-                    positionInd += 2;
+                    positions[positionInd] =
+                        new Vector2h(x + bearingX * sizeMult, y - bearingY * sizeMult);
+
+                    ++positionInd;
 
                     x += advance * sizeMult;
                     break;
@@ -166,10 +166,6 @@ public class TextBlock : IRenderableModel {
     private static unsafe void StoreSizeMult(float sizeMult, IntPtr sizePtr) {
         ref var mult = ref sizePtr.ToReference<float>();
         mult = sizeMult;
-    }
-
-    public void UpdateProjectionMatrix(ref Matrix3 mat) {
-        shader.SetProjectionMatrix(ref mat);
     }
 
     public void Render() {

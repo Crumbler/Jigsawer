@@ -1,21 +1,19 @@
 ﻿
 using OpenTK.Graphics.OpenGL4;
-using OpenTK.Mathematics;
 
 namespace Jigsawer.Shaders.Programs;
 
 public sealed class ImageShaderProgram : ShaderProgram {
     private const string EntityName = "Image";
 
-    public ImageShaderProgram() {
+    public ImageShaderProgram(int sharedInfoUboBindingPoint) {
         Initialize(
             ShaderInfo.Get(EntityName, ShaderType.VertexShader),
             ShaderInfo.Get(EntityName, ShaderType.FragmentShader));
+
+        ConnectUniformBlockToBuffer(UniformBlockNames.SharedInfo, sharedInfoUboBindingPoint);
     }
 
-    public void SetProjectionMatrix(ref Matrix3 mat) {
-        SetMatrix(UniformLocations.ProjectionMatrix, ref mat);
-    }
     public void SetScaleFactor(float x) {
         SetFloat(UniformLocations.ScaleFactor, x);
     }
@@ -28,8 +26,11 @@ public sealed class ImageShaderProgram : ShaderProgram {
     }
 
     private static class UniformLocations {
-        public const int ProjectionMatrix = 0;
-        public const int ScaleFactor = 1;
-        public const int Texture = 2;
+        public const int ScaleFactor = 0;
+        public const int Texture = 1;
+    }
+
+    private static class UniformBlockNames {
+        public const string SharedInfo = "SharedInfo";
     }
 }

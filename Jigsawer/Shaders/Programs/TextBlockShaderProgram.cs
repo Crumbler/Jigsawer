@@ -15,7 +15,7 @@ public sealed class TextBlockShaderProgram : ShaderProgram {
     private readonly FontAtlas fontAtlas;
     private int instanceCount = 1;
 
-    private TextBlockShaderProgram(FontAtlas fontAtlas) {
+    private TextBlockShaderProgram(FontAtlas fontAtlas, int sharedInfoUboBindingPoint) {
         Initialize(
             ShaderInfo.Get(EntityName, ShaderType.VertexShader),
             ShaderInfo.Get(EntityName, ShaderType.FragmentShader));
@@ -23,7 +23,8 @@ public sealed class TextBlockShaderProgram : ShaderProgram {
         this.fontAtlas = fontAtlas;
         fontInfoUbo = new UBO<FontInfo>();
 
-        ConnectUniformBlockToBuffer(UniformBlockNames.FontData, fontInfoUbo.BindingPoint);
+        ConnectUniformBlockToBuffer(UniformBlockNames.FontInfo, fontInfoUbo.BindingPoint);
+        ConnectUniformBlockToBuffer(UniformBlockNames.SharedInfo, sharedInfoUboBindingPoint);
 
         FillFontInfoUBO(fontInfoUbo, fontAtlas);
     }
@@ -37,10 +38,6 @@ public sealed class TextBlockShaderProgram : ShaderProgram {
         ubo.Unmap();
     }
 
-    public void SetProjectionMatrix(ref Matrix3 mat) {
-        SetMatrix(UniformLocations.ProjectionMatrix, ref mat);
-    }
-
     public void SetTextureUnit(int unit) {
         SetInt(UniformLocations.Texture, unit);
     }
@@ -51,13 +48,13 @@ public sealed class TextBlockShaderProgram : ShaderProgram {
         fontInfoUbo.Bind();
     }
 
-    public static TextBlockShaderProgram GetInstance(FontAtlas atlas) {
+    public static TextBlockShaderProgram GetInstance(FontAtlas atlas, int sharedInfoUboBindingPoint) {
         if (instances.TryGetValue(atlas, out var existingProgram)) {
             ++existingProgram.instanceCount;
             return existingProgram;
         }
 
-        var newProgram = new TextBlockShaderProgram(atlas);
+        var newProgram = new TextBlockShaderProgram(atlas, sharedInfoUboBindingPoint);
         instances.Add(atlas, newProgram);
         return newProgram;
     }
@@ -78,11 +75,10 @@ public sealed class TextBlockShaderProgram : ShaderProgram {
     }
 
     private static class UniformLocations {
-        public const int ProjectionMatrix = 0,
-            Texture = 1;
+        public const int Texture = 0;
     }
-
     private static class UniformBlockNames {
-        public const string FontData = "FontData";
+        public const string FontInfo = "FontInfo";
+        public const string SharedInfo = "SharedInfo";
     }
 }

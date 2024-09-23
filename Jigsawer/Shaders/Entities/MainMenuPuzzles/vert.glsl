@@ -1,7 +1,12 @@
 #version 430
 
-layout(location = 0) uniform int time;
-layout(location = 1) uniform vec2 drawSize;
+layout (std140) uniform SharedInfo
+{
+    int time;
+    mat3 projMat;
+};
+
+layout(location = 0) uniform vec2 drawSize;
 
 out vec2 uv;
 flat out int pieceId;
