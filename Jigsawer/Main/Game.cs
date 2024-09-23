@@ -1,4 +1,6 @@
-﻿using Jigsawer.Scenes;
+﻿using Jigsawer.Debug;
+using Jigsawer.GLObjects;
+using Jigsawer.Scenes;
 
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
@@ -47,6 +49,9 @@ public sealed class Game : GameWindow {
     private static void InitOpenGL() {
         GL.ClearColor(Color4.Black);
 
+        GL.Enable(EnableCap.Blend);
+        GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+
         DebugHelper.InitDebugLogging();
     }
 
@@ -67,6 +72,10 @@ public sealed class Game : GameWindow {
                 ToggleFullscreen();
                 break;
         }
+    }
+
+    protected override void OnMouseDown(MouseButtonEventArgs e) {
+        currentScene?.OnMouseDown(e);
     }
 
     private void ToggleFullscreen() {
@@ -90,22 +99,27 @@ public sealed class Game : GameWindow {
 
     private void SwitchToScene(SceneType sceneType) {
         Scene newScene;
-
+        
         switch (sceneType) {
             case SceneType.MainMenu:
                 newScene = new MainMenuScene();
+                break;
+
+            case SceneType.SingleplayerStart:
+                newScene = new SingeplayerStartScene();
                 break;
             default:
                 throw new ArgumentException($"Scene type {sceneType} not found.", nameof(sceneType));
         }
 
-        newScene.OnTransfer = SwitchToScene;
+        newScene.SceneTransferAction = SwitchToScene;
+        newScene.ExitAction = Close;
 
         currentScene = newScene;
     }
 
     protected override void OnUpdateFrame(FrameEventArgs args) {
-        currentScene?.Update(args.Time);
+        currentScene?.Update(args.Time, MousePosition);
     }
 
     private new void Close() {

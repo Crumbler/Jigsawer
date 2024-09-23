@@ -1,6 +1,6 @@
 ﻿
+using Jigsawer.Debug;
 using Jigsawer.Exceptions;
-using Jigsawer.Main;
 
 using OpenTK.Graphics.OpenGL4;
 

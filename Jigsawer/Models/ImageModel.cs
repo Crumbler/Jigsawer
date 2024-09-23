@@ -1,14 +1,14 @@
-﻿
-using Jigsawer.Main;
-using static Jigsawer.Shaders.Programs.ImageShaderProgram;
+﻿using static Jigsawer.Shaders.Programs.ImageShaderProgram;
 
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using Jigsawer.Shaders.Programs;
+using Jigsawer.GLBuffers;
+using Jigsawer.GLObjects;
 
 namespace Jigsawer.Models;
 
-public sealed class ImageModel {
+public sealed class ImageModel : IRenderableModel {
     private const int PrimitivesPerInstance = 4;
     private const int InstanceDataSize = sizeof(float) * PrimitivesPerInstance;
 
@@ -16,7 +16,7 @@ public sealed class ImageModel {
     private readonly VAO vao;
     private readonly VBO positionVBO;
     private readonly Texture texture;
-    private readonly ImageShaderProgram imageShader;
+    private readonly ImageShaderProgram shader;
 
     public Box2 Rect {
         get => box;
@@ -24,38 +24,32 @@ public sealed class ImageModel {
         set {
             box = value;
 
-            positionVBO.Orphan();
-            positionVBO.SetData(InstanceDataSize, value);
+            positionVBO.SetData(value, true);
         }
     }
 
-    public ImageModel(ref Matrix3 projMat, float textureSizeMultiplier) {
-        vao = VAO.Create();
+    public ImageModel(int sharedInfoUboBindingPoint, float scaleFactor) {
+        positionVBO = new VBO(InstanceDataSize);
+        positionVBO.SetData(box);
 
-        positionVBO = VBO.Create(BufferUsageHint.StaticDraw);
-        positionVBO.SetData(InstanceDataSize, box);
+        vao = new VAO();
+        vao.SetBindingPointToBuffer(0, positionVBO.Id);
+        vao.SetBindingPointDivisor(0, 1);
 
         vao.EnableVertexAttributeArray(AttributePositions.Position);
         vao.BindAttributeToPoint(AttributePositions.Position, 0);
-        vao.SetBindingPointToBuffer(0, positionVBO.Id);
-        // 1 attribute value per instance
-        vao.SetBindingPointDivisor(0, 1);
-        vao.SetAttributeFormat(AttributePositions.Position, PrimitivesPerInstance, VertexAttribType.Float);
+        vao.SetAttributeFormat(AttributePositions.Position,
+            PrimitivesPerInstance, VertexAttribType.Float);
 
-        texture = Texture.Create(0, Images.Image.MainMenuBackgroundTile);
+        texture = new Texture(Images.Image.MainMenuBackgroundTile);
         texture.SetMinFilter(TextureMinFilter.Linear);
         texture.SetMagFilter(TextureMagFilter.Linear);
         texture.SetWrapping(TextureParameterName.TextureWrapS, TextureWrapMode.Repeat);
         texture.SetWrapping(TextureParameterName.TextureWrapT, TextureWrapMode.Repeat);
 
-        imageShader = Create();
-        imageShader.SetProjectionMatrix(ref projMat);
-        imageShader.SetTextureSize(texture.Size * textureSizeMultiplier);
-        imageShader.SetTextureUnit(0);
-    }
-
-    public void UpdateProjectionMatrix(ref Matrix3 mat) {
-        imageShader.SetProjectionMatrix(ref mat);
+        shader = new ImageShaderProgram(sharedInfoUboBindingPoint);
+        shader.SetScaleFactor(scaleFactor);
+        shader.SetTextureUnit(texture.Unit);
     }
 
     public void Render() {
@@ -63,9 +57,9 @@ public sealed class ImageModel {
 
         texture.Use();
 
-        imageShader.Use();
+        shader.Use();
 
-        GL.DrawArrays(PrimitiveType.TriangleFan, 0, PrimitivesPerInstance);
+        GL.DrawArraysInstanced(PrimitiveType.TriangleStrip, 0, PrimitivesPerInstance, 1);
     }
 
     public void Delete() {

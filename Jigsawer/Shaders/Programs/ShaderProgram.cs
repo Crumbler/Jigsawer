@@ -1,4 +1,4 @@
-﻿using Jigsawer.Main;
+﻿using Jigsawer.Debug;
 
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
@@ -56,8 +56,16 @@ public abstract class ShaderProgram {
     protected void SetVector2(int location, Vector2 vector) {
         GL.ProgramUniform2(Id, location, vector);
     }
+    protected void SetFloat(int location, float x) {
+        GL.ProgramUniform1(Id, location, x);
+    }
     protected void SetInt(int location, int value) {
         GL.ProgramUniform1(Id, location, value);
+    }
+
+    protected void ConnectUniformBlockToBuffer(string blockName, int bindingPoint) {
+        int blockIndex = GL.GetUniformBlockIndex(Id, blockName);
+        GL.UniformBlockBinding(Id, blockIndex, bindingPoint);
     }
 
     protected void Initialize(ShaderInfo shaderInfoA, ShaderInfo shaderInfoB) {
@@ -87,12 +95,12 @@ public abstract class ShaderProgram {
         }
     }
 
-    public void Use() {
+    public virtual void Use() {
         if (currentlyUsedId != Id) {
             GL.UseProgram(Id);
             currentlyUsedId = Id;
         }
     }
 
-    public void Delete() => GL.DeleteProgram(Id);
+    public virtual void Delete() => GL.DeleteProgram(Id);
 }

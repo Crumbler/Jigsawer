@@ -1,11 +1,10 @@
-﻿
-using Jigsawer.Exceptions;
+﻿using Jigsawer.Exceptions;
 
 using OpenTK.Graphics.OpenGL4;
 
 using System.Runtime.InteropServices;
 
-namespace Jigsawer.Main;
+namespace Jigsawer.Debug;
 
 public static class DebugHelper {
     private static string OpenGLDebugSourceToString(DebugSource source) => source switch {
@@ -42,10 +41,6 @@ public static class DebugHelper {
         _ => throw new UnknownDebugSeverityException(severity)
     };
 
-#if DEBUG
-    private static readonly DebugProc debugMessageDelegate = OnDebugMessage;
-#endif
-
     public static void InitDebugLogging() {
 #if DEBUG
         GL.DebugMessageCallback(debugMessageDelegate, 0);
@@ -54,9 +49,8 @@ public static class DebugHelper {
     }
 
 #if DEBUG
-    /// <summary>
-    /// 
-    /// </summary>
+    private static readonly DebugProc debugMessageDelegate = OnDebugMessage;
+
     /// <param name="source">Source of the debugging message.</param>
     /// <param name="type">Type of the debugging message.</param>
     /// <param name="id">ID associated with the message.</param>
@@ -70,8 +64,8 @@ public static class DebugHelper {
         int id,
         DebugSeverity severity,
         int length,
-        IntPtr pMessage,
-        IntPtr pUserParam) {
+        nint pMessage,
+        nint pUserParam) {
         string message = Marshal.PtrToStringAnsi(pMessage, length);
         string sourceString = OpenGLDebugSourceToString(source);
         string typeString = OpenGLDebugTypeToString(type);

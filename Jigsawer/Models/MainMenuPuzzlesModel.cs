@@ -6,13 +6,13 @@ using OpenTK.Mathematics;
 
 namespace Jigsawer.Models;
 
-public sealed class MainMenuPuzzlesModel {
-    private readonly MainMenuPuzzlesProgram shader;
+public sealed class MainMenuPuzzlesModel : IRenderableModel {
     private const int PuzzlePieceCount = 4;
+    private readonly MainMenuPuzzlesShaderProgram shader;
 
-    public MainMenuPuzzlesModel(int time, Vector2 drawSize) {
-        shader = MainMenuPuzzlesProgram.Create();
-        shader.SetTime(time);
+    public MainMenuPuzzlesModel(Vector2 drawSize, int sharedInfoUboBindingPoint) {
+        shader = new MainMenuPuzzlesShaderProgram(sharedInfoUboBindingPoint);
+        
         shader.SetDrawSize(drawSize);
     }
 
@@ -20,10 +20,6 @@ public sealed class MainMenuPuzzlesModel {
         shader.Use();
 
         GL.DrawArrays(PrimitiveType.Triangles, 0, PuzzlePieceCount * 3);
-    }
-
-    public void UpdateTime(int time) {
-        shader.SetTime(time);
     }
 
     public void UpdateDrawSize(Vector2 drawSize) {

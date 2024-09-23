@@ -1,11 +1,15 @@
-﻿
-using OpenTK.Graphics.OpenGL4;
+﻿using OpenTK.Graphics.OpenGL4;
 
-namespace Jigsawer.Main;
+namespace Jigsawer.GLObjects;
 public struct VAO {
     private static int boundId;
 
     public int Id { get; private set; }
+
+    public VAO() {
+        GL.CreateVertexArrays(1, out int vaoId);
+        Id = vaoId;
+    }
 
     public void Bind() {
         if (Id != boundId) {
@@ -23,8 +27,8 @@ public struct VAO {
         }
     }
 
-    public void SetBindingPointToBuffer(int bindingPoint, int bufferId) {
-        GL.VertexArrayVertexBuffer(Id, bindingPoint, bufferId, 0, 0);
+    public void SetBindingPointToBuffer(int bindingPoint, int bufferId, int offset = 0, int stride = 0) {
+        GL.VertexArrayVertexBuffer(Id, bindingPoint, bufferId, offset, stride);
     }
 
     public void BindAttributeToPoint(int attribute, int bindingPoint) {
@@ -34,8 +38,17 @@ public struct VAO {
     public void SetAttributeFormat(
         int attribute,
         int size,
-        VertexAttribType type) {
-        GL.VertexArrayAttribFormat(Id, attribute, size, type, false, 0);
+        VertexAttribType type,
+        bool normalized = false,
+        int offset = 0) {
+        GL.VertexArrayAttribFormat(Id, attribute, size, type, normalized, offset);
+    }
+
+    public void SetIntegerAttributeFormat(
+        int attribute,
+        int size,
+        VertexAttribIntegerType type) {
+        GL.VertexArrayAttribIFormat(Id, attribute, size, type, 0);
     }
 
     public void SetBindingPointDivisor(int bindingPoint, int divisor) {
@@ -43,12 +56,4 @@ public struct VAO {
     }
 
     public void EnableVertexAttributeArray(int index) => GL.EnableVertexArrayAttrib(Id, index);
-
-    public static VAO Create() {
-        GL.CreateVertexArrays(1, out int vaoId);
-
-        return new VAO() {
-            Id = vaoId
-        };
-    }
 }

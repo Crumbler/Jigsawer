@@ -1,9 +1,9 @@
-﻿
-using OpenTK.Graphics.OpenGL4;
+﻿using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
+
 using System.Runtime.CompilerServices;
 
-namespace Jigsawer.Main;
+namespace Jigsawer.GLObjects;
 
 public static class Viewport {
     public static Box2i Bounds {
