@@ -9,8 +9,7 @@ public struct VBO {
     public BufferUsageHint Usage { get; private set; }
 
     [SkipLocalsInit]
-    public VBO(
-        int size) {
+    public VBO(int size) {
         int bufId;
         unsafe {
             GL.CreateBuffers(1, &bufId);

@@ -9,8 +9,8 @@ public static class PointerExtensions {
         return ref Unsafe.AsRef<T>((void*)valuePtr);
     }
 
-    public static unsafe Span<T> ToSpan<T>(this IntPtr pointer, int elementCount)
+    public static unsafe Span<T> ToSpan<T>(this IntPtr spanPtr, int elementCount)
         where T : unmanaged {
-        return new Span<T>((void*)pointer, elementCount);
+        return new Span<T>((void*)spanPtr, elementCount);
     }
 }

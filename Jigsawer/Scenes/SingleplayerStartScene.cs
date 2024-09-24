@@ -8,10 +8,11 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Jigsawer.Scenes;
 
-public class SingleplayerStartScene : Scene {
+public sealed class SingleplayerStartScene : Scene {
     private readonly ImageModel backgroundImage;
     private readonly MainMenuPuzzlesModel backgroundPuzzles;
     private readonly ButtonsModel buttons;
+    private readonly PanelsModel imagaPanel;
 
     public SingleplayerStartScene() : base() {
         backgroundImage = new ImageModel(sharedInfo.BindingPoint, 0.5f) {
@@ -31,6 +32,10 @@ public class SingleplayerStartScene : Scene {
             "Back", OnBack);
 
         buttons = new ButtonsModel(sharedInfo.BindingPoint, buttonStart, buttonBack);
+        
+        var imagePanelInfo = new PanelInfo(new Box2(600, 200, 1000, 800), Color4.Blue);
+
+        imagaPanel = new PanelsModel(sharedInfo.BindingPoint, imagePanelInfo);
     }
 
     protected override void Close() {
@@ -39,6 +44,7 @@ public class SingleplayerStartScene : Scene {
         backgroundImage.Delete();
         backgroundPuzzles.Delete();
         buttons.Delete();
+        imagaPanel.Delete();
     }
 
     private void OnStart() {
@@ -61,6 +67,8 @@ public class SingleplayerStartScene : Scene {
         backgroundImage.Render();
 
         backgroundPuzzles.Render();
+
+        imagaPanel.Render();
 
         buttons.Render();
     }
