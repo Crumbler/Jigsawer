@@ -16,7 +16,8 @@ public record struct ButtonInfo(Box2 Box,
     float Padding,
     float TextSize,
     string Text,
-    Action OnClick);
+    Action OnClick,
+    bool Enabled = true);
 
 public sealed class ButtonsModel : IRenderableModel {
     // 4 floats in box, 4 bytes per color + 1 float for hoverFactor
@@ -121,12 +122,17 @@ public sealed class ButtonsModel : IRenderableModel {
         for (int i = 0; i < buttons.Length; ++i) {
             var button = buttons[i];
             bool isHovered = button.Box.ContainsExclusive(cursorPos);
+            bool isEnabled = button.Enabled;
 
-            if (isHovered) {
+            if (isHovered && isEnabled) {
                 button.OnClick();
                 break;
             }
         }
+    }
+
+    public void SetButtonEnabledStatus(int index, bool enabled) {
+        buttons[index].Enabled = enabled;
     }
 
     public void Update(Vector2 cursorPos, int elapsedMs) {
@@ -134,7 +140,9 @@ public sealed class ButtonsModel : IRenderableModel {
         Span<float> hoverFactors = this.hoverFactors;
         
         for (int i = 0; i < buttons.Length; ++i) {
-            bool isHovered = buttons[i].Box.ContainsExclusive(cursorPos);
+            var button = buttons[i];
+
+            bool isHovered = button.Enabled && button.Box.ContainsExclusive(cursorPos);
             
             float hoverChangeDirection = isHovered ? 1f : -1f;
 

@@ -23,7 +23,7 @@ public class SingleplayerStartScene : Scene {
         ButtonInfo buttonStart = new(new Box2(200, 200, 500, 280),
             Color4.Gray.WithAlpha(0.8f), Color4.Black.WithAlpha(0.8f),
             Color4.White, 20, 50f,
-            "Start", OnStart);
+            "Start", OnStart, false);
 
         ButtonInfo buttonBack = new(new Box2(200, 350, 500, 430),
             Color4.Gray.WithAlpha(0.8f), Color4.Black.WithAlpha(0.8f),
