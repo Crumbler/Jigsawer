@@ -2,12 +2,25 @@
 
 using OpenTK.Graphics.OpenGL4;
 
-using System.Drawing;
 using System.Drawing.Imaging;
 
 namespace Jigsawer.GLObjects;
 
+public record struct TextureParameters(TextureMinFilter MinFilter,
+    TextureMagFilter MagFilter,
+    TextureWrapMode HorWrap,
+    TextureWrapMode VertWrap);
+
 public struct Texture {
+    public static readonly TextureParameters defaultParameters =
+        new(TextureMinFilter.Linear,
+            TextureMagFilter.Linear,
+            TextureWrapMode.ClampToEdge,
+            TextureWrapMode.ClampToEdge), repeatingParameters =
+        new(TextureMinFilter.Linear,
+            TextureMagFilter.Linear,
+            TextureWrapMode.Repeat,
+            TextureWrapMode.Repeat);
     public int Id { get; private set; }
     public int Unit { get; private set; }
 
@@ -19,7 +32,7 @@ public struct Texture {
         Initialize();
 
         using var imageStream =
-            EmbeddedResourceLoader.GetResourceStream(Images.Image.GetPath(resourceName));
+            EmbeddedResourceLoader.GetResourceStream(Images.EmbeddedImage.GetPath(resourceName));
 
         using var bitmap = new Bitmap(imageStream);
 
@@ -63,6 +76,13 @@ public struct Texture {
 
     public static void Unbind() {
         TextureUnits.UnbindAll();
+    }
+
+    public void SetParameters(TextureParameters parameters) {
+        SetMinFilter(parameters.MinFilter);
+        SetMagFilter(parameters.MagFilter);
+        SetWrapping(TextureParameterName.TextureWrapS, parameters.HorWrap);
+        SetWrapping(TextureParameterName.TextureWrapT, parameters.VertWrap);
     }
 
     public void SetWrapping(TextureParameterName parameter, TextureWrapMode value) {

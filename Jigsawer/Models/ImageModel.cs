@@ -28,7 +28,12 @@ public sealed class ImageModel : IRenderableModel {
         }
     }
 
-    public ImageModel(int sharedInfoUboBindingPoint, float scaleFactor) {
+
+
+    public ImageModel(int sharedInfoUboBindingPoint,
+        float scaleFactor,
+        string imagePath,
+        TextureParameters? textureParameters = null) {
         positionVBO = new VBO(InstanceDataSize);
         positionVBO.SetData(box);
 
@@ -41,12 +46,9 @@ public sealed class ImageModel : IRenderableModel {
         vao.SetAttributeFormat(AttributePositions.Position,
             PrimitivesPerInstance, VertexAttribType.Float);
 
-        texture = new Texture(Images.Image.MainMenuBackgroundTile);
-        texture.SetMinFilter(TextureMinFilter.Linear);
-        texture.SetMagFilter(TextureMagFilter.Linear);
-        texture.SetWrapping(TextureParameterName.TextureWrapS, TextureWrapMode.Repeat);
-        texture.SetWrapping(TextureParameterName.TextureWrapT, TextureWrapMode.Repeat);
-
+        texture = new Texture(imagePath);
+        texture.SetParameters(textureParameters ?? Texture.defaultParameters);
+        
         shader = new ImageShaderProgram(sharedInfoUboBindingPoint);
         shader.SetScaleFactor(scaleFactor);
         shader.SetTextureUnit(texture.Unit);

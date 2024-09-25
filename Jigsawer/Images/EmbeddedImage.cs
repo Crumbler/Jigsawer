@@ -1,7 +1,7 @@
 ﻿
 namespace Jigsawer.Images;
 
-public static class Image {
+public static class EmbeddedImage {
     public static string GetPath(string imageName) {
         return "Jigsawer.Images." + imageName;
     }

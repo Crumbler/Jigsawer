@@ -1,4 +1,5 @@
 ﻿
+using Jigsawer.GLObjects;
 using Jigsawer.Helpers;
 using Jigsawer.Models;
 
@@ -12,30 +13,51 @@ public sealed class SingleplayerStartScene : Scene {
     private readonly ImageModel backgroundImage;
     private readonly MainMenuPuzzlesModel backgroundPuzzles;
     private readonly ButtonsModel buttons;
-    private readonly PanelsModel imagaPanel;
+    private readonly PanelsModel imagePanel;
 
     public SingleplayerStartScene() : base() {
-        backgroundImage = new ImageModel(sharedInfo.BindingPoint, 0.5f) {
+        backgroundImage = new ImageModel(sharedInfo.BindingPoint, 0.5f,
+            Images.EmbeddedImage.MainMenuBackgroundTile, Texture.repeatingParameters) {
             Rect = new Box2(Vector2.Zero, FramebufferSize)
         };
 
         backgroundPuzzles = new MainMenuPuzzlesModel(FramebufferSize, sharedInfo.BindingPoint);
 
-        ButtonInfo buttonStart = new(new Box2(200, 200, 500, 280),
-            Color4.Gray.WithAlpha(0.8f), Color4.Black.WithAlpha(0.8f),
-            Color4.White, 20, 50f,
+        var buttonColor = Color4.Gray.WithAlpha(0.8f);
+        var buttonHoverColor = Color4.Black.WithAlpha(0.8f);
+        var textColor = Color4.White;
+
+        const float buttonWidth = 300f,
+            buttonHeight = 80f,
+            buttonX = 200f,
+            buttonY = 200f,
+            buttonGap = 50f;
+
+        ButtonInfo buttonStart = new(
+            new Box2(buttonX, buttonY, buttonX + buttonWidth, buttonY + buttonHeight),
+            buttonColor, buttonHoverColor, textColor,
+            20, 50f,
             "Start", OnStart, false);
 
-        ButtonInfo buttonBack = new(new Box2(200, 350, 500, 430),
-            Color4.Gray.WithAlpha(0.8f), Color4.Black.WithAlpha(0.8f),
-            Color4.White, 20, 50f,
+        ButtonInfo buttonBack = new(
+            new Box2(buttonX, buttonY + buttonHeight + buttonGap,
+                buttonX + buttonWidth, buttonY + buttonHeight + buttonGap + buttonHeight),
+            buttonColor, buttonHoverColor, textColor,
+            20, 50f,
             "Back", OnBack);
 
         buttons = new ButtonsModel(sharedInfo.BindingPoint, buttonStart, buttonBack);
         
-        var imagePanelInfo = new PanelInfo(new Box2(600, 200, 1000, 800), Color4.Blue);
+        var imagePanelInfo = new PanelInfo(CalculateImagePanelBox(),
+            Color4.Cornsilk.WithAlpha(0.9f));
 
-        imagaPanel = new PanelsModel(sharedInfo.BindingPoint, imagePanelInfo);
+        imagePanel = new PanelsModel(sharedInfo.BindingPoint, imagePanelInfo);
+    }
+
+    private Box2 CalculateImagePanelBox() {
+        var box = new Box2(550f, 50f, FramebufferSize.X - 50f, FramebufferSize.Y - 50f);
+        
+        return box;
     }
 
     protected override void Close() {
@@ -44,7 +66,7 @@ public sealed class SingleplayerStartScene : Scene {
         backgroundImage.Delete();
         backgroundPuzzles.Delete();
         buttons.Delete();
-        imagaPanel.Delete();
+        imagePanel.Delete();
     }
 
     private void OnStart() {
@@ -68,7 +90,7 @@ public sealed class SingleplayerStartScene : Scene {
 
         backgroundPuzzles.Render();
 
-        imagaPanel.Render();
+        imagePanel.Render();
 
         buttons.Render();
     }

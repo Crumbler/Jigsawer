@@ -1,4 +1,5 @@
 ﻿
+using Jigsawer.GLObjects;
 using Jigsawer.Helpers;
 using Jigsawer.Models;
 
@@ -14,7 +15,8 @@ public sealed class MainMenuScene : Scene {
     private readonly ButtonsModel buttons;
 
     public MainMenuScene() : base() {
-        backgroundImage = new ImageModel(sharedInfo.BindingPoint, 0.5f) {
+        backgroundImage = new ImageModel(sharedInfo.BindingPoint, 0.5f,
+            Images.EmbeddedImage.MainMenuBackgroundTile, Texture.repeatingParameters) {
             Rect = new Box2(Vector2.Zero, FramebufferSize)
         };
 
