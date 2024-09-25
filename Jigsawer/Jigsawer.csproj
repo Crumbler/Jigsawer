@@ -34,6 +34,8 @@
     <None Remove="Shaders\Entities\Image\vert.glsl" />
     <None Remove="Shaders\Entities\MainMenuPuzzles\frag.glsl" />
     <None Remove="Shaders\Entities\MainMenuPuzzles\vert.glsl" />
+    <None Remove="Shaders\Entities\Panel\frag.glsl" />
+    <None Remove="Shaders\Entities\Panel\vert.glsl" />
     <None Remove="Shaders\Entities\TextBlock\frag.glsl" />
     <None Remove="Shaders\Entities\TextBlock\vert.glsl" />
   </ItemGroup>
@@ -46,6 +48,8 @@
     <EmbeddedResource Include="Shaders\Entities\Image\vert.glsl" />
     <EmbeddedResource Include="Shaders\Entities\MainMenuPuzzles\frag.glsl" />
     <EmbeddedResource Include="Shaders\Entities\MainMenuPuzzles\vert.glsl" />
+    <EmbeddedResource Include="Shaders\Entities\Panel\frag.glsl" />
+    <EmbeddedResource Include="Shaders\Entities\Panel\vert.glsl" />
     <EmbeddedResource Include="Shaders\Entities\TextBlock\frag.glsl" />
     <EmbeddedResource Include="Shaders\Entities\TextBlock\vert.glsl" />
   </ItemGroup>
