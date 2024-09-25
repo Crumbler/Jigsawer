@@ -60,7 +60,7 @@ public sealed class SingleplayerStartScene : Scene {
         return box;
     }
 
-    protected override void Close() {
+    public override void Close() {
         base.Close();
 
         backgroundImage.Delete();
@@ -83,6 +83,8 @@ public sealed class SingleplayerStartScene : Scene {
         backgroundImage.Rect = new Box2(Vector2.Zero, FramebufferSize);
         
         backgroundPuzzles.UpdateDrawSize(newSize);
+
+        imagePanel.SetPanelRect(0, CalculateImagePanelBox());
     }
 
     public override void Render() {
@@ -90,9 +92,9 @@ public sealed class SingleplayerStartScene : Scene {
 
         backgroundPuzzles.Render();
 
-        imagePanel.Render();
-
         buttons.Render();
+
+        imagePanel.Render();
     }
 
     public override void OnMouseDown(MouseButtonEventArgs e) {

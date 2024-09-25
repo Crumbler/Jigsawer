@@ -13,7 +13,9 @@ public record struct PanelInfo(Box2 Rect,
     Color4 Color);
 
 public class PanelsModel : IRenderableModel {
-    private const int BytesForRectAndColor = sizeof(float) * 4 + sizeof(byte) * 4;
+    private const int BytesForRect = sizeof(float) * 4,
+        BytesForColor = sizeof(byte) * 4;
+    private const int BytesForRectAndColor = BytesForRect + BytesForColor;
 
     private readonly VAO vao;
     private readonly VBO dataVBO;
@@ -44,6 +46,15 @@ public class PanelsModel : IRenderableModel {
             var panel = panels[i];
             span[i] = new RectAndColor(panel.Rect, panel.Color.ToInt());
         }
+
+        dataVBO.Unmap();
+    }
+
+    public void SetPanelRect(int index, Box2 rect) {
+        ref var panelRect = ref dataVBO.MapRange(BytesForRectAndColor * index, BytesForRect, true)
+            .ToReference<Box2>();
+
+        panelRect = rect;
 
         dataVBO.Unmap();
     }

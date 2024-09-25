@@ -35,7 +35,7 @@ public sealed class MainMenuScene : Scene {
         buttons = new ButtonsModel(sharedInfo.BindingPoint, buttonSingleplayer, buttonExit);
     }
 
-    protected override void Close() {
+    public override void Close() {
         base.Close();
 
         backgroundImage.Delete();

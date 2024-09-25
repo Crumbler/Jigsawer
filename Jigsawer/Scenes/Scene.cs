@@ -17,7 +17,7 @@ public abstract class Scene {
 
     protected Scene() {
         FramebufferSize = Viewport.Size;
-        CalculateProjectionMatrix(FramebufferSize);
+        projMat = CalculateProjectionMatrix(FramebufferSize);
 
         sharedInfo = new UBO<SharedInfo>();
         sharedInfo.Bind();
@@ -31,17 +31,17 @@ public abstract class Scene {
     protected int TotalMilliseconds { get; private set; }
     protected Vector2i FramebufferSize { get; private set; }
     protected Vector2 CursorPos { get; private set; }
-    public Action<SceneType> SceneTransferAction { get; set; }
-    public Action ExitAction { get; set; }
+    public Action<SceneType> SceneTransferAction { get; set; } = null!;
+    public Action ExitAction { get; set; } = null!;
 
-    private void CalculateProjectionMatrix(Vector2i size) {
+    private static Matrix3 CalculateProjectionMatrix(Vector2i size) {
         var mat = Matrix3.CreateScale(size.X / 2f, -size.Y / 2f, 0f);
 
         mat.Row0.Z = size.X / 2f;
         mat.Row1.Z = size.Y / 2f;
         mat.Row2.Z = 1f;
 
-        projMat = mat.Inverted();
+        return mat.Inverted();
     }
 
     protected void TransferToScene(SceneType sceneType) {
@@ -52,7 +52,7 @@ public abstract class Scene {
     /// <summary>
     /// When overriding make sure to call the base method.
     /// </summary>
-    protected virtual void Close() {
+    public virtual void Close() {
         ShaderProgram.StopUsing();
         VAO.Unbind();
         UBO.UnbindAll();
@@ -90,7 +90,7 @@ public abstract class Scene {
     /// When overriding, make sure to call the base method.
     /// </summary>
     public virtual void OnFramebufferResize(Vector2i newSize) {
-        CalculateProjectionMatrix(newSize);
+        projMat = CalculateProjectionMatrix(newSize);
 
         ref var info = ref sharedInfo.MapRange(SharedInfo.ProjectionMatrixOffset,
             SharedInfo.ProjectionMatrixSize);

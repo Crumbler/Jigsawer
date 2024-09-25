@@ -36,16 +36,7 @@ public static class TextureUnits {
     }
 
     public static void UnbindAll() {
-        Span<int> span = unitToTexture;
-
-        for (int i = 0; i < span.Length; ++i) {
-            if (span[i] != 0) {
-                GL.BindTextureUnit(i, 0);
-            }
-        }
-
-        span.Clear();
-
         Array.Clear(unitUseCounts);
+        Array.Clear(unitToTexture);
     }
 }

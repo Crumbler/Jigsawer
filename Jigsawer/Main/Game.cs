@@ -98,6 +98,8 @@ public sealed class Game : GameWindow {
     }
 
     private void SwitchToScene(SceneType sceneType) {
+        currentScene?.Close();
+
         Scene newScene;
         
         switch (sceneType) {
