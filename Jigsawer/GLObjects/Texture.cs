@@ -2,6 +2,7 @@
 
 using OpenTK.Graphics.OpenGL4;
 
+using System.Drawing;
 using System.Drawing.Imaging;
 
 namespace Jigsawer.GLObjects;
@@ -28,6 +29,12 @@ public struct Texture {
         Initialize();
     }
 
+    public Texture(Bitmap bitmap) {
+        Initialize();
+
+        CopyFromBitmap(bitmap);
+    }
+
     public Texture(string resourceName) {
         Initialize();
 
@@ -36,6 +43,10 @@ public struct Texture {
 
         using var bitmap = new Bitmap(imageStream);
 
+        CopyFromBitmap(bitmap);
+    }
+
+    private void CopyFromBitmap(Bitmap bitmap) {
         BitmapData bitmapData = bitmap.LockBits(new Rectangle(Point.Empty, bitmap.Size),
             ImageLockMode.ReadOnly,
             System.Drawing.Imaging.PixelFormat.Format24bppRgb);

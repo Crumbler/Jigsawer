@@ -10,7 +10,13 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <OutputPath>bin/$(Configuration)</OutputPath>
+    <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
+  </ItemGroup>
 
   <PropertyGroup Label="Suppressions">
     <NoWarn>$(NoWarn);CA1032;CA1848;CA1815;CA1303;CA1034;CA1051;CA1062</NoWarn>

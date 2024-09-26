@@ -2,9 +2,12 @@
 
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
+
 using Jigsawer.Shaders.Programs;
 using Jigsawer.GLBuffers;
 using Jigsawer.GLObjects;
+
+using System.Drawing;
 
 namespace Jigsawer.Models;
 
@@ -28,16 +31,39 @@ public sealed class ImageModel : IRenderableModel {
         }
     }
 
+    public ImageModel(int sharedInfoUboBindingPoint,
+        float scaleFactor, Bitmap bitmap,
+        TextureParameters? textureParameters = null) {
+        positionVBO = InitializeVBO();
+        vao = InitializeVAO();
 
+        texture = new Texture(bitmap);
+        texture.SetParameters(textureParameters ?? Texture.defaultParameters);
+
+        shader = InitializeShader(sharedInfoUboBindingPoint, scaleFactor);
+    }
 
     public ImageModel(int sharedInfoUboBindingPoint,
-        float scaleFactor,
-        string imagePath,
+        float scaleFactor, string imagePath,
         TextureParameters? textureParameters = null) {
-        positionVBO = new VBO(InstanceDataSize);
+        positionVBO = InitializeVBO();
+        vao = InitializeVAO();
+
+        texture = new Texture(imagePath);
+        texture.SetParameters(textureParameters ?? Texture.defaultParameters);
+
+        shader = InitializeShader(sharedInfoUboBindingPoint, scaleFactor);
+    }
+
+    private VBO InitializeVBO() {
+        var positionVBO = new VBO(InstanceDataSize);
         positionVBO.SetData(box);
 
-        vao = new VAO();
+        return positionVBO;
+    }
+
+    private VAO InitializeVAO() {
+        var vao = new VAO();
         vao.SetBindingPointToBuffer(0, positionVBO.Id);
         vao.SetBindingPointDivisor(0, 1);
 
@@ -46,12 +72,15 @@ public sealed class ImageModel : IRenderableModel {
         vao.SetAttributeFormat(AttributePositions.Position,
             PrimitivesPerInstance, VertexAttribType.Float);
 
-        texture = new Texture(imagePath);
-        texture.SetParameters(textureParameters ?? Texture.defaultParameters);
-        
-        shader = new ImageShaderProgram(sharedInfoUboBindingPoint);
+        return vao;
+    }
+
+    private ImageShaderProgram InitializeShader(int sharedInfoUboBindingPoint, float scaleFactor) {
+        var shader = new ImageShaderProgram(sharedInfoUboBindingPoint);
         shader.SetScaleFactor(scaleFactor);
         shader.SetTextureUnit(texture.Unit);
+
+        return shader;
     }
 
     public void Render() {

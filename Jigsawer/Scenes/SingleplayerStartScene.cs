@@ -7,6 +7,8 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
+using System.Drawing;
+
 namespace Jigsawer.Scenes;
 
 public sealed class SingleplayerStartScene : Scene {
@@ -14,6 +16,8 @@ public sealed class SingleplayerStartScene : Scene {
     private readonly MainMenuPuzzlesModel backgroundPuzzles;
     private readonly ButtonsModel buttons;
     private readonly PanelsModel imagePanel;
+    private ImageModel? puzzleImage;
+    private Bitmap? puzzleBitmap;
 
     public SingleplayerStartScene() : base() {
         backgroundImage = new ImageModel(sharedInfo.BindingPoint, 0.5f,
@@ -36,31 +40,33 @@ public sealed class SingleplayerStartScene : Scene {
 
         const float padding = 10f;
 
+        const float fontSize = 40f;
+
         ButtonInfo buttonStart = new(
             new Box2(buttonX, buttonY, buttonX + buttonWidth, buttonY + buttonHeight),
             buttonColor, buttonHoverColor, textColor,
-            padding, 40f,
+            padding, fontSize,
             "Start", OnStart, false);
 
         ButtonInfo buttonLoadFromClipboard = new(
             new Box2(buttonX, buttonY + yDiff,
             buttonX + buttonWidth, buttonY + yDiff + buttonHeight),
             buttonColor, buttonHoverColor, textColor,
-            padding, 40f,
+            padding, fontSize,
             "Load image from clipboard", OnLoadFromClipboard);
 
         ButtonInfo buttonLoadFromFile = new(
             new Box2(buttonX, buttonY + yDiff * 2f,
             buttonX + buttonWidth, buttonY + yDiff * 2f + buttonHeight),
             buttonColor, buttonHoverColor, textColor,
-            padding, 40f,
+            padding, fontSize,
             "Load image from file", OnLoadFromFile);
 
         ButtonInfo buttonBack = new(
             new Box2(buttonX, buttonY + yDiff * 3f,
                 buttonX + buttonWidth, buttonY + yDiff * 3f + buttonHeight),
             buttonColor, buttonHoverColor, textColor,
-            padding, 40f,
+            padding, fontSize,
             "Back", OnBack);
 
         buttons = new ButtonsModel(sharedInfo.BindingPoint,
@@ -85,6 +91,7 @@ public sealed class SingleplayerStartScene : Scene {
         backgroundPuzzles.Delete();
         buttons.Delete();
         imagePanel.Delete();
+        puzzleImage?.Delete();
     }
 
     private void OnStart() {
@@ -92,7 +99,13 @@ public sealed class SingleplayerStartScene : Scene {
     }
 
     private void OnLoadFromClipboard() {
+        var bmp = ClipboardHelper.GetBitmap();
+        if (bmp == null) {
+            Console.WriteLine("Failed to get bitmap");
+            return;
+        }
 
+        puzzleBitmap = bmp;
     }
 
     private void OnLoadFromFile() {
@@ -121,6 +134,7 @@ public sealed class SingleplayerStartScene : Scene {
         buttons.Render();
 
         imagePanel.Render();
+        puzzleImage?.Render();
     }
 
     public override void OnMouseDown(MouseButtonEventArgs e) {
