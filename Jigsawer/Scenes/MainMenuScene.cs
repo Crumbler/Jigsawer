@@ -15,8 +15,11 @@ public sealed class MainMenuScene : Scene {
     private readonly ButtonsModel buttons;
 
     public MainMenuScene() : base() {
-        backgroundImage = new ImageModel(sharedInfo.BindingPoint, 0.5f,
-            Images.EmbeddedImage.MainMenuBackgroundTile, Texture.repeatingParameters) {
+        backgroundImage = new ImageModel(sharedInfo.BindingPoint,
+            Images.EmbeddedImage.MainMenuBackgroundTile,
+            ImageSizeMode.Normal,
+            0.5f,
+            Texture.repeatingParameters) {
             Rect = new Box2(Vector2.Zero, FramebufferSize)
         };
 
@@ -36,10 +39,10 @@ public sealed class MainMenuScene : Scene {
     }
 
     public override void Close() {
-        base.Close();
-
         backgroundImage.Delete();
         backgroundPuzzles.Delete();
+
+        base.Close();
     }
 
     public override void OnFramebufferResize(Vector2i newSize) {

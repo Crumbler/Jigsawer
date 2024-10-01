@@ -20,8 +20,11 @@ public sealed class SingleplayerStartScene : Scene {
     private Bitmap? puzzleBitmap;
 
     public SingleplayerStartScene() : base() {
-        backgroundImage = new ImageModel(sharedInfo.BindingPoint, 0.5f,
-            Images.EmbeddedImage.MainMenuBackgroundTile, Texture.repeatingParameters) {
+        backgroundImage = new ImageModel(sharedInfo.BindingPoint,
+            Images.EmbeddedImage.MainMenuBackgroundTile,
+            ImageSizeMode.Normal,
+            0.5f,
+            Texture.repeatingParameters) {
             Rect = new Box2(Vector2.Zero, FramebufferSize)
         };
 
@@ -84,14 +87,20 @@ public sealed class SingleplayerStartScene : Scene {
         return box;
     }
 
-    public override void Close() {
-        base.Close();
+    private Box2 CalculateImageBox() {
+        var box = new Box2(675f, 75f, FramebufferSize.X - 75f, FramebufferSize.Y - 75f);
 
+        return box;
+    }
+
+    public override void Close() {
         backgroundImage.Delete();
         backgroundPuzzles.Delete();
         buttons.Delete();
         imagePanel.Delete();
         puzzleImage?.Delete();
+
+        base.Close();
     }
 
     private void OnStart() {
@@ -105,7 +114,15 @@ public sealed class SingleplayerStartScene : Scene {
             return;
         }
 
+        puzzleBitmap?.Dispose();
+
         puzzleBitmap = bmp;
+
+        puzzleImage?.Delete();
+
+        puzzleImage = new ImageModel(sharedInfo.BindingPoint, bmp, ImageSizeMode.Zoom) {
+            Rect = CalculateImageBox()
+        };
     }
 
     private void OnLoadFromFile() {
@@ -124,6 +141,10 @@ public sealed class SingleplayerStartScene : Scene {
         backgroundPuzzles.UpdateDrawSize(newSize);
 
         imagePanel.SetPanelRect(0, CalculateImagePanelBox());
+
+        if (puzzleImage != null) {
+            puzzleImage.Rect = CalculateImageBox();
+        }
     }
 
     public override void Render() {

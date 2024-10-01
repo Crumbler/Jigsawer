@@ -11,6 +11,11 @@ using System.Drawing;
 
 namespace Jigsawer.Models;
 
+public enum ImageSizeMode {
+    Normal,
+    Zoom
+}
+
 public sealed class ImageModel : IRenderableModel {
     private const int PrimitivesPerInstance = 4;
     private const int InstanceDataSize = sizeof(float) * PrimitivesPerInstance;
@@ -32,7 +37,9 @@ public sealed class ImageModel : IRenderableModel {
     }
 
     public ImageModel(int sharedInfoUboBindingPoint,
-        float scaleFactor, Bitmap bitmap,
+        Bitmap bitmap,
+        ImageSizeMode sizeMode = ImageSizeMode.Normal,
+        float scaleFactor = 1f,
         TextureParameters? textureParameters = null) {
         positionVBO = InitializeVBO();
         vao = InitializeVAO();
@@ -40,11 +47,13 @@ public sealed class ImageModel : IRenderableModel {
         texture = new Texture(bitmap);
         texture.SetParameters(textureParameters ?? Texture.defaultParameters);
 
-        shader = InitializeShader(sharedInfoUboBindingPoint, scaleFactor);
+        shader = InitializeShader(sharedInfoUboBindingPoint, scaleFactor, sizeMode);
     }
 
     public ImageModel(int sharedInfoUboBindingPoint,
-        float scaleFactor, string imagePath,
+        string imagePath,
+        ImageSizeMode sizeMode,
+        float scaleFactor = 1f,
         TextureParameters? textureParameters = null) {
         positionVBO = InitializeVBO();
         vao = InitializeVAO();
@@ -52,7 +61,7 @@ public sealed class ImageModel : IRenderableModel {
         texture = new Texture(imagePath);
         texture.SetParameters(textureParameters ?? Texture.defaultParameters);
 
-        shader = InitializeShader(sharedInfoUboBindingPoint, scaleFactor);
+        shader = InitializeShader(sharedInfoUboBindingPoint, scaleFactor, sizeMode);
     }
 
     private VBO InitializeVBO() {
@@ -75,8 +84,14 @@ public sealed class ImageModel : IRenderableModel {
         return vao;
     }
 
-    private ImageShaderProgram InitializeShader(int sharedInfoUboBindingPoint, float scaleFactor) {
-        var shader = new ImageShaderProgram(sharedInfoUboBindingPoint);
+    private ImageShaderProgram InitializeShader(int sharedInfoUboBindingPoint,
+        float scaleFactor,
+        ImageSizeMode sizeMode) {
+        ImageShaderProgram shader = sizeMode switch {
+            ImageSizeMode.Normal => new NormalImageShaderProgram(sharedInfoUboBindingPoint),
+            _ => new ZoomImageShaderProgram(sharedInfoUboBindingPoint)
+        };
+
         shader.SetScaleFactor(scaleFactor);
         shader.SetTextureUnit(texture.Unit);
 

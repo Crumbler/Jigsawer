@@ -17,7 +17,8 @@ public struct Texture {
         new(TextureMinFilter.Linear,
             TextureMagFilter.Linear,
             TextureWrapMode.ClampToEdge,
-            TextureWrapMode.ClampToEdge), repeatingParameters =
+            TextureWrapMode.ClampToEdge),
+        repeatingParameters =
         new(TextureMinFilter.Linear,
             TextureMagFilter.Linear,
             TextureWrapMode.Repeat,
@@ -49,11 +50,11 @@ public struct Texture {
     private void CopyFromBitmap(Bitmap bitmap) {
         BitmapData bitmapData = bitmap.LockBits(new Rectangle(Point.Empty, bitmap.Size),
             ImageLockMode.ReadOnly,
-            System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
         SetStorage2D(1, SizedInternalFormat.Rgb8, bitmap.Width, bitmap.Height);
         SetSubImage2D(0, 0, 0, bitmap.Width, bitmap.Height,
-            OpenTK.Graphics.OpenGL4.PixelFormat.Bgr, PixelType.UnsignedByte, bitmapData.Scan0);
+            OpenTK.Graphics.OpenGL4.PixelFormat.Bgra, PixelType.UnsignedByte, bitmapData.Scan0);
 
         bitmap.UnlockBits(bitmapData);
     }

@@ -26,6 +26,7 @@ public static class TextureUnits {
 
     public static void ReturnOne(int unit) {
         --unitUseCounts[unit];
+        unitToTexture[unit] = 0;
     }
 
     public static void Bind(int unit, int texture) {

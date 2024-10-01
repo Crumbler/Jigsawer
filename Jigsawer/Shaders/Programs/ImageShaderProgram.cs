@@ -3,31 +3,20 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace Jigsawer.Shaders.Programs;
 
-public sealed class ImageShaderProgram : ShaderProgram {
-    private const string EntityName = "Image";
-
-    public ImageShaderProgram(int sharedInfoUboBindingPoint) {
+public abstract class ImageShaderProgram : ShaderProgram {
+    protected void InitializeImageShader(string entityName, int sharedInfoUboBindingPoint) {
         Initialize(
-            ShaderInfo.Get(EntityName, ShaderType.VertexShader),
-            ShaderInfo.Get(EntityName, ShaderType.FragmentShader));
+            ShaderInfo.Get(entityName, ShaderType.VertexShader),
+            ShaderInfo.Get(entityName, ShaderType.FragmentShader));
 
         ConnectUniformBlockToBuffer(UniformBlockNames.SharedInfo, sharedInfoUboBindingPoint);
     }
 
-    public void SetScaleFactor(float x) {
-        SetFloat(UniformLocations.ScaleFactor, x);
-    }
-    public void SetTextureUnit(int unit) {
-        SetInt(UniformLocations.Texture, unit);
-    }
+    public abstract void SetScaleFactor(float x);
+    public abstract void SetTextureUnit(int unit);
 
     public static class AttributePositions {
         public const int Position = 0;
-    }
-
-    private static class UniformLocations {
-        public const int ScaleFactor = 0;
-        public const int Texture = 1;
     }
 
     private static class UniformBlockNames {

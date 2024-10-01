@@ -12,14 +12,17 @@ out vec2 uv;
 
 void main()
 {
+    float isRight = gl_VertexID & 1;
+    float isDown = step(2, gl_VertexID);
+
     vec3 pos;
     
-    pos.x = box[0] + box[2] * (gl_VertexID & 1);
-    pos.y = box[1] + box[3] * step(2, gl_VertexID);
+    pos.x = mix(box[0], box[2], isRight);
+    pos.y = mix(box[1], box[3], isDown);
     // Necessary for matrix multiplication
     pos.z = 1;
 
-    uv = pos.xy;
+    uv = pos.xy - box.xy;
 
     pos = projMat * pos;
 
