@@ -1,4 +1,5 @@
 ﻿
+using Jigsawer.Debug;
 using Jigsawer.GLObjects;
 using Jigsawer.Helpers;
 using Jigsawer.Models;
@@ -8,6 +9,7 @@ using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace Jigsawer.Scenes;
 
@@ -110,10 +112,45 @@ public sealed class SingleplayerStartScene : Scene {
     private void OnLoadFromClipboard() {
         var bmp = ClipboardHelper.GetBitmap();
         if (bmp == null) {
-            Console.WriteLine("Failed to get bitmap");
+            Logger.LogDebug("Failed to get bitmap from clipboard");
             return;
         }
 
+        DisplayImage(bmp);
+    }
+
+    private void OnLoadFromFile() {
+        using var openFileDialog = new OpenFileDialog();
+
+        openFileDialog.ShowPreview = true;
+        openFileDialog.Title = "Select an image file";
+        openFileDialog.CheckFileExists = true;
+
+        var res = openFileDialog.ShowDialog();
+        if (res != DialogResult.OK) {
+            return;
+        }
+
+        Bitmap bmp;
+
+        try {
+#pragma warning disable CA2000 // No object to dispose if an exception is caught
+            bmp = new Bitmap(openFileDialog.FileName);
+#pragma warning restore CA2000
+        }
+        catch (FileNotFoundException) {
+            Logger.LogDebug("File not found");
+            return;
+        }
+        catch {
+            Logger.LogDebug("Incorrect file format");
+            return;
+        }
+
+        DisplayImage(bmp);
+    }
+
+    private void DisplayImage(Bitmap bmp) {
         puzzleBitmap?.Dispose();
 
         puzzleBitmap = bmp;
@@ -123,10 +160,6 @@ public sealed class SingleplayerStartScene : Scene {
         puzzleImage = new ImageModel(sharedInfo.BindingPoint, bmp, ImageSizeMode.Zoom) {
             Rect = CalculateImageBox()
         };
-    }
-
-    private void OnLoadFromFile() {
-
     }
 
     private void OnBack() {
