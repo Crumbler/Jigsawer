@@ -15,15 +15,14 @@ public sealed class MainMenuScene : Scene {
     private readonly ButtonsModel buttons;
 
     public MainMenuScene() : base() {
-        backgroundImage = new ImageModel(sharedInfo.BindingPoint,
-            Images.EmbeddedImage.MainMenuBackgroundTile,
+        backgroundImage = new ImageModel(Images.EmbeddedImage.MainMenuBackgroundTile,
             ImageSizeMode.Normal,
             0.5f,
             Texture.repeatingParameters) {
             Rect = new Box2(Vector2.Zero, FramebufferSize)
         };
 
-        backgroundPuzzles = new MainMenuPuzzlesModel(FramebufferSize, sharedInfo.BindingPoint);
+        backgroundPuzzles = new MainMenuPuzzlesModel(FramebufferSize);
 
         ButtonInfo buttonSingleplayer = new(new Box2(200, 200, 500, 280),
             Color4.Gray.WithAlpha(0.8f), Color4.Black.WithAlpha(0.8f),
@@ -35,7 +34,7 @@ public sealed class MainMenuScene : Scene {
             Color4.White, 20, 50f,
             "Exit", OnExit);
 
-        buttons = new ButtonsModel(sharedInfo.BindingPoint, buttonSingleplayer, buttonExit);
+        buttons = new ButtonsModel(buttonSingleplayer, buttonExit);
     }
 
     public override void Close() {

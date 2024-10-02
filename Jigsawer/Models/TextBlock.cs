@@ -23,7 +23,7 @@ public class TextBlock : IRenderableModel {
         SizeMultSize = sizeof(float);
 
     public TextBlock(ReadOnlySpan<char> text, Vector2 position, Color4 color,
-        float padding, float size, int sharedInfoUboBindingPoint) {
+        float padding, float size) {
         var fontAtlas = FontAtlas.GetFontAtlas((int)size);
 
         fontTexture = fontAtlas.Texture;
@@ -86,7 +86,7 @@ public class TextBlock : IRenderableModel {
         vao.SetAttributeFormat(TextBlockShaderProgram.AttributePositions.SizeMult,
             1, VertexAttribType.Float, offset: ColorSize);
 
-        shader = TextBlockShaderProgram.GetInstance(fontAtlas, sharedInfoUboBindingPoint);
+        shader = TextBlockShaderProgram.GetInstance(fontAtlas);
         shader.SetTextureUnit(fontTexture.Unit);
     }
 

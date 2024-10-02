@@ -12,14 +12,15 @@ namespace Jigsawer.Scenes;
 
 public abstract class Scene {
     private double secondsAccumulator;
+    private UBO<SharedInfo> sharedInfo;
     protected Matrix3 projMat;
-    protected UBO<SharedInfo> sharedInfo;
 
     protected Scene() {
         FramebufferSize = Viewport.Size;
         projMat = CalculateProjectionMatrix(FramebufferSize);
 
         sharedInfo = new UBO<SharedInfo>();
+        Globals.SharedInfoBindingPoint = sharedInfo.BindingPoint;
         sharedInfo.Bind();
 
         ref var info = ref sharedInfo.Map();

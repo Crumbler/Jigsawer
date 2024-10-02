@@ -4,8 +4,8 @@ namespace Jigsawer.Shaders.Programs;
 public sealed class NormalImageShaderProgram : ImageShaderProgram {
     private const string EntityName = "Image.Normal";
 
-    public NormalImageShaderProgram(int sharedInfoUboBindingPoint) {
-        InitializeImageShader(EntityName, sharedInfoUboBindingPoint);
+    public NormalImageShaderProgram() {
+        InitializeImageShader(EntityName);
     }
 
     public override void SetScaleFactor(float x) {

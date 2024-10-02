@@ -22,15 +22,14 @@ public sealed class SingleplayerStartScene : Scene {
     private Bitmap? puzzleBitmap;
 
     public SingleplayerStartScene() : base() {
-        backgroundImage = new ImageModel(sharedInfo.BindingPoint,
-            Images.EmbeddedImage.MainMenuBackgroundTile,
+        backgroundImage = new ImageModel(Images.EmbeddedImage.MainMenuBackgroundTile,
             ImageSizeMode.Normal,
             0.5f,
             Texture.repeatingParameters) {
             Rect = new Box2(Vector2.Zero, FramebufferSize)
         };
 
-        backgroundPuzzles = new MainMenuPuzzlesModel(FramebufferSize, sharedInfo.BindingPoint);
+        backgroundPuzzles = new MainMenuPuzzlesModel(FramebufferSize);
 
         var buttonColor = Color4.Gray.WithAlpha(0.8f);
         var buttonHoverColor = Color4.Black.WithAlpha(0.8f);
@@ -74,13 +73,13 @@ public sealed class SingleplayerStartScene : Scene {
             padding, fontSize,
             "Back", OnBack);
 
-        buttons = new ButtonsModel(sharedInfo.BindingPoint,
-            buttonStart, buttonLoadFromClipboard, buttonLoadFromFile, buttonBack);
+        buttons = new ButtonsModel(buttonStart,
+            buttonLoadFromClipboard, buttonLoadFromFile, buttonBack);
         
         var imagePanelInfo = new PanelInfo(CalculateImagePanelBox(),
             Color4.Cornsilk.WithAlpha(0.9f));
 
-        imagePanel = new PanelsModel(sharedInfo.BindingPoint, imagePanelInfo);
+        imagePanel = new PanelsModel(imagePanelInfo);
     }
 
     private Box2 CalculateImagePanelBox() {
@@ -90,7 +89,7 @@ public sealed class SingleplayerStartScene : Scene {
     }
 
     private Box2 CalculateImageBox() {
-        var box = new Box2(675f, 75f, FramebufferSize.X - 75f, FramebufferSize.Y - 75f);
+        var box = new Box2(675f, 75f, FramebufferSize.X - 75f, FramebufferSize.Y - 100f);
 
         return box;
     }
@@ -157,7 +156,7 @@ public sealed class SingleplayerStartScene : Scene {
 
         puzzleImage?.Delete();
 
-        puzzleImage = new ImageModel(sharedInfo.BindingPoint, bmp, ImageSizeMode.Zoom) {
+        puzzleImage = new ImageModel(bmp, ImageSizeMode.Zoom) {
             Rect = CalculateImageBox()
         };
     }

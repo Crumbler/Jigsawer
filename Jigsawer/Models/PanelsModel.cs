@@ -22,10 +22,10 @@ public class PanelsModel : IRenderableModel {
     private readonly PanelsShaderProgram shader;
     private readonly PanelInfo[] panels;
 
-    public PanelsModel(int sharedInfoUboBindgPoint, params PanelInfo[] panels) {
+    public PanelsModel(params PanelInfo[] panels) {
         this.panels = panels;
 
-        shader = new PanelsShaderProgram(sharedInfoUboBindgPoint);
+        shader = new PanelsShaderProgram();
 
         dataVBO = new VBO(panels.Length * BytesForRectAndColor);
         FillVBO();

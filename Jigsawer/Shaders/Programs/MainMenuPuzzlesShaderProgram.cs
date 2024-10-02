@@ -1,4 +1,6 @@
 ﻿
+using Jigsawer.Scenes;
+
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
@@ -7,12 +9,12 @@ namespace Jigsawer.Shaders.Programs;
 public sealed class MainMenuPuzzlesShaderProgram : ShaderProgram {
     private const string EntityName = "MainMenuPuzzles";
 
-    public MainMenuPuzzlesShaderProgram(int sharedInfoUboBindingPoint) {
+    public MainMenuPuzzlesShaderProgram() {
         Initialize(
             ShaderInfo.Get(EntityName, ShaderType.VertexShader),
             ShaderInfo.Get(EntityName, ShaderType.FragmentShader));
 
-        ConnectUniformBlockToBuffer(UniformBlockNames.SharedInfo, sharedInfoUboBindingPoint);
+        ConnectUniformBlockToBuffer(UniformBlockNames.SharedInfo, Globals.SharedInfoBindingPoint);
     }
 
     public void SetDrawSize(Vector2 drawSize) => SetVector2(UniformLocations.DrawSize, drawSize);

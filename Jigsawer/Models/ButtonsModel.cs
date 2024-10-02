@@ -32,13 +32,13 @@ public sealed class ButtonsModel : IRenderableModel {
     private readonly TextBlock[] textBlocks;
     private readonly float[] hoverFactors;
 
-    public ButtonsModel(int sharedInfoUboBindgPoint, params ButtonInfo[] buttons) {
+    public ButtonsModel(params ButtonInfo[] buttons) {
         this.buttons = buttons;
         hoverFactors = new float[buttons.Length];
         textBlocks = new TextBlock[buttons.Length];
-        FillTextBlocks(sharedInfoUboBindgPoint);
+        FillTextBlocks();
 
-        shader = new ButtonsShaderProgram(sharedInfoUboBindgPoint);
+        shader = new ButtonsShaderProgram();
 
         dataVBO = new VBO(buttons.Length * BytesPerButton);
         FillVBO();
@@ -47,7 +47,7 @@ public sealed class ButtonsModel : IRenderableModel {
         SetupVAO();
     }
 
-    private void FillTextBlocks(int sharedInfoUboBindgPoint) {
+    private void FillTextBlocks() {
         ReadOnlySpan<ButtonInfo> buttons = this.buttons;
         Span<TextBlock> textBlocks = this.textBlocks;
 
@@ -55,7 +55,7 @@ public sealed class ButtonsModel : IRenderableModel {
             var button = buttons[i];
             textBlocks[i] = new TextBlock(button.Text, button.Box.Min,
                 button.TextColor, button.Padding, 
-                button.TextSize, sharedInfoUboBindgPoint);
+                button.TextSize);
         }
     }
 

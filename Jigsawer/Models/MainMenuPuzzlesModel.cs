@@ -10,8 +10,8 @@ public sealed class MainMenuPuzzlesModel : IRenderableModel {
     private const int PuzzlePieceCount = 4;
     private readonly MainMenuPuzzlesShaderProgram shader;
 
-    public MainMenuPuzzlesModel(Vector2 drawSize, int sharedInfoUboBindingPoint) {
-        shader = new MainMenuPuzzlesShaderProgram(sharedInfoUboBindingPoint);
+    public MainMenuPuzzlesModel(Vector2 drawSize) {
+        shader = new MainMenuPuzzlesShaderProgram();
         
         shader.SetDrawSize(drawSize);
     }

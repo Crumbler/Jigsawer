@@ -1,4 +1,6 @@
 ﻿
+using Jigsawer.Scenes;
+
 using OpenTK.Graphics.OpenGL4;
 
 namespace Jigsawer.Shaders.Programs;
@@ -6,12 +8,12 @@ namespace Jigsawer.Shaders.Programs;
 public class PanelsShaderProgram : ShaderProgram {
     private const string EntityName = "Panel";
 
-    public PanelsShaderProgram(int sharedInfoUboBindingPoint) {
+    public PanelsShaderProgram() {
         Initialize(
             ShaderInfo.Get(EntityName, ShaderType.VertexShader),
             ShaderInfo.Get(EntityName, ShaderType.FragmentShader));
 
-        ConnectUniformBlockToBuffer(UniformBlockNames.SharedInfo, sharedInfoUboBindingPoint);
+        ConnectUniformBlockToBuffer(UniformBlockNames.SharedInfo, Globals.SharedInfoBindingPoint);
     }
 
     public static class AttributePositions {

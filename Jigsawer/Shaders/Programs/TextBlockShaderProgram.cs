@@ -1,6 +1,7 @@
 ﻿
 using Jigsawer.GLBuffers;
 using Jigsawer.GLBuffers.Interfaces;
+using Jigsawer.Scenes;
 using Jigsawer.Text;
 
 using OpenTK.Graphics.OpenGL4;
@@ -14,7 +15,7 @@ public sealed class TextBlockShaderProgram : ShaderProgram {
     private readonly FontAtlas fontAtlas;
     private int instanceCount = 1;
 
-    private TextBlockShaderProgram(FontAtlas fontAtlas, int sharedInfoUboBindingPoint) {
+    private TextBlockShaderProgram(FontAtlas fontAtlas) {
         Initialize(
             ShaderInfo.Get(EntityName, ShaderType.VertexShader),
             ShaderInfo.Get(EntityName, ShaderType.FragmentShader));
@@ -23,7 +24,7 @@ public sealed class TextBlockShaderProgram : ShaderProgram {
         fontInfoUbo = new UBO<FontInfo>();
 
         ConnectUniformBlockToBuffer(UniformBlockNames.FontInfo, fontInfoUbo.BindingPoint);
-        ConnectUniformBlockToBuffer(UniformBlockNames.SharedInfo, sharedInfoUboBindingPoint);
+        ConnectUniformBlockToBuffer(UniformBlockNames.SharedInfo, Globals.SharedInfoBindingPoint);
 
         FillFontInfoUBO(fontInfoUbo, fontAtlas);
     }
@@ -47,13 +48,13 @@ public sealed class TextBlockShaderProgram : ShaderProgram {
         fontInfoUbo.Bind();
     }
 
-    public static TextBlockShaderProgram GetInstance(FontAtlas atlas, int sharedInfoUboBindingPoint) {
+    public static TextBlockShaderProgram GetInstance(FontAtlas atlas) {
         if (instances.TryGetValue(atlas, out var existingProgram)) {
             ++existingProgram.instanceCount;
             return existingProgram;
         }
 
-        var newProgram = new TextBlockShaderProgram(atlas, sharedInfoUboBindingPoint);
+        var newProgram = new TextBlockShaderProgram(atlas);
         instances.Add(atlas, newProgram);
         return newProgram;
     }

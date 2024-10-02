@@ -1,4 +1,6 @@
 ﻿
+using Jigsawer.Scenes;
+
 using OpenTK.Graphics.OpenGL4;
 
 namespace Jigsawer.Shaders.Programs;
@@ -6,12 +8,12 @@ namespace Jigsawer.Shaders.Programs;
 public class ButtonsShaderProgram : ShaderProgram {
     private const string EntityName = "Buttons";
 
-    public ButtonsShaderProgram(int sharedInfoUboBindingPoint) {
+    public ButtonsShaderProgram() {
         Initialize(
             ShaderInfo.Get(EntityName, ShaderType.VertexShader),
             ShaderInfo.Get(EntityName, ShaderType.FragmentShader));
 
-        ConnectUniformBlockToBuffer(UniformBlockNames.SharedInfo, sharedInfoUboBindingPoint);
+        ConnectUniformBlockToBuffer(UniformBlockNames.SharedInfo, Globals.SharedInfoBindingPoint);
     }
 
     public static class AttributePositions {

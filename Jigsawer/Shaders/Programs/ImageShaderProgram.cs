@@ -1,15 +1,17 @@
 ﻿
+using Jigsawer.Scenes;
+
 using OpenTK.Graphics.OpenGL4;
 
 namespace Jigsawer.Shaders.Programs;
 
 public abstract class ImageShaderProgram : ShaderProgram {
-    protected void InitializeImageShader(string entityName, int sharedInfoUboBindingPoint) {
+    protected void InitializeImageShader(string entityName) {
         Initialize(
             ShaderInfo.Get(entityName, ShaderType.VertexShader),
             ShaderInfo.Get(entityName, ShaderType.FragmentShader));
 
-        ConnectUniformBlockToBuffer(UniformBlockNames.SharedInfo, sharedInfoUboBindingPoint);
+        ConnectUniformBlockToBuffer(UniformBlockNames.SharedInfo, Globals.SharedInfoBindingPoint);
     }
 
     public abstract void SetScaleFactor(float x);

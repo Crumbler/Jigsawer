@@ -36,8 +36,7 @@ public sealed class ImageModel : IRenderableModel {
         }
     }
 
-    public ImageModel(int sharedInfoUboBindingPoint,
-        Bitmap bitmap,
+    public ImageModel(Bitmap bitmap,
         ImageSizeMode sizeMode = ImageSizeMode.Normal,
         float scaleFactor = 1f,
         TextureParameters? textureParameters = null) {
@@ -47,11 +46,10 @@ public sealed class ImageModel : IRenderableModel {
         texture = new Texture(bitmap);
         texture.SetParameters(textureParameters ?? Texture.defaultParameters);
 
-        shader = InitializeShader(sharedInfoUboBindingPoint, scaleFactor, sizeMode);
+        shader = InitializeShader(scaleFactor, sizeMode);
     }
 
-    public ImageModel(int sharedInfoUboBindingPoint,
-        string imagePath,
+    public ImageModel(string imagePath,
         ImageSizeMode sizeMode,
         float scaleFactor = 1f,
         TextureParameters? textureParameters = null) {
@@ -61,7 +59,7 @@ public sealed class ImageModel : IRenderableModel {
         texture = new Texture(imagePath);
         texture.SetParameters(textureParameters ?? Texture.defaultParameters);
 
-        shader = InitializeShader(sharedInfoUboBindingPoint, scaleFactor, sizeMode);
+        shader = InitializeShader(scaleFactor, sizeMode);
     }
 
     private VBO InitializeVBO() {
@@ -84,12 +82,11 @@ public sealed class ImageModel : IRenderableModel {
         return vao;
     }
 
-    private ImageShaderProgram InitializeShader(int sharedInfoUboBindingPoint,
-        float scaleFactor,
+    private ImageShaderProgram InitializeShader(float scaleFactor,
         ImageSizeMode sizeMode) {
         ImageShaderProgram shader = sizeMode switch {
-            ImageSizeMode.Normal => new NormalImageShaderProgram(sharedInfoUboBindingPoint),
-            _ => new ZoomImageShaderProgram(sharedInfoUboBindingPoint)
+            ImageSizeMode.Normal => new NormalImageShaderProgram(),
+            _ => new ZoomImageShaderProgram()
         };
 
         shader.SetScaleFactor(scaleFactor);
