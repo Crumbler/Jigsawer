@@ -11,6 +11,9 @@ using OpenTK.Mathematics;
 
 namespace Jigsawer.Models;
 
+public record struct TextInfo(string Text, Vector2 Position,
+    Color4 Color, float Padding, float Size);
+
 public class TextBlock : IRenderableModel {
     private readonly VAO vao;
     private readonly VBO dataVBO;
@@ -22,29 +25,28 @@ public class TextBlock : IRenderableModel {
         ColorSize = sizeof(byte) * 4,
         SizeMultSize = sizeof(float);
 
-    public TextBlock(ReadOnlySpan<char> text, Vector2 position, Color4 color,
-        float padding, float size) {
-        var fontAtlas = FontAtlas.GetFontAtlas((int)size);
+    public TextBlock(TextInfo info) {
+        var fontAtlas = FontAtlas.GetFontAtlas((int)info.Size);
 
         fontTexture = fontAtlas.Texture;
 
-        displayedCharacters = CalculateDisplayedCharacterCount(text);
+        displayedCharacters = CalculateDisplayedCharacterCount(info.Text);
 
         int bufferSize = displayedCharacters * (PosSize + IndexSize) + ColorSize + SizeMultSize;
 
         dataVBO = new VBO(bufferSize);
 
-        float sizeMult = size / fontAtlas.EmSize;
+        float sizeMult = info.Size / fontAtlas.EmSize;
 
         IntPtr ptr = dataVBO.Map();
-        CalculateAndStoreCharacterPositions(text, position, sizeMult,
-            fontAtlas, ptr, padding, displayedCharacters);
+        CalculateAndStoreCharacterPositions(info.Text, info.Position, sizeMult,
+            fontAtlas, ptr, info.Padding, displayedCharacters);
 
         ptr += displayedCharacters * PosSize;
-        StoreCharacterIndices(text, ptr, displayedCharacters);
+        StoreCharacterIndices(info.Text, ptr, displayedCharacters);
 
         ptr += displayedCharacters * IndexSize;
-        StoreColor(color, ptr);
+        StoreColor(info.Color, ptr);
 
         ptr += ColorSize;
         StoreSizeMult(sizeMult, ptr);

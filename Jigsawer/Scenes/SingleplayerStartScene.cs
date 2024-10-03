@@ -1,5 +1,6 @@
 ﻿
 using Jigsawer.Debug;
+using Jigsawer.Entities;
 using Jigsawer.GLObjects;
 using Jigsawer.Helpers;
 using Jigsawer.Models;
@@ -16,7 +17,7 @@ namespace Jigsawer.Scenes;
 public sealed class SingleplayerStartScene : Scene {
     private readonly ImageModel backgroundImage;
     private readonly MainMenuPuzzlesModel backgroundPuzzles;
-    private readonly ButtonsModel buttons;
+    private readonly Buttons buttons;
     private readonly PanelsModel imagePanel;
     private ImageModel? puzzleImage;
     private Bitmap? puzzleBitmap;
@@ -46,36 +47,40 @@ public sealed class SingleplayerStartScene : Scene {
 
         const float fontSize = 40f;
 
-        ButtonInfo buttonStart = new(
-            new Box2(buttonX, buttonY, buttonX + buttonWidth, buttonY + buttonHeight),
-            buttonColor, buttonHoverColor, textColor,
-            padding, fontSize,
-            "Start", OnStart, false);
+        ButtonTextInfo buttonStart = new(
+            new ButtonInfo(new Box2(buttonX, buttonY,
+                buttonX + buttonWidth, buttonY + buttonHeight),
+                buttonColor, buttonHoverColor, false),
+            new TextInfo("Start", new Vector2(buttonX, buttonY), textColor, padding, fontSize),
+            OnStart);
 
-        ButtonInfo buttonLoadFromClipboard = new(
-            new Box2(buttonX, buttonY + yDiff,
-            buttonX + buttonWidth, buttonY + yDiff + buttonHeight),
-            buttonColor, buttonHoverColor, textColor,
-            padding, fontSize,
-            "Load image from clipboard", OnLoadFromClipboard);
+        ButtonTextInfo buttonLoadFromClipboard = new(
+            new ButtonInfo(new Box2(buttonX, buttonY + yDiff,
+                buttonX + buttonWidth, buttonY + yDiff + buttonHeight),
+                buttonColor, buttonHoverColor),
+            new TextInfo("Load image from clipboard", new Vector2(buttonX, buttonY + yDiff),
+                textColor, padding, fontSize),
+            OnLoadFromClipboard);
 
-        ButtonInfo buttonLoadFromFile = new(
-            new Box2(buttonX, buttonY + yDiff * 2f,
-            buttonX + buttonWidth, buttonY + yDiff * 2f + buttonHeight),
-            buttonColor, buttonHoverColor, textColor,
-            padding, fontSize,
-            "Load image from file", OnLoadFromFile);
+        ButtonTextInfo buttonLoadFromFile = new(
+            new ButtonInfo(new Box2(buttonX, buttonY + yDiff * 2f,
+                buttonX + buttonWidth, buttonY + yDiff * 2f + buttonHeight),
+                buttonColor, buttonHoverColor),
+            new TextInfo("Load image from file", new Vector2(buttonX, buttonY + yDiff * 2f),
+                textColor, padding, fontSize),
+            OnLoadFromFile);
 
-        ButtonInfo buttonBack = new(
-            new Box2(buttonX, buttonY + yDiff * 3f,
+        ButtonTextInfo buttonBack = new(
+            new ButtonInfo(new Box2(buttonX, buttonY + yDiff * 3f,
                 buttonX + buttonWidth, buttonY + yDiff * 3f + buttonHeight),
-            buttonColor, buttonHoverColor, textColor,
-            padding, fontSize,
-            "Back", OnBack);
+                buttonColor, buttonHoverColor),
+            new TextInfo("Back", new Vector2(buttonX, buttonY + yDiff * 3f),
+                textColor, padding, fontSize),
+            OnBack);
 
-        buttons = new ButtonsModel(buttonStart,
-            buttonLoadFromClipboard, buttonLoadFromFile, buttonBack);
-        
+        buttons = new Buttons(buttonStart, buttonLoadFromClipboard,
+            buttonLoadFromFile, buttonBack);
+
         var imagePanelInfo = new PanelInfo(CalculateImagePanelBox(),
             Color4.Cornsilk.WithAlpha(0.9f));
 

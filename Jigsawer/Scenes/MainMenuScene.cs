@@ -1,4 +1,5 @@
 ﻿
+using Jigsawer.Entities;
 using Jigsawer.GLObjects;
 using Jigsawer.Helpers;
 using Jigsawer.Models;
@@ -12,7 +13,7 @@ namespace Jigsawer.Scenes;
 public sealed class MainMenuScene : Scene {
     private readonly ImageModel backgroundImage;
     private readonly MainMenuPuzzlesModel backgroundPuzzles;
-    private readonly ButtonsModel buttons;
+    private readonly Buttons buttons;
 
     public MainMenuScene() : base() {
         backgroundImage = new ImageModel(Images.EmbeddedImage.MainMenuBackgroundTile,
@@ -24,17 +25,26 @@ public sealed class MainMenuScene : Scene {
 
         backgroundPuzzles = new MainMenuPuzzlesModel(FramebufferSize);
 
-        ButtonInfo buttonSingleplayer = new(new Box2(200, 200, 500, 280),
-            Color4.Gray.WithAlpha(0.8f), Color4.Black.WithAlpha(0.8f),
-            Color4.White, 20, 50f,
-            "Singleplayer", OnSingleplayer);
+        var buttonColor = Color4.Gray.WithAlpha(0.8f);
+        var buttonHoverColor = Color4.Black.WithAlpha(0.8f);
+        var textColor = Color4.White;
 
-        ButtonInfo buttonExit = new(new Box2(200, 350, 500, 430),
-            Color4.Gray.WithAlpha(0.8f), Color4.Black.WithAlpha(0.8f),
-            Color4.White, 20, 50f,
-            "Exit", OnExit);
+        const float padding = 20f;
+        const float fontSize = 50f;
 
-        buttons = new ButtonsModel(buttonSingleplayer, buttonExit);
+        ButtonTextInfo buttonSingleplayer = new(
+            new ButtonInfo(new Box2(200, 200, 500, 280),
+                buttonColor, buttonHoverColor),
+            new TextInfo("Singleplayer", new Vector2(200), textColor, padding, fontSize),
+            OnSingleplayer);
+
+        ButtonTextInfo buttonExit = new(
+            new ButtonInfo(new Box2(200, 350, 500, 430),
+                buttonColor, buttonHoverColor),
+            new TextInfo("Exit", new Vector2(200, 350), textColor, padding, fontSize),
+            OnExit);
+
+        buttons = new Buttons(buttonSingleplayer, buttonExit);
     }
 
     public override void Close() {

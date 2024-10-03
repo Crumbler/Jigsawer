@@ -12,11 +12,6 @@ namespace Jigsawer.Models;
 public record struct ButtonInfo(Box2 Box,
     Color4 Color,
     Color4 HoverColor,
-    Color4 TextColor,
-    float Padding,
-    float TextSize,
-    string Text,
-    Action OnClick,
     bool Enabled = true);
 
 public sealed class ButtonsModel : IRenderableModel {
@@ -28,45 +23,28 @@ public sealed class ButtonsModel : IRenderableModel {
     private readonly VAO vao;
     private readonly VBO dataVBO;
     private readonly ButtonsShaderProgram shader;
-    private readonly ButtonInfo[] buttons;
-    private readonly TextBlock[] textBlocks;
-    private readonly float[] hoverFactors;
+    private readonly int buttonCount;
 
     public ButtonsModel(params ButtonInfo[] buttons) {
-        this.buttons = buttons;
-        hoverFactors = new float[buttons.Length];
-        textBlocks = new TextBlock[buttons.Length];
-        FillTextBlocks();
+        buttonCount = buttons.Length;
 
         shader = new ButtonsShaderProgram();
 
-        dataVBO = new VBO(buttons.Length * BytesPerButton);
-        FillVBO();
+        dataVBO = new VBO(buttonCount * BytesPerButton);
+        FillVBO(buttons);
 
         vao = new VAO();
         SetupVAO();
     }
 
-    private void FillTextBlocks() {
-        ReadOnlySpan<ButtonInfo> buttons = this.buttons;
-        Span<TextBlock> textBlocks = this.textBlocks;
-
-        for (int i = 0; i < textBlocks.Length; ++i) {
-            var button = buttons[i];
-            textBlocks[i] = new TextBlock(button.Text, button.Box.Min,
-                button.TextColor, button.Padding, 
-                button.TextSize);
-        }
-    }
-
-    private void FillVBO() {
+    private void FillVBO(ReadOnlySpan<ButtonInfo> buttons) {
         IntPtr ptr = dataVBO.Map();
 
         FillButtonBoxesAndColors(ptr, buttons);
 
-        ptr += buttons.Length * BytesForBoxAndColors;
+        ptr += buttonCount * BytesForBoxAndColors;
 
-        FillButtonHoverFactors(ptr, buttons.Length);
+        FillButtonHoverFactors(ptr);
 
         dataVBO.Unmap();
     }
@@ -82,7 +60,7 @@ public sealed class ButtonsModel : IRenderableModel {
         }
     }
 
-    private static void FillButtonHoverFactors(IntPtr ptr, int buttonCount) {
+    private void FillButtonHoverFactors(IntPtr ptr) {
         var span = ptr.ToSpan<float>(buttonCount);
         span.Clear();
     }
@@ -106,7 +84,7 @@ public sealed class ButtonsModel : IRenderableModel {
         vao.SetAttributeFormat(ButtonsShaderProgram.AttributePositions.HoverColor,
             4, VertexAttribType.UnsignedByte, true, sizeof(float) * 4 + sizeof(byte) * 4);
 
-        vao.SetBindingPointToBuffer(1, dataVBO.Id, buttons.Length * BytesForBoxAndColors,
+        vao.SetBindingPointToBuffer(1, dataVBO.Id, buttonCount * BytesForBoxAndColors,
             BytesForHoverFactor);
         vao.SetBindingPointDivisor(1, 1);
 
@@ -115,50 +93,10 @@ public sealed class ButtonsModel : IRenderableModel {
         vao.SetAttributeFormat(ButtonsShaderProgram.AttributePositions.HoverFactor,
             1, VertexAttribType.Float);
     }
-
-    public void TryClick(Vector2 cursorPos) {
-        ReadOnlySpan<ButtonInfo> buttons = this.buttons;
-
-        for (int i = 0; i < buttons.Length; ++i) {
-            var button = buttons[i];
-            bool isHovered = button.Box.ContainsExclusive(cursorPos);
-            bool isEnabled = button.Enabled;
-
-            if (isHovered && isEnabled) {
-                button.OnClick();
-                break;
-            }
-        }
-    }
-
-    public void SetButtonEnabledStatus(int index, bool enabled) {
-        buttons[index].Enabled = enabled;
-    }
-
-    public void Update(Vector2 cursorPos, int elapsedMs) {
-        ReadOnlySpan<ButtonInfo> buttons = this.buttons;
-        Span<float> hoverFactors = this.hoverFactors;
-        
-        for (int i = 0; i < buttons.Length; ++i) {
-            var button = buttons[i];
-
-            bool isHovered = button.Enabled && button.Box.ContainsExclusive(cursorPos);
-            
-            float hoverChangeDirection = isHovered ? 1f : -1f;
-
-            float newVal = hoverFactors[i] + hoverChangeDirection * elapsedMs / 200f;
-
-            hoverFactors[i] = Math.Clamp(newVal, 0f, 1f);
-        }
-
-        StoreHoverFactors();
-    }
-
-    private void StoreHoverFactors() {
-        ReadOnlySpan<float> hoverFactors = this.hoverFactors;
-
-        IntPtr ptr = dataVBO.MapRange(buttons.Length * BytesForBoxAndColors,
-            buttons.Length * BytesForHoverFactor, true);
+    
+    public void StoreHoverFactors(ReadOnlySpan<float> hoverFactors) {
+        IntPtr ptr = dataVBO.MapRange(buttonCount * BytesForBoxAndColors,
+            buttonCount * BytesForHoverFactor, true);
 
         var span = ptr.ToSpan<float>(hoverFactors.Length);
 
@@ -171,22 +109,12 @@ public sealed class ButtonsModel : IRenderableModel {
         vao.Bind();
         shader.Use();
 
-        GL.DrawArraysInstanced(PrimitiveType.TriangleStrip, 0, 4, buttons.Length);
-
-        ReadOnlySpan<TextBlock> textBlocks = this.textBlocks;
-        foreach (var textBlock in textBlocks) {
-            textBlock.Render();
-        }
+        GL.DrawArraysInstanced(PrimitiveType.TriangleStrip, 0, 4, buttonCount);
     }
 
     public void Delete() {
         vao.Delete();
         dataVBO.Delete();
         shader.Delete();
-
-        Span<TextBlock> textBlocks = this.textBlocks;
-        foreach (var textBlock in textBlocks) {
-            textBlock.Delete();
-        }
     }
 }
