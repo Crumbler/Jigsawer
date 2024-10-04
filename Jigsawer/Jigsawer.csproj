@@ -46,6 +46,8 @@
     <None Remove="Shaders\Entities\Panel\vert.glsl" />
     <None Remove="Shaders\Entities\TextBlock\frag.glsl" />
     <None Remove="Shaders\Entities\TextBlock\vert.glsl" />
+    <None Remove="Shaders\Entities\UpDownArrows\frag.glsl" />
+    <None Remove="Shaders\Entities\UpDownArrows\vert.glsl" />
   </ItemGroup>
 
   <ItemGroup>
@@ -62,6 +64,8 @@
     <EmbeddedResource Include="Shaders\Entities\Panel\vert.glsl" />
     <EmbeddedResource Include="Shaders\Entities\TextBlock\frag.glsl" />
     <EmbeddedResource Include="Shaders\Entities\TextBlock\vert.glsl" />
+    <EmbeddedResource Include="Shaders\Entities\UpDownArrows\frag.glsl" />
+    <EmbeddedResource Include="Shaders\Entities\UpDownArrows\vert.glsl" />
   </ItemGroup>
 
   <ItemGroup>
