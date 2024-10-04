@@ -54,12 +54,8 @@
     <EmbeddedResource Include="Shaders\Entities\Buttons\vert.glsl" />
     <EmbeddedResource Include="Shaders\Entities\Image\Normal\frag.glsl" />
     <EmbeddedResource Include="Shaders\Entities\Image\Normal\vert.glsl" />
-    <EmbeddedResource Include="Shaders\Entities\Image\Zoom\frag.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Shaders\Entities\Image\Zoom\vert.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Shaders\Entities\Image\Zoom\frag.glsl" />
+    <EmbeddedResource Include="Shaders\Entities\Image\Zoom\vert.glsl" />
     <EmbeddedResource Include="Shaders\Entities\MainMenuPuzzles\frag.glsl" />
     <EmbeddedResource Include="Shaders\Entities\MainMenuPuzzles\vert.glsl" />
     <EmbeddedResource Include="Shaders\Entities\Panel\frag.glsl" />

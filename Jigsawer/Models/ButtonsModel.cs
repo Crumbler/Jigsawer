@@ -20,20 +20,17 @@ public sealed class ButtonsModel : IRenderableModel {
     private const int BytesForHoverFactor = sizeof(float);
     private const int BytesPerButton = BytesForBoxAndColors + BytesForHoverFactor;
 
-    private readonly VAO vao;
+    private readonly VAO vao = new();
     private readonly VBO dataVBO;
-    private readonly ButtonsShaderProgram shader;
+    private readonly ButtonsShaderProgram shader = new();
     private readonly int buttonCount;
 
     public ButtonsModel(params ButtonInfo[] buttons) {
         buttonCount = buttons.Length;
 
-        shader = new ButtonsShaderProgram();
-
         dataVBO = new VBO(buttonCount * BytesPerButton);
         FillVBO(buttons);
 
-        vao = new VAO();
         SetupVAO();
     }
 

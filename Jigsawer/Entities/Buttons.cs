@@ -2,16 +2,18 @@
 using Jigsawer.Models;
 
 using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
 
 namespace Jigsawer.Entities;
 
-public record struct ButtonTextInfo(ButtonInfo BInfo, TextInfo TInfo, Action OnClick);
+public record struct ButtonTextInfo(ButtonInfo BInfo, TextInfo TInfo,
+    Action<MouseButtonEventArgs> OnClick);
 
 public sealed class Buttons : IRenderableModel {
     private readonly float[] hoverFactors;
     private readonly ButtonInfo[] buttonInfos;
     private readonly TextBlock[] textBlocks;
-    private readonly Action[] clickActions;
+    private readonly Action<MouseButtonEventArgs>[] clickActions;
     private readonly ButtonsModel buttons;
 
     public Buttons(params ButtonTextInfo[] infos) {
@@ -29,9 +31,9 @@ public sealed class Buttons : IRenderableModel {
         buttonInfos[index].Enabled = enabled;
     }
 
-    public void TryClick(Vector2 cursorPos) {
+    public void TryClick(Vector2 cursorPos, MouseButtonEventArgs eventArgs) {
         ReadOnlySpan<ButtonInfo> buttons = buttonInfos;
-        ReadOnlySpan<Action> actions = clickActions;
+        ReadOnlySpan<Action<MouseButtonEventArgs>> actions = clickActions;
 
         for (int i = 0; i < buttons.Length; ++i) {
             var button = buttons[i];
@@ -39,7 +41,7 @@ public sealed class Buttons : IRenderableModel {
             bool isEnabled = button.Enabled;
 
             if (isHovered && isEnabled) {
-                actions[i]();
+                actions[i](eventArgs);
                 break;
             }
         }

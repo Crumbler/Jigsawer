@@ -109,11 +109,11 @@ public sealed class SingleplayerStartScene : Scene {
         base.Close();
     }
 
-    private void OnStart() {
+    private void OnStart(MouseButtonEventArgs eventArgs) {
 
     }
 
-    private void OnLoadFromClipboard() {
+    private void OnLoadFromClipboard(MouseButtonEventArgs eventArgs) {
         var bmp = ClipboardHelper.GetBitmap();
         if (bmp == null) {
             Logger.LogDebug("Failed to get bitmap from clipboard");
@@ -123,7 +123,7 @@ public sealed class SingleplayerStartScene : Scene {
         DisplayImage(bmp);
     }
 
-    private void OnLoadFromFile() {
+    private void OnLoadFromFile(MouseButtonEventArgs eventArgs) {
         using var openFileDialog = new OpenFileDialog();
 
         openFileDialog.ShowPreview = true;
@@ -166,7 +166,7 @@ public sealed class SingleplayerStartScene : Scene {
         };
     }
 
-    private void OnBack() {
+    private void OnBack(MouseButtonEventArgs eventArgs) {
         TransferToScene(SceneType.MainMenu);
     }
 
@@ -197,7 +197,7 @@ public sealed class SingleplayerStartScene : Scene {
 
     public override void OnMouseDown(MouseButtonEventArgs e) {
         if (e.Button == MouseButton.Left) {
-            buttons.TryClick(CursorPos);
+            buttons.TryClick(CursorPos, e);
         }
     }
 

@@ -64,15 +64,15 @@ public sealed class MainMenuScene : Scene {
 
     public override void OnMouseDown(MouseButtonEventArgs e) {
         if (e.Button == MouseButton.Left) {
-            buttons.TryClick(CursorPos);
+            buttons.TryClick(CursorPos, e);
         }
     }
 
-    private void OnSingleplayer() {
+    private void OnSingleplayer(MouseButtonEventArgs eventArgs) {
         TransferToScene(SceneType.SingleplayerStart);
     }
 
-    private void OnExit() {
+    private void OnExit(MouseButtonEventArgs eventArgs) {
         ExitAction.Invoke();
     }
 
