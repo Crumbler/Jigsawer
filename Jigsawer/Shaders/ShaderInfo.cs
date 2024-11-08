@@ -5,20 +5,20 @@ using OpenTK.Graphics.OpenGL4;
 namespace Jigsawer.Shaders;
 
 public struct ShaderInfo {
-    public string SourcePath { get; private set; }
-    public ShaderType Type { get; private set; }
+    public string SourcePath { get; }
+    public ShaderType Type { get; }
 
     public ShaderInfo(string sourcePath, ShaderType type) {
         SourcePath = sourcePath;
         Type = type;
     }
 
-    public static ShaderInfo Get(string entityName, ShaderType type) => 
+    public static ShaderInfo Get(string entityName, ShaderType type) =>
         new(Shader.GetEntityShaderPath(entityName, type), type);
 
     public Shader Load() {
         var shader = Shader.Create(Type);
-        
+
         string shaderSourceCode = EmbeddedResourceLoader.GetResourceString(SourcePath);
 
         shader.SetSource(shaderSourceCode);

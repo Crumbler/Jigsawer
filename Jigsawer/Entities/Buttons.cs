@@ -14,13 +14,13 @@ public sealed class Buttons : IRenderableModel {
     private readonly ButtonInfo[] buttonInfos;
     private readonly TextBlock[] textBlocks;
     private readonly Action<MouseButtonEventArgs>[] clickActions;
-    private readonly ButtonsModel buttons;
+    private readonly ButtonsModel buttonModels;
 
     public Buttons(params ButtonTextInfo[] infos) {
         hoverFactors = new float[infos.Length];
 
         buttonInfos = infos.Select(inf => inf.BInfo).ToArray();
-        buttons = new ButtonsModel(buttonInfos);
+        buttonModels = new ButtonsModel(buttonInfos);
 
         clickActions = infos.Select(inf => inf.OnClick).ToArray();
 
@@ -48,8 +48,8 @@ public sealed class Buttons : IRenderableModel {
     }
 
     public void Update(Vector2 cursorPos, int elapsedMs) {
-        ReadOnlySpan<ButtonInfo> buttons = buttonInfos;
-        Span<float> hoverFactors = this.hoverFactors;
+        ReadOnlySpan<ButtonInfo> buttons = this.buttonInfos;
+        Span<float> hoverFactorsSpan = this.hoverFactors;
 
         for (int i = 0; i < buttons.Length; ++i) {
             var button = buttons[i];
@@ -58,27 +58,25 @@ public sealed class Buttons : IRenderableModel {
 
             float hoverChangeDirection = isHovered ? 1f : -1f;
 
-            float newVal = hoverFactors[i] + hoverChangeDirection * elapsedMs / 200f;
+            float newVal = hoverFactorsSpan[i] + hoverChangeDirection * elapsedMs / 200f;
 
-            hoverFactors[i] = Math.Clamp(newVal, 0f, 1f);
+            hoverFactorsSpan[i] = Math.Clamp(newVal, 0f, 1f);
         }
 
-        this.buttons.StoreHoverFactors(hoverFactors);
+        this.buttonModels.StoreHoverFactors(hoverFactorsSpan);
     }
 
     public void Render() {
-        buttons.Render();
+        buttonModels.Render();
 
-        ReadOnlySpan<TextBlock> textBlocks = this.textBlocks;
         foreach (var textBlock in textBlocks) {
             textBlock.Render();
         }
     }
 
     public void Delete() {
-        buttons.Delete();
+        buttonModels.Delete();
 
-        Span<TextBlock> textBlocks = this.textBlocks;
         foreach (var textBlock in textBlocks) {
             textBlock.Delete();
         }

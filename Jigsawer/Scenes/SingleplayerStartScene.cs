@@ -88,15 +88,11 @@ public sealed class SingleplayerStartScene : Scene {
     }
 
     private Box2 CalculateImagePanelBox() {
-        var box = new Box2(650f, 50f, FramebufferSize.X - 50f, FramebufferSize.Y - 50f);
-        
-        return box;
+        return new Box2(650f, 50f, FramebufferSize.X - 50f, FramebufferSize.Y - 50f);
     }
 
     private Box2 CalculateImageBox() {
-        var box = new Box2(675f, 75f, FramebufferSize.X - 75f, FramebufferSize.Y - 100f);
-
-        return box;
+        return new Box2(675f, 75f, FramebufferSize.X - 75f, FramebufferSize.Y - 100f);
     }
 
     public override void Close() {
@@ -110,7 +106,7 @@ public sealed class SingleplayerStartScene : Scene {
     }
 
     private void OnStart(MouseButtonEventArgs eventArgs) {
-
+        // No start action yet
     }
 
     private void OnLoadFromClipboard(MouseButtonEventArgs eventArgs) {
@@ -138,9 +134,7 @@ public sealed class SingleplayerStartScene : Scene {
         Bitmap bmp;
 
         try {
-#pragma warning disable CA2000 // No object to dispose if an exception is caught
             bmp = new Bitmap(openFileDialog.FileName);
-#pragma warning restore CA2000
         }
         catch (FileNotFoundException) {
             Logger.LogDebug("File not found");
@@ -174,7 +168,7 @@ public sealed class SingleplayerStartScene : Scene {
         base.OnFramebufferResize(newSize);
 
         backgroundImage.Rect = new Box2(Vector2.Zero, FramebufferSize);
-        
+
         backgroundPuzzles.UpdateDrawSize(newSize);
 
         imagePanel.SetPanelRect(0, CalculateImagePanelBox());

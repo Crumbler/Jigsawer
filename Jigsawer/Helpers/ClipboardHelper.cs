@@ -11,7 +11,7 @@ public static class ClipboardHelper {
         if (!Clipboard.ContainsImage()) {
             return null;
         }
-        
+
         return Clipboard.GetDataObject()?.GetData(bitmapClassName) as Bitmap;
     }
 }

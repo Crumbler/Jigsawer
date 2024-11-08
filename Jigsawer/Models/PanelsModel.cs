@@ -39,11 +39,11 @@ public class PanelsModel : IRenderableModel {
     private void FillVBO() {
         IntPtr ptr = dataVBO.Map();
 
-        ReadOnlySpan<PanelInfo> panels = this.panels;
-        var span = ptr.ToSpan<RectAndColor>(panels.Length);
-        
-        for (int i = 0; i < panels.Length; ++i) {
-            var panel = panels[i];
+        ReadOnlySpan<PanelInfo> panelSpan = this.panels;
+        var span = ptr.ToSpan<RectAndColor>(panelSpan.Length);
+
+        for (int i = 0; i < panelSpan.Length; ++i) {
+            var panel = panelSpan[i];
             span[i] = new RectAndColor(panel.Rect, panel.Color.ToInt());
         }
 

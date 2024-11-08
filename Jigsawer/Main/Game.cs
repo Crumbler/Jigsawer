@@ -101,7 +101,7 @@ public sealed class Game : GameWindow {
         currentScene?.Close();
 
         Scene newScene;
-        
+
         switch (sceneType) {
             case SceneType.MainMenu:
                 newScene = new MainMenuScene();

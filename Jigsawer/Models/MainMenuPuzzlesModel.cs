@@ -12,7 +12,7 @@ public sealed class MainMenuPuzzlesModel : IRenderableModel {
 
     public MainMenuPuzzlesModel(Vector2 drawSize) {
         shader = new MainMenuPuzzlesShaderProgram();
-        
+
         shader.SetDrawSize(drawSize);
     }
 

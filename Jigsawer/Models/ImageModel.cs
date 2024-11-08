@@ -63,36 +63,36 @@ public sealed class ImageModel : IRenderableModel {
     }
 
     private VBO InitializeVBO() {
-        var positionVBO = new VBO(InstanceDataSize);
-        positionVBO.SetData(box);
+        var vbo = new VBO(InstanceDataSize);
+        vbo.SetData(box);
 
-        return positionVBO;
+        return vbo;
     }
 
     private VAO InitializeVAO() {
-        var vao = new VAO();
-        vao.SetBindingPointToBuffer(0, positionVBO.Id);
-        vao.SetBindingPointDivisor(0, 1);
+        var imageVao = new VAO();
+        imageVao.SetBindingPointToBuffer(0, positionVBO.Id);
+        imageVao.SetBindingPointDivisor(0, 1);
 
-        vao.EnableVertexAttributeArray(AttributePositions.Position);
-        vao.BindAttributeToPoint(AttributePositions.Position, 0);
-        vao.SetAttributeFormat(AttributePositions.Position,
+        imageVao.EnableVertexAttributeArray(AttributePositions.Position);
+        imageVao.BindAttributeToPoint(AttributePositions.Position, 0);
+        imageVao.SetAttributeFormat(AttributePositions.Position,
             PrimitivesPerInstance, VertexAttribType.Float);
 
-        return vao;
+        return imageVao;
     }
 
     private ImageShaderProgram InitializeShader(float scaleFactor,
         ImageSizeMode sizeMode) {
-        ImageShaderProgram shader = sizeMode switch {
+        ImageShaderProgram imageShader = sizeMode switch {
             ImageSizeMode.Normal => new NormalImageShaderProgram(),
             _ => new ZoomImageShaderProgram()
         };
 
-        shader.SetScaleFactor(scaleFactor);
-        shader.SetTextureUnit(texture.Unit);
+        imageShader.SetScaleFactor(scaleFactor);
+        imageShader.SetTextureUnit(texture.Unit);
 
-        return shader;
+        return imageShader;
     }
 
     public void Render() {

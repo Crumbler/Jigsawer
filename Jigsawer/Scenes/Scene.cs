@@ -12,7 +12,7 @@ namespace Jigsawer.Scenes;
 
 public abstract class Scene {
     private double secondsAccumulator;
-    private UBO<SharedInfo> sharedInfo;
+    private readonly UBO<SharedInfo> sharedInfo;
     protected Matrix3 projMat;
 
     protected Scene() {
@@ -81,7 +81,6 @@ public abstract class Scene {
     }
 
     public virtual void OnMouseDown(MouseButtonEventArgs e) {
-
     }
 
     protected abstract void Update(int passedMs);
@@ -99,7 +98,7 @@ public abstract class Scene {
         info.SetProjectionMatrix(in projMat);
 
         sharedInfo.Unmap();
-        
+
         FramebufferSize = newSize;
     }
 }

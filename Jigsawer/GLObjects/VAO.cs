@@ -4,7 +4,7 @@ namespace Jigsawer.GLObjects;
 public struct VAO {
     private static int boundId;
 
-    public int Id { get; private set; }
+    public int Id { get; }
 
     public VAO() {
         GL.CreateVertexArrays(1, out int vaoId);

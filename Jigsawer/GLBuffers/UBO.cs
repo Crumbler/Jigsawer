@@ -15,7 +15,7 @@ public static class UBO {
 public struct UBO<T> where T : unmanaged {
     private readonly int id;
 
-    public int BindingPoint { get; private set; }
+    public int BindingPoint { get; }
 
     [SkipLocalsInit]
     public UBO() {

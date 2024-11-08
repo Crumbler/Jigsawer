@@ -1,5 +1,4 @@
 ﻿
-
 using Jigsawer.GLBuffers;
 using Jigsawer.GLObjects;
 using Jigsawer.Helpers;

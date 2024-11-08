@@ -2,7 +2,7 @@
 namespace Jigsawer.Helpers;
 
 public static class SpanExtensions {
-    public static (int index, T element) GetMinElement<T>(this ReadOnlySpan<T> span) 
+    public static (int index, T element) GetMinElement<T>(this ReadOnlySpan<T> span)
         where T : IComparable<T> {
         int index = 0;
         T minElement = span[0];

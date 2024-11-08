@@ -51,6 +51,9 @@ public static class DebugHelper {
 #if DEBUG
     private static readonly DebugProc debugMessageDelegate = OnDebugMessage;
 
+    /// <summary>
+    /// Logs OpenGL debug messages
+    /// </summary>
     /// <param name="source">Source of the debugging message.</param>
     /// <param name="type">Type of the debugging message.</param>
     /// <param name="id">ID associated with the message.</param>

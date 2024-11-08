@@ -14,7 +14,7 @@ public sealed class FontAtlas {
     public const char MinChar = '!', MaxChar = '~';
     public const int TotalChars = MaxChar - MinChar + 1;
 
-    private static readonly List<FontAtlas> atlases = GenerateFontAtlases();
+    private static readonly List<FontAtlas> allAtlases = GenerateFontAtlases();
 
     private static List<FontAtlas> GenerateFontAtlases() {
         using var library = new Library();
@@ -40,13 +40,13 @@ public sealed class FontAtlas {
     }
 
     public static FontAtlas GetFontAtlas(int emSize) =>
-        atlases.MinBy(atlas => int.Abs(atlas.EmSize - emSize))!;
+        allAtlases.MinBy(atlas => int.Abs(atlas.EmSize - emSize))!;
 
     public Texture Texture { get; private set; }
-    public int CharacterHeight { get; private set; }
+    public int CharacterHeight { get; }
     public float SpaceAdvance { get; private set; }
-    public float MaxAscender { get; private set; }
-    public int EmSize { get; private set; }
+    public float MaxAscender { get; }
+    public int EmSize { get; }
     public ReadOnlySpan<(float width, float height)> CharacterSizes => characterSizes;
     public ReadOnlySpan<(int bearingX, int bearingY, float advance)> CharacterMetrics => characterMetrics;
 

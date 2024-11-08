@@ -1,5 +1,4 @@
 ﻿
-
 namespace Jigsawer.Models;
 
 public interface IRenderableModel {

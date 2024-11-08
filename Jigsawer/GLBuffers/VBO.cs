@@ -5,8 +5,8 @@ using System.Runtime.CompilerServices;
 namespace Jigsawer.GLBuffers;
 
 public struct VBO {
-    public int Id { get; private set; }
-    public BufferUsageHint Usage { get; private set; }
+    public int Id { get; }
+    public BufferUsageHint Usage { get; }
 
     [SkipLocalsInit]
     public VBO(int size) {

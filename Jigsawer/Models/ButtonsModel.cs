@@ -90,7 +90,7 @@ public sealed class ButtonsModel : IRenderableModel {
         vao.SetAttributeFormat(ButtonsShaderProgram.AttributePositions.HoverFactor,
             1, VertexAttribType.Float);
     }
-    
+
     public void StoreHoverFactors(ReadOnlySpan<float> hoverFactors) {
         IntPtr ptr = dataVBO.MapRange(buttonCount * BytesForBoxAndColors,
             buttonCount * BytesForHoverFactor, true);
